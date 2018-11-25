@@ -17,7 +17,7 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 - Sonoff 4CH Pro R2 [Amazon](https://amzn.to/2AgIaRm)
 - Sonoff T1 WiFi Wall Switch 1 Gang [Amazon](https://amzn.to/2DMiMXp)
 - Sonoff T1 WiFi Wall Switch 2 Gang [Amazon](https://amzn.to/2P2FLz5)
-- Sonoff T1 WiFi Wall Switch 2 Gang [Amazon](https://amzn.to/2R7Tqa5)
+- Sonoff T1 WiFi Wall Switch 3 Gang [Amazon](https://amzn.to/2R7Tqa5)
 - TECKIN Smart WiFi Plug [Amazon](https://amzn.to/2P0EBEk)
 - 4 Way Powerstrip Manzoku / ZLD-44UK-W [Amazon](https://amzn.to/2KuYbIg)
 
@@ -27,3 +27,4 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 - HikVision DS-2CD2T42WD-I5 [4mm Lense Amazon](https://amzn.to/2DIuUIL) [6mm Lense Amazon](https://amzn.to/2AkqB2W) [12mm Lense Amazon](https://amzn.to/2RhGKh6) 
 - HikVision DS-2CD2T42WD-I8 [6mm Lense Amazon](https://amzn.to/2Kugxcf)
+- HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) [HikVision Version DS-KB6003-WIP at Amazon](https://amzn.to/2P2dkkQ)
