@@ -11,7 +11,7 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 - Synology DS1511+ (Docker running Home Assistant)
 - Linksys WRT1900ACS Router [Amazon](https://amzn.to/2AiKSWz)
 
-### The following are flashed with [Tasmota Firmware]https://github.com/arendst/Sonoff-Tasmota)
+### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
 
 - Sonoff Basic WiFi Relay [Amazon](https://amzn.to/2KuhDVp)
 - Sonoff 4CH Pro R2 [Amazon](https://amzn.to/2AgIaRm)
