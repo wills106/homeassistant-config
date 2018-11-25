@@ -25,6 +25,6 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 ### Security
 
-- HikVision DS-2CD2T42WD-I5 [4mm Lense Amazon](https://amzn.to/2DIuUIL) [6mm Lense Amazon](https://amzn.to/2AkqB2W) [12mm Lense Amazon](https://amzn.to/2RhGKh6) 
+- HikVision DS-2CD2T42WD-I5 [4mm Lense Amazon](https://amzn.to/2DIuUIL) , [6mm Lense Amazon](https://amzn.to/2AkqB2W) , [12mm Lense Amazon](https://amzn.to/2RhGKh6) 
 - HikVision DS-2CD2T42WD-I8 [6mm Lense Amazon](https://amzn.to/2Kugxcf)
-- HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) [HikVision Version DS-KB6003-WIP at Amazon](https://amzn.to/2P2dkkQ)
+- HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) , [HikVision Version DS-KB6003-WIP at Amazon](https://amzn.to/2P2dkkQ)
