@@ -1,0 +1,41 @@
+input_select:
+  music:
+    name: Playlists
+    options:
+     - " "   # Should be empty
+    icon: mdi:playlist-play
+  media_player:
+    name: Speakers
+    options: # entity_ids of your media players
+     - "home_group"
+     - "living_room_speaker"
+     - "bedroom_speaker"
+    icon: mdi:speaker-wireless
+
+switch:
+ - platform: gmusic
+   user: !secret user_name
+   password: !secret g_pass
+   device_id: !secret gmusic_id # http://unofficial-google-music-api.readthedocs.io/en/latest/reference/mobileclient.html#gmusicapi.clients.Mobileclient.login
+   media_player: media_player # entity id of the input select used for mediaplayer
+   playlist: music # entity id of the input select used for playlist
+
+# OPTIONAL
+group:
+  google_music:
+    name: Google Music 
+    entities:
+    - input_select.music
+    - input_select.media_player
+    - switch.google_music
+
+shell_command:
+  install_gmusic: pip3 install gmusicapi
+
+automation:
+  - alias: homeassistant_start
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: shell_command.install_gmusic
