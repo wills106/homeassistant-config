@@ -1,0 +1,10 @@
+camera.hikvision__ds2cd2t42wdi8:
+  friendly_name: HIKVISION - Front Door
+camera.hikvision__ds2cd2t42wdi5:
+  friendly_name: HIKVISION - Garage
+script.play_chromecast_radio:
+  friendly_name: Play
+  icon: mdi:play
+script.stop_chromecast_radio:
+  friendly_name: Stop
+  icon: mdi:stop

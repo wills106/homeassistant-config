@@ -1,0 +1,313 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Will's House
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 207
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: GB
+  # Customization file
+  customize: !include customize.yaml
+
+  packages: !include_dir_named packages
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  ssl_certificate: /config/ssl/cert.pem
+  ssl_key: /config/ssl/privkey.pem
+  base_url: !secret base_url
+
+duckdns:
+  domain: !secret domain
+  access_token: !secret duck_token
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google
+
+# Cloud
+cloud:
+
+mqtt:
+  broker: !secret mqtt_broker
+  port: 1883
+  keepalive: 60
+  username: !secret mqtt_name
+  password: !secret mqtt_pass
+
+light:
+
+  - platform: mqtt
+    name: "KitchenCupboards"
+    state_topic: "stat/sonoffKit/POWER1"
+    command_topic: "cmnd/sonoffKit/POWER1"
+    availability_topic: "tele/sonoffKit/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "KitchenCeiling"
+    state_topic: "stat/sonoffKit/POWER2"
+    command_topic: "cmnd/sonoffKit/POWER2"
+    availability_topic: "tele/sonoffKit/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "HallMaster"
+    state_topic: "stat/sonoffHM/POWER"
+    command_topic: "cmnd/sonoffHM/POWER"
+    availability_topic: "tele/sonoffHS/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "HallSlave"
+    state_topic: "stat/sonoffHS/POWER"
+    command_topic: "cmnd/sonoffHS/POWER"
+    availability_topic: "tele/sonoffHS/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "KitchenWorktop"
+    state_topic: "stat/sonoffKW/RESULT"
+    command_topic: "cmnd/sonoffKW/POWER"
+    state_value_template: "{{ value_json.POWER }}"
+    brightness_state_topic: "stat/sonoffKW/RESULT"
+    brightness_command_topic: "cmnd/sonoff/Dimmer"
+    brightness_scale: 100
+    brightness_value_template: "{{ value_json.Dimmer }}"
+    white_value_state_topic: "stat/sonoffKW/RESULT"
+    white_value_command_topic: "cmnd/sonoffKW/Channel4"
+    white_value_scale: 100
+    white_value_template: "{{ value_json.Channel[3] }}"
+    rgb_command_topic: "cmnd/sonoffKW/Color"
+    rgb_command_template: "{{ '%02x%02x%02x' | format(red, green, blue)}}"
+    rgb_state_topic: "stat/sonoffA/RESULT"
+    rgb_value_template: "{{(value_json.Channel[0]*2.55)|int}},{{(value_json.Channel[1]*2.55)|int}},{{(value_json.Channel[2]*2.55)|int}}"
+    effect_state_topic: "stat/sonoffKW/RESULT"
+    effect_command_topic: "cmnd/sonoffKW/Scheme"
+    effect_list:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    retain: false
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+
+  - platform: mqtt
+    name: "LivingroomMaster"
+    state_topic: "stat/sonoffLM/POWER"
+    command_topic: "cmnd/sonoffLM/POWER"
+    availability_topic: "tele/sonoffLM/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+  - platform: mqtt
+    name: "LivingroomSlave"
+    state_topic: "stat/sonoffLS/POWER"
+    command_topic: "cmnd/sonoffLS/POWER"
+    availability_topic: "tele/sonoffLS/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+  - platform: mqtt
+    name: "MasterBedroom"
+    state_topic: "stat/sonoffMB/POWER"
+    command_topic: "cmnd/sonoffMB/POWER"
+    availability_topic: "tele/sonoffMB/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "LivingRoomWallUnit"
+    state_topic: "stat/PrStrLivingRoom/POWER1"
+    command_topic: "cmnd/PrStrLivingRoom/POWER1"
+    availability_topic: "tele/PrStrLivingRoom/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+switch:
+
+  - platform: mqtt
+    name: "BedroomCurtains"
+    state_topic: "stat/bedcurtain/POWER"
+    command_topic: "cmnd/bedcurtain/POWER"
+    availability_topic: "tele/bedcurtain/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+    icon: mdi:blinds
+
+  - platform: mqtt
+    name: "LivingroomCurtains"
+    state_topic: "stat/LivingroomCurtains/POWER"
+    command_topic: "cmnd/LivingroomCurtains/POWER"
+    availability_topic: "tele/LivingroomCurtains/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+    icon: mdi:blinds
+
+  - platform: mqtt
+    name: "LivingRoomUSB"
+    state_topic: "stat/PrStrLivingRoom/POWER5"
+    command_topic: "cmnd/PrStrLivingRoom/POWER5"
+    availability_topic: "tele/PrStrLivingRoom/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+tuya:
+  username: !secret user_name
+  password: !secret tuya_pass
+  country_code: 44
+
+camera:
+  - platform: synology
+    url: !secret syn_host
+    username: !secret syn_name
+    password: !secret syn_pass
+    timeout: 15
+    verify_ssl: False
+
+#  - platform: generic
+#    name: Vacuum Map
+#    still_image_url: http://192.168.1.134{{states.sensor.rosiesmap.state | string }}
+#    content_type: image/png
+#    framerate: 1
+
+  - platform: generic
+    name: Vacuum Map
+    still_image_url: http://192.168.1.134/api/remote/map?drawRobot=true&drawCharger=true&scale=5&border=0&doCropping=true&drawPath=true&returnImage=true
+    content_type: image/png
+    framerate: 1
+
+weather:
+  - platform: openweathermap
+    api_key: !secret weather_key
+
+# Track calendar false is needed to prevent Hass from overwriting the google_calendar.yaml file.
+google:
+  client_id: !secret calendar_id
+  client_secret: !secret calendar_secret
+  track_new_calendar: false
+
+google_assistant:
+  project_id: !secret google_assistant_project_id
+  api_key: !secret google_assistant_api
+  exposed_domains:
+    - switch
+    - light
+    - group
+    - vacuum
+
+input_boolean:        
+  early_shift:
+  late_shift:
+  overtime:
+  holiday:
+  party:
+  weekend:
+  heater:
+    icon: mdi:radiator
+
+vacuum:
+  - platform: xiaomi_miio
+    host: 192.168.1.134
+    token: !secret rosie_token
+    name: Rosie
+
+ifttt:
+  key: !secret ifttt_token
+
+rest_command:
+  gate_record:
+    url: 'https://wills106.duckdns.org:5001/webapi/entry.cgi?api=SYNO.SurveillanceStation.ExternalEvent&method="Trigger"&version=1&eventId=1&eventName="This is external event1"&account="admin"&password="1979kgc210Amiga060"'
+
+group: !include groups.yaml
+automation: !include automations.yaml
+sensor: !include sensors.yaml
+script: !include scripts.yaml

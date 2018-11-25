@@ -1,0 +1,38 @@
+LivingRoomLights:
+  view: no
+  name: 'Living room Lights'
+  entities:
+    - light.LivingroomMaster
+    - light.LivingroomSlave
+
+HallLights:
+  view: no
+  name: 'Hall Lights'
+  entities:
+    - light.HallMaster
+    - light.HallSlave
+
+AllLights:
+  view: no
+  name: 'All Lights'
+  entities:
+    - light.LivingroomMaster
+    - light.LivingroomSlave
+    - light.HallMaster
+    - light.HallSlave
+    - light.KitchenCupboards
+    - light.KitchenCeiling
+    - light.KitchenWorktop
+    - light.06200393b4e62d1ba7be
+    - light.06200393b4e62d1ba9f1
+    - light.06200393b4e62d1ba7c7
+    - light.MasterBedroom
+    - light.LivingRoomWallUnit
+
+BathroomLights:
+  view: no
+  name: 'Bathroom Lights'
+  entities:
+    - light.06200393b4e62d1ba7be
+    - light.06200393b4e62d1ba9f1
+    - light.06200393b4e62d1ba7c7

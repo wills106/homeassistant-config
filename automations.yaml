@@ -1,0 +1,422 @@
+
+#######################################
+#                                     #
+# Input_Boolean's                     #
+#                                     #
+#######################################
+
+#############################
+#                           #
+# Reset - Input_Boolean's   #
+#                           #
+#############################
+
+- alias: Reset Daily Booleans
+  trigger:
+    - platform: time
+      at: '20:00:00'
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - input_boolean.early_shift
+        - input_boolean.late_shift
+        - input_boolean.overtime
+        - input_boolean.holiday
+        - input_boolean.party
+        - input_boolean.weekend
+
+#############################
+#                           #
+# Set - Input_Boolean's     #
+#                           #
+#############################
+
+- alias: Early Shift
+  trigger:
+    - platform: state
+      entity_id: calendar.early_shift
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.early_shift
+
+- alias: Late Shift
+  trigger:
+    - platform: state
+      entity_id: calendar.late_shift
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.late_shift
+
+- alias: Overtime
+  trigger:
+    - platform: state
+      entity_id: calendar.overtime
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.overtime
+
+- alias: Holiday
+  trigger:
+    - platform: state
+      entity_id: calendar.holiday
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.holiday
+
+- alias: Party
+  trigger:
+    - platform: state
+      entity_id: calendar.party
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.party
+
+- alias: Weekend
+  trigger:
+    - platform: state
+      entity_id: calendar.weekend
+      to: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.weekend
+
+#######################################
+#                                     #
+# MQTT - Status Power on Startup      #
+#                                     #
+#######################################
+
+#Check Power Status on startup for Sonoff Devices
+- alias: "Power state on HA start-up"
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/sonoffs/power1"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/sonoffs/power2"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/sonoffs/Power3"
+        payload: "" 
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/sonoffs/power4"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/sonoffs/power5"
+        payload: ""
+
+#######################################
+#                                     #
+# Curtain On/Off Control              #
+#                                     #
+#######################################
+
+# Due to curtain controller needing to be turned off in order for it to run again
+# a timer is setup to automaticaly turn it off, so it can run again with same call.
+- alias: Bedroom Curtains
+  trigger:
+    - platform: state
+      entity_id: switch.BedroomCurtains
+      to: 'on'
+  action:
+    - delay: '00:00:15'
+    - service: switch.turn_off
+      entity_id: switch.BedroomCurtains
+
+- alias: Livingroom Curtains
+  trigger:
+    - platform: state
+      entity_id: switch.LivingroomCurtains
+      to: 'on'
+  action:
+    - delay: '00:00:30'
+    - service: switch.turn_off
+      entity_id: switch.LivingroomCurtains
+
+#######################################
+#                                     #
+# 2 Way Light Control                 #
+#                                     #
+#######################################
+
+# Automation for two way Living Room Lights
+- alias: Living Room Lights On
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: group.LivingRoomLights
+    to: 'on'
+  action:
+    service: homeassistant.turn_on
+    entity_id: group.LivingRoomLights
+
+- alias: Living Room Lights Off
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: light.LivingroomMaster
+      to: 'off'
+    - platform: state
+      entity_id: light.LivingroomSlave
+      to: 'off'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.LivingRoomLights
+
+# Automation for two way Hall Lights
+- alias: Hall Lights On
+  initial_state: 'on'
+  trigger:
+    platform: state
+    entity_id: group.HallLights
+    to: 'on'
+  action:
+    service: homeassistant.turn_on
+    entity_id: group.HallLights
+
+- alias: Hall Lights Off
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: light.HallMaster
+      to: 'off'
+    - platform: state
+      entity_id: light.HallSlave
+      to: 'off'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.HallLights
+
+#######################################
+#                                     #
+# Lights - Based on Calendar          #
+#                                     #
+#######################################
+
+#############################
+#                           #
+# Lights - Early Shift      #
+#                           #
+#############################
+
+# Time to get up...
+# Condition ideally needs to check light lux for summer months, no need for kitchen lights then.
+
+- alias: "LightsOnMorningEarly"
+  trigger:
+    platform: time
+    at: '04:45:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.early_shift
+    state: 'on'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.HallLights
+    - delay: 00:00:10
+    - service: homeassistant.turn_on
+      entity_id: light.KitchenCeiling
+
+# Time for work...
+- alias: "LightsOutWorkEarly"
+  trigger:
+    platform: time
+    at: '05:20:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.early_shift
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+# Time for bed...
+- alias: "LightsOutBedEarly"
+  trigger:
+    platform: time
+    at: '22:15:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.early_shift
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Late Shift       #
+#                           #
+#############################
+
+# Time for work...
+- alias: "LightsOutWorkLate"
+  trigger:
+    platform: time
+    at: '12:40:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.late_shift
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+# Time for bed...
+- alias: "LightsOutBedLate"
+  trigger:
+    platform: time
+    at: '01:00:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.late_shift
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Overtime         #
+#                           #
+#############################
+
+# Time for work...
+- alias: "LightsOutWorkOvertime"
+  trigger:
+    platform: time
+    at: '05:20:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.overtime
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+# Time for bed...
+- alias: "LightsOutBedOvertime"
+  trigger:
+    platform: time
+    at: '22:15:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.overtime
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Holiday          #
+#                           #
+#############################
+
+# Time for bed...
+- alias: "LightsOutBedHoliday"
+  trigger:
+    platform: time
+    at: '00:15:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.holiday
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Party            #
+#                           #
+#############################
+
+# Time for bed...
+- alias: "LightsOutBedParty"
+  trigger:
+    platform: time
+    at: '02:00:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.party
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Weekend          #
+#                           #
+#############################
+
+# Time for bed...    
+- alias: "LightsOutBedWeekend"
+  trigger:
+    platform: time
+    at: '00:15:00'
+  condition:
+    condition: state
+    entity_id: input_boolean.weekend
+    state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#############################
+#                           #
+# Lights - Vacation         #
+#                           #
+#############################
+
+#############################
+#                           #
+# Lights - Failsafe @ Night #
+#                           #
+#############################
+
+# I already said it's time for bed...
+- alias: "LightsOutFailSafe"
+  trigger:
+    platform: state
+    entity_id: group.AllLights
+    to: 'on'    
+  condition:
+    condition: time
+    after: '02:00:00'
+    before: '04:44:00'
+  action:
+  - delay: 00:15:00
+  - service: homeassistant.turn_off
+    entity_id: group.AllLights
+
+#######################################
+#                                     #
+# 433Mhz Door / Window Sensor         #
+#                                     #
+#######################################
+
+
+- alias: Trigger Syno to record
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "96F5EE" }}'
+  action:
+    - service: rest_command.gate_record

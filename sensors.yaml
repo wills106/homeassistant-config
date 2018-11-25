@@ -1,0 +1,20 @@
+# Snow Monitor
+- platform: openweathermap
+  api_key: !secret weather_key
+  monitored_conditions:
+    - snow
+
+#Command to get 2nd half of the address for Rosies map
+- platform: rest
+  resource: http://192.168.1.134/api/remote/map?drawRobot=true&drawCharger=true&scale=5&border=0&doCropping=true&drawPath=true
+  name: "RosiesMap"
+  value_template: '{{ value_json.mapsrc }}'
+  scan_interval: 02:00:00
+
+- platform: mqtt
+  name: "FrontDoor"
+  state_topic: "tele/sonoffBridge/RESULT"
+  value_template: '{{value_json.RfReceived.Data}}'
+  payload_on: "96F5E7"
+  payload_off: "96F5EE"
+#  device_class: Door
