@@ -12,7 +12,7 @@ HallLights:
     - light.HallMaster
     - light.HallSlave
 
-AllLights:
+alllights:
   view: no
   name: 'All Lights'
   entities:
@@ -27,6 +27,7 @@ AllLights:
     - light.06200393b4e62d1ba9f1
     - light.06200393b4e62d1ba7c7
     - light.MasterBedroom
+    - light.MasterBedroomWall
     - light.LivingRoomWallUnit
 
 BathroomLights:

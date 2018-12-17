@@ -241,7 +241,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 # Time for bed...
 - alias: "LightsOutBedEarly"
@@ -254,7 +254,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -273,7 +273,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 # Time for bed...
 - alias: "LightsOutBedLate"
@@ -286,7 +286,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -305,7 +305,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 # Time for bed...
 - alias: "LightsOutBedOvertime"
@@ -318,7 +318,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -337,7 +337,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -356,7 +356,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -375,7 +375,7 @@
     state: 'on'
   action:
     service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #############################
 #                           #
@@ -393,7 +393,7 @@
 - alias: "LightsOutFailSafe"
   trigger:
     platform: state
-    entity_id: group.AllLights
+    entity_id: group.alllights
     to: 'on'    
   condition:
     condition: time
@@ -402,7 +402,7 @@
   action:
   - delay: 00:15:00
   - service: homeassistant.turn_off
-    entity_id: group.AllLights
+    entity_id: group.alllights
 
 #######################################
 #                                     #
@@ -411,12 +411,29 @@
 #######################################
 
 
-- alias: Trigger Syno to record
+#- alias: Trigger Syno to record
+#  trigger:
+#    platform: mqtt
+#    topic: tele/sonoffBridge/RESULT
+#  condition:
+#    condition: template
+#    value_template: '{{ trigger.payload_json.RfReceived.Data == "96F5EE" }}'
+#  action:
+#    - service: rest_command.gate_record
+
+#######################################
+#                                     #
+# Recieve IFTTT.com message           #
+#                                     #
+#######################################
+
+- alias: Ifttt_webhook
   trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "96F5EE" }}'
+    platform: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: call_service
   action:
-    - service: rest_command.gate_record
+    service_template: '{{ trigger.event.data.service }}'
+    data_template:
+      entity_id: '{{ trigger.event.data.entity_id }}'

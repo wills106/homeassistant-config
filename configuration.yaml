@@ -12,7 +12,6 @@ homeassistant:
   time_zone: GB
   # Customization file
   customize: !include customize.yaml
-
   packages: !include_dir_named packages
 
 # Show links to resources in log and frontend
@@ -60,6 +59,23 @@ map:
 # Track the sun
 sun:
 
+# Sensors
+sensor:
+
+  - platform: nut
+    name: Syno UPS
+    host: !secret host
+    port: 3493
+    alias: ups
+    username: !secret nut_name
+    password: !secret nut_pass
+    resources:
+      - ups.load
+      - ups.status.display
+      - input.voltage
+      - battery.charge
+      - battery.voltage
+
 # Text to speech
 tts:
   - platform: google
@@ -68,7 +84,7 @@ tts:
 cloud:
 
 mqtt:
-  broker: !secret mqtt_broker
+  broker: !secret host
   port: 1883
   keepalive: 60
   username: !secret mqtt_name
@@ -200,6 +216,25 @@ light:
     payload_not_available: "Offline"
     retain: false
 
+  - platform: mqtt
+    name: "MasterBedroomWall"
+    state_topic: "stat/MasterBedroomWall/POWER"
+    command_topic: "cmnd/MasterBedroomWall/POWER"
+    availability_topic: "tele/MasterBedroomWall/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: template
+    lights:
+      dashboard_screen:
+        turn_on:
+        turn_off:
+        set_level:
+
 switch:
 
   - platform: mqtt
@@ -239,6 +274,7 @@ switch:
     payload_available: "Online"
     payload_not_available: "Offline"
     retain: false
+    icon: mdi:usb
 
 tuya:
   username: !secret user_name
@@ -253,15 +289,9 @@ camera:
     timeout: 15
     verify_ssl: False
 
-#  - platform: generic
-#    name: Vacuum Map
-#    still_image_url: http://192.168.1.134{{states.sensor.rosiesmap.state | string }}
-#    content_type: image/png
-#    framerate: 1
-
   - platform: generic
     name: Vacuum Map
-    still_image_url: http://192.168.1.134/api/remote/map?drawRobot=true&drawCharger=true&scale=5&border=0&doCropping=true&drawPath=true&returnImage=true
+    still_image_url: !secret rosie_map
     content_type: image/png
     framerate: 1
 
@@ -296,18 +326,45 @@ input_boolean:
 
 vacuum:
   - platform: xiaomi_miio
-    host: 192.168.1.134
+    host: !secret rosie_host
     token: !secret rosie_token
     name: Rosie
 
 ifttt:
   key: !secret ifttt_token
 
-rest_command:
-  gate_record:
-    url: 'https://wills106.duckdns.org:5001/webapi/entry.cgi?api=SYNO.SurveillanceStation.ExternalEvent&method="Trigger"&version=1&eventId=1&eventName="This is external event1"&account="admin"&password="1979kgc210Amiga060"'
+#rest_command:
+#  gate_record:
+#    url: !secret gate_url
+
+binary_sensor:
+  - platform: mqtt
+    name: dashboard_motion
+    state_topic: any/value
+
+media_player:
+  - platform: volumio
+    host: !secret volumio_host
+    port: 3000
+
+device_tracker:
+#Livingroom Speaker
+  - platform: googlehome
+    host: !secret livingroom_speaker
+    rssi_threshold: -100
+    interval_seconds: 4
+    consider_home: 60
+    new_device_defaults:
+      track_new_devices: false
+#Bedroom Speaker
+  - platform: googlehome
+    host: !secret masterbedroom_spreaker    
+    rssi_threshold: -100
+    interval_seconds: 4
+    consider_home: 60
+    new_device_defaults:
+      track_new_devices: false
 
 group: !include groups.yaml
 automation: !include automations.yaml
-sensor: !include sensors.yaml
 script: !include scripts.yaml

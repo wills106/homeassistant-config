@@ -1,7 +1,7 @@
 camera.hikvision__ds2cd2t42wdi8:
-  friendly_name: HIKVISION - Front Door
+  friendly_name: Driveway
 camera.hikvision__ds2cd2t42wdi5:
-  friendly_name: HIKVISION - Garage
+  friendly_name: Garage
 script.play_chromecast_radio:
   friendly_name: Play
   icon: mdi:play
