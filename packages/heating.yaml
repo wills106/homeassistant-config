@@ -17,25 +17,25 @@ input_select:
   
 automation:
 
-#If Hive gets set to 19o and above for more than 15 mins revert to normal
+#If Hive gets set to 21o and above for more than 15 mins revert to normal
   - alias: Hive overtemp limit 
     trigger:
       - platform: numeric_state
         entity_id: climate.heating
         value_template: '{{ state.attributes.current_temperature }}'
-        above: 19
+        above: 21
         for:
           hours: 0
           minutes: 15
           seconds: 0
     condition:
       condition: template
-      value_template: '{{ states.climate.heating.attributes.temperature > 18 }}'
+      value_template: '{{ states.climate.heating.attributes.temperature > 21 }}'
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 20
 
 # Automation for variable time heating boost, uses input selects above to determin how long heating gets boosted for.            
   - alias: "HeatBoost"
@@ -44,30 +44,30 @@ automation:
       - platform: state
         entity_id:
           - input_select.heating_boost
-        to: '00:30'
+        to: '00:30:00'
       - platform: state
         entity_id:
           - input_select.heating_boost
-        to: '01:00'        
+        to: '01:00:00'        
       - platform: state
         entity_id:
           - input_select.heating_boost
-        to: '02:00'
+        to: '02:00:00'
       - platform: state
         entity_id:
           - input_select.heating_boost
-        to: '03:00'
+        to: '03:00:00'
       - platform: state
         entity_id:
           - input_select.heating_boost
-        to: '04:00'
+        to: '04:00:00'
         
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
-      - delay: '{{ states.input_select.heating_boost.state | int }}:00'
+          temperature: 19
+      - delay: '{{ states.input_select.heating_boost | int }}'
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
@@ -103,7 +103,7 @@ automation:
   - alias: "HeatOnEveningEarly"
     trigger:
       platform: time
-      at: '17:00:00'
+      at: '15:00:00'
     condition:
       condition: state
       entity_id: input_boolean.early_shift
@@ -112,7 +112,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 04:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -138,7 +138,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 00:45:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -158,7 +158,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -204,7 +204,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -224,7 +224,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 05:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -262,7 +262,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -282,7 +282,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -302,7 +302,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18
+          temperature: 19
       - delay: 06:00:00
       - service: climate.set_temperature
         entity_id: climate.heating

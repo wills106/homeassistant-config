@@ -28,6 +28,7 @@ input_select:
       - LivingRoom
       - Bedroom
       - TV
+      - Volumio Radio
       - All
     initial: LivingRoom
     icon: mdi:speaker-wireless
@@ -56,6 +57,7 @@ script:
             {% if is_state("input_select.chromecast_radio_speakers", "LivingRoom") %} media_player.living_room_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "Bedroom") %} media_player.bedroom_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "TV") %} media_player.chromecast0899
+            {% elif is_state("input_select.chromecast_radio_speakers", "Volumio Radio") %} media_player.volumio
             {% elif is_state("input_select.chromecast_radio_speakers", "All") %} media_player.home_group
             {% endif %}
           volume_level: '{{  states.input_number.volume_radio.state  }}' 
@@ -65,6 +67,7 @@ script:
             {% if is_state("input_select.chromecast_radio_speakers", "LivingRoom") %} media_player.living_room_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "Bedroom") %} media_player.bedroom_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "TV") %} media_player.chromecast0899
+            {% elif is_state("input_select.chromecast_radio_speakers", "Volumio Radio") %} media_player.volumio
             {% elif is_state("input_select.chromecast_radio_speakers", "All") %} media_player.home_group
             {% endif %}
           media_content_id: >
@@ -83,5 +86,6 @@ script:
             {% if is_state("input_select.chromecast_radio_speakers", "LivingRoom") %} media_player.living_room_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "Bedroom") %} media_player.bedroom_speaker
             {% elif is_state("input_select.chromecast_radio_speakers", "TV") %} media_player.chromecast0899
+            {% elif is_state("input_select.chromecast_radio_speakers", "Volumio Radio") %} media_player.volumio
             {% elif is_state("input_select.chromecast_radio_speakers", "All") %} media_player.home_group
             {% endif %}
