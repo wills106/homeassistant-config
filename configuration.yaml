@@ -76,6 +76,12 @@ sensor:
       - battery.charge
       - battery.voltage
 
+  - platform: speedtest
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+
 # Text to speech
 tts:
   - platform: google
