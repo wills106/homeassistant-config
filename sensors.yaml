@@ -1,0 +1,19 @@
+- platform: nut
+  name: Syno UPS
+  host: !secret host
+  port: 3493
+  alias: ups
+  username: !secret nut_name
+  password: !secret nut_pass
+  resources:
+    - ups.load
+    - ups.status.display
+    - input.voltage
+    - battery.charge
+    - battery.voltage
+
+- platform: speedtest
+  monitored_conditions:
+    - ping
+    - download
+    - upload

@@ -60,29 +60,6 @@ map:
 # Track the sun
 sun:
 
-# Sensors
-sensor:
-
-  - platform: nut
-    name: Syno UPS
-    host: !secret host
-    port: 3493
-    alias: ups
-    username: !secret nut_name
-    password: !secret nut_pass
-    resources:
-      - ups.load
-      - ups.status.display
-      - input.voltage
-      - battery.charge
-      - battery.voltage
-
-  - platform: speedtest
-    monitored_conditions:
-      - ping
-      - download
-      - upload
-
 # Text to speech
 tts:
   - platform: google
@@ -283,6 +260,10 @@ switch:
     retain: false
     icon: mdi:usb
 
+meross:
+  username: !secret user_name
+  password: !secret tuya_pass
+
 tuya:
   username: !secret user_name
   password: !secret tuya_pass
@@ -366,12 +347,13 @@ device_tracker:
 #Bedroom Speaker
   - platform: googlehome
     host: !secret masterbedroom_spreaker    
-    rssi_threshold: -100
+    rssi_threshold: -120
     interval_seconds: 4
-    consider_home: 60
+    consider_home: 120
     new_device_defaults:
       track_new_devices: false
 
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
+sensor: !include sensors.yaml
