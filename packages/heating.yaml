@@ -2,15 +2,16 @@ hive:
   username: !secret user_name
   password: !secret hive_pass
 
+#Still not working how I want.
 input_select:
   heating_boost:
     name: Heating Boost
     options:
-      - 00:30
-      - 01:00
-      - 02:00
-      - 03:00
-      - 04:00
+      - 00:30:00
+      - 01:00:00
+      - 02:00:00
+      - 03:00:00
+      - 04:00:00
       - None
     initial: None
     icon: mdi:radiator  
@@ -37,7 +38,8 @@ automation:
         data_template:
           temperature: 20
 
-# Automation for variable time heating boost, uses input selects above to determin how long heating gets boosted for.            
+# Automation for variable time heating boost, uses input selects above to determin how long heating gets boosted for.
+# Still not woking how I want it to.           
   - alias: "HeatBoost"
     trigger:
     # Multiple Entities for which you want to perform the same action, I am sure I can condense this down at some point.
@@ -236,7 +238,67 @@ automation:
   # Heating - Holiday         #
   #                           #
   #############################
+
+  # Automation for when to turn heating on in the mornings if I am on Holiday (At Home).
+  - alias: "HeatOnMorningHoliday"
+    trigger:
+      platform: time
+      at: '07:30:00'
+    condition:
+      condition: state
+      entity_id: input_boolean.holiday
+      state: 'on'
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 19
+      - delay: 01:00:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7
   
+  # Automation for when to turn heating on at lunchtime if I am on Holiday (At Home).
+  - alias: "HeatOnLunchHoliday"
+    trigger:
+      platform: time
+      at: '12:00:00'
+    condition:
+      condition: state
+      entity_id: input_boolean.holiday
+      state: 'on'
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 19
+      - delay: 01:00:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7
+  
+  # Automation for when to turn heating on in the evening if I am on Holiday (At Home).
+  - alias: "HeatOnEveningHoliday"
+    trigger:
+      platform: time
+      at: '17:00:00'
+    condition:
+      condition: state
+      entity_id: input_boolean.holiday
+      state: 'on'
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 19
+      - delay: 06:00:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7  
+
   #############################
   #                           #
   # Heating - Party           #
