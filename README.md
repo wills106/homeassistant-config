@@ -6,6 +6,12 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 [.HA_VERSION](https://github.com/wills106/homeassistant-config/blob/master/.HA_VERSION)
 
+## Screen Shots
+
+Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I get it better organised.
+
+[Screen Shots](https://github.com/wills106/homeassistant-config/blob/master/screenshots/README.md)
+
 ## Devices
 
 - Synology DS1511+ (Docker running Home Assistant)
