@@ -127,32 +127,62 @@ light:
   - platform: mqtt
     name: "KitchenWorktop"
     state_topic: "stat/sonoffKW/RESULT"
-    command_topic: "cmnd/sonoffKW/POWER"
-    state_value_template: "{{ value_json.POWER }}"
-    brightness_state_topic: "stat/sonoffKW/RESULT"
-    brightness_command_topic: "cmnd/sonoff/Dimmer"
+    state_topic: "tele/sonoffKW/STATE"
+    state_value_template: "{{value_json.POWER}}"
+    availability_topic: "tele/sonoffKW/LWT"
+    brightness_command_topic: "cmnd/sonoffKW/Dimmer"
+    brightness_state_topic: "tele/sonoffKW/STATE"
     brightness_scale: 100
-    brightness_value_template: "{{ value_json.Dimmer }}"
-    white_value_state_topic: "stat/sonoffKW/RESULT"
-    white_value_command_topic: "cmnd/sonoffKW/Channel4"
-    white_value_scale: 100
-    white_value_template: "{{ value_json.Channel[3] }}"
-    rgb_command_topic: "cmnd/sonoffKW/Color"
-    rgb_command_template: "{{ '%02x%02x%02x' | format(red, green, blue)}}"
-    rgb_state_topic: "stat/sonoffA/RESULT"
-    rgb_value_template: "{{(value_json.Channel[0]*2.55)|int}},{{(value_json.Channel[1]*2.55)|int}},{{(value_json.Channel[2]*2.55)|int}}"
-    effect_state_topic: "stat/sonoffKW/RESULT"
+    on_command_type: "brightness"
+    brightness_value_template: "{{value_json.Dimmer}}"
+    rgb_command_topic: "cmnd/sonoffKW/Color2"
+    rgb_state_topic: "tele/sonoffKW/STATE"
+    rgb_value_template: "{{value_json.Color.split(',')[0:3]|join(',')}}"
     effect_command_topic: "cmnd/sonoffKW/Scheme"
+    effect_state_topic: "tele/sonoffKW/STATE"
+    effect_value_template: "{{value_json.Scheme}}"
     effect_list:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    retain: false
-    qos: 1
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
     payload_on: "ON"
     payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+
+  - platform: mqtt
+    name: "Kitchen Floor"
+    command_topic: "cmnd/kitchenfloor/POWER"
+    state_topic: "tele/kitchenfloor/STATE"
+    state_value_template: "{{value_json.POWER}}"
+    availability_topic: "tele/kitchenfloor/LWT"
+    brightness_command_topic: "cmnd/kitchenfloor/Dimmer"
+    brightness_state_topic: "tele/kitchenfloor/STATE"
+    brightness_scale: 100
+    on_command_type: "brightness"
+    brightness_value_template: "{{value_json.Dimmer}}"
+    rgb_command_topic: "cmnd/kitchenfloor/Color2"
+    rgb_state_topic: "tele/kitchenfloor/STATE"
+    rgb_value_template: "{{value_json.Color.split(',')[0:3]|join(',')}}"
+    effect_command_topic: "cmnd/kitchenfloor/Scheme"
+    effect_state_topic: "tele/kitchenfloor/STATE"
+    effect_value_template: "{{value_json.Scheme}}"
+    effect_list:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
 
   - platform: mqtt
     name: "LivingroomMaster"
@@ -212,13 +242,6 @@ light:
     payload_not_available: "Offline"
     retain: false
 
-  - platform: template
-    lights:
-      dashboard_screen:
-        turn_on:
-        turn_off:
-        set_level:
-
 switch:
 
   - platform: mqtt
@@ -260,9 +283,9 @@ switch:
     retain: false
     icon: mdi:usb
 
-meross:
-  username: !secret user_name
-  password: !secret tuya_pass
+#meross:
+#  username: !secret user_name
+#  password: !secret tuya_pass
 
 tuya:
   username: !secret user_name
@@ -324,11 +347,6 @@ ifttt:
 #rest_command:
 #  gate_record:
 #    url: !secret gate_url
-
-binary_sensor:
-  - platform: mqtt
-    name: dashboard_motion
-    state_topic: any/value
 
 media_player:
   - platform: volumio

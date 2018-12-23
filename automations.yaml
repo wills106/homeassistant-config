@@ -417,9 +417,20 @@
 #    topic: tele/sonoffBridge/RESULT
 #  condition:
 #    condition: template
-#    value_template: '{{ trigger.payload_json.RfReceived.Data == "96F5EE" }}'
+#    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_open" }}'
 #  action:
 #    - service: rest_command.gate_record
+
+- alias: Turn Bathroom Lights On Off
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret bathlight" }}'
+  action:
+  - service: homeassistant.toggle
+    entity_id: group.BathroomLights
 
 #######################################
 #                                     #

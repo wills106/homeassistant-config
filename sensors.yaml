@@ -17,3 +17,9 @@
     - ping
     - download
     - upload
+
+- platform: pi_hole
+  host: !secret host
+  port: 8888
+  location: admin
+  verify_ssl: false
