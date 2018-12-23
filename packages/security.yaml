@@ -1,0 +1,175 @@
+##########
+#
+# Start of Input_Booleans
+#
+##########
+
+input_boolean:
+  master_bedroom_window:
+  master_bedroom_window_alarm:
+  front_door:
+  front_door_alarm:
+  rear_door:
+  rear_door_alarm:
+
+##########
+#
+# Automations
+#
+##########
+
+automation:
+
+##########
+# Start of Master Bedroom Window
+##########
+- alias: master_bedroom_window_open
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_open" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.master_bedroom_window
+- alias: master_bedroom_window_close
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_closed" }}'
+  action:
+    service: homeassistant.turn_off
+    entity_id: input_boolean.master_bedroom_window
+- alias: master_bedroom_window_alarm
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_tamper" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.master_bedroom_window_alarm
+
+##########
+# Start of Front Door
+##########
+- alias: front_door_open
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_open" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.front_door
+- alias: front_door_close
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_closed" }}'
+  action:
+    service: homeassistant.turn_off
+    entity_id: input_boolean.front_door
+- alias: front_door_alarm
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_tamper" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.front_door_alarm
+
+##########
+# Start of Rear Door
+##########
+- alias: rear_door_open
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_open" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.rear_door
+- alias: rear_door_close
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_closed" }}'
+  action:
+    service: homeassistant.turn_off
+    entity_id: input_boolean.rear_door
+- alias: rear_door_alarm
+  trigger:
+    platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  condition:
+    condition: template
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_tamper" }}'
+  action:
+    service: homeassistant.turn_on
+    entity_id: input_boolean.rear_door_alarm
+
+##########
+#
+# Start of Binary_Sensors
+#
+##########
+
+binary_sensor:
+  - platform: template
+    sensors:
+
+##########
+# Start of Master Bedroom Window
+##########
+      master_bedroom_window:
+        friendly_name: "Master Bedroom Window"
+        device_class: window
+        value_template: >-
+          {{ is_state('input_boolean.master_bedroom_window', 'on') }}
+      master_bedroom_window_alarm:
+        friendly_name: "Master Bedroom Window Alarm"
+        device_class: problem
+        value_template: >-
+          {{ is_state('input_boolean.master_bedroom_window_alarm', 'on') }}
+
+##########
+# Start of Front Door
+##########
+      front_door:
+        friendly_name: "Front Door"
+        device_class: door
+        value_template: >-
+          {{ is_state('input_boolean.front_door', 'on') }}
+      front_door_alarm:
+        friendly_name: "Front Door Alarm"
+        device_class: problem
+        value_template: >-
+          {{ is_state('input_boolean.front_door_alarm', 'on') }}
+
+##########
+# Start of Rear Door
+##########
+      rear_door:
+        friendly_name: "Rear Door"
+        device_class: door
+        value_template: >-
+          {{ is_state('input_boolean.rear_door', 'on') }}
+      rear_door_alarm:
+        friendly_name: "Rear Door Alarm"
+        device_class: problem
+        value_template: >-
+          {{ is_state('input_boolean.rear_door_alarm', 'on') }}
