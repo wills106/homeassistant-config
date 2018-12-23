@@ -1,0 +1,22 @@
+##########
+#
+# Example on how to trigger a manual Synology Surveillance Station recording
+# when an RF Door / Window Sensor gets triggered.
+# https://community.home-assistant.io/t/trigger-a-manual-synology-surveillance-station-recording-with-an-rf-door-sensor/80596
+#
+##########
+
+#rest_command:
+#  carpot_record:
+#    url: !secret carport_url
+
+#automation:
+#- alias: Trigger Syno to record
+#  trigger:
+#    platform: mqtt
+#    topic: tele/sonoffBridge/RESULT
+#  condition:
+#    condition: template
+#    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_open" }}'
+#  action:
+#    - service: rest_command.carport_record

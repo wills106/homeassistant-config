@@ -126,7 +126,7 @@ light:
 
   - platform: mqtt
     name: "KitchenWorktop"
-    state_topic: "stat/sonoffKW/RESULT"
+    command_topic: "cmnd/sonoffKW/POWER"
     state_topic: "tele/sonoffKW/STATE"
     state_value_template: "{{value_json.POWER}}"
     availability_topic: "tele/sonoffKW/LWT"
@@ -343,10 +343,6 @@ vacuum:
 
 ifttt:
   key: !secret ifttt_token
-
-#rest_command:
-#  gate_record:
-#    url: !secret gate_url
 
 media_player:
   - platform: volumio
