@@ -1,0 +1,23 @@
+# Trying to resolve https://community.home-assistant.io/t/sonoff-pow-used-to-limit-on-time/87299 for Mark-Mills
+automation:
+  - alias: Scrooge 
+    trigger:
+    - platform: mqtt
+      topic: "stat/pow1/STATUS"
+    condition:
+      condition: template
+      value_template: '{{ trigger.payload_json.Status.Power > "20" }}'
+    action:
+    - delay: '00:05:00'
+    - service: switch.turn_off
+      entity_id: switch.Shower
+    - delay: '00:00:01'
+    - service: switch.turn_on
+      entity_id: switch.Shower
+    - delay: '00:01:00'
+    - service: switch.turn_off
+      entity_id: switch.Shower
+# Delay to put power back on ready for next shower
+    - delay: '00:02:00'
+    - service: switch.turn_on
+      entity_id: switch.Shower
