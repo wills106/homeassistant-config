@@ -351,13 +351,13 @@ media_player:
 
 device_tracker:
 #Livingroom Speaker
-  - platform: googlehome
-    host: !secret livingroom_speaker
-    rssi_threshold: -100
-    interval_seconds: 4
-    consider_home: 60
-    new_device_defaults:
-      track_new_devices: false
+#  - platform: googlehome
+#    host: !secret livingroom_speaker
+#    rssi_threshold: -100
+#    interval_seconds: 4
+#    consider_home: 60
+#    new_device_defaults:
+#      track_new_devices: false
 #Bedroom Speaker
   - platform: googlehome
     host: !secret masterbedroom_spreaker    
@@ -366,6 +366,16 @@ device_tracker:
     consider_home: 120
     new_device_defaults:
       track_new_devices: false
+
+notify:
+  - platform: nfandroidtv
+    name: Lounge
+    host: 192.168.1.37
+    duration: 30
+    position: bottom-right
+
+owntracks:
+  max_gps_accuracy: 200
 
 group: !include groups.yaml
 automation: !include automations.yaml
