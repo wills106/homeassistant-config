@@ -19,7 +19,7 @@
     - upload
 
 - platform: pi_hole
-  host: !secret host
-  port: 8888
+  host: !secret pi_host
+#  port: 8888
   location: admin
   verify_ssl: false

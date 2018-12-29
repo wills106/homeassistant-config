@@ -35,7 +35,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_open" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.master_bedroom_window
@@ -45,7 +45,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_closed" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234E7" }}'
   action:
     service: homeassistant.turn_off
     entity_id: input_boolean.master_bedroom_window
@@ -55,7 +55,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret mbw_tamper" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EB" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.master_bedroom_window_alarm
@@ -69,7 +69,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_open" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.front_door
@@ -79,7 +79,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_closed" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_off
     entity_id: input_boolean.front_door
@@ -89,7 +89,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret fd_tamper" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.front_door_alarm
@@ -103,7 +103,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_open" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.rear_door
@@ -113,7 +113,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_closed" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_off
     entity_id: input_boolean.rear_door
@@ -123,7 +123,7 @@ automation:
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret rd_tamper" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
   action:
     service: homeassistant.turn_on
     entity_id: input_boolean.rear_door_alarm

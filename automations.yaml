@@ -416,7 +416,7 @@
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "!secret bathlight" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
   action:
   - service: homeassistant.toggle
     entity_id: group.BathroomLights
@@ -437,3 +437,51 @@
     service_template: '{{ trigger.event.data.service }}'
     data_template:
       entity_id: '{{ trigger.event.data.entity_id }}'
+
+#- alias: Stream Doorbell
+#  trigger:
+#    platform: mqtt
+#    topic: tele/sonoffBridge/RESULT
+#  condition:
+#    condition: template
+#    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
+#  action:
+#  - service: media_player.play_media
+#    entity_id: media_player.living_room_tv
+#    data:
+#      media_content_id: 'does not work'
+#      media_content_type: video
+
+#- alias: 'Notify when front door is open'
+#  trigger:
+#    platform: mqtt
+#    topic: tele/sonoffBridge/RESULT
+#  condition:
+#    condition: template
+#    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
+#  action:
+#    service: notify.Lounge
+#    data_template:
+#      title: "Home Assistant"
+#      message: "Front door is OPEN"
+#      data:
+#        file:
+#          url: !secret carport_url
+- alias: Im Home light me up
+  trigger:
+    platform: state
+    entity_id: device_tracker.1921681216_001b351326f5
+    from: 'not_home'
+    to: 'home'
+  condition:
+    condition: or  # 'when dark' condition: either after sunset or before sunrise
+    conditions:
+      - condition: sun
+        after: sunset
+        after_offset: "-01:00:00"
+      - condition: sun
+        before: sunrise
+  action:
+    service: homeassistant.turn_on
+    entity_id: group.HallLights
+  
