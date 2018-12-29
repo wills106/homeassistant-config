@@ -1,4 +1,18 @@
 # Trying to resolve https://community.home-assistant.io/t/sonoff-pow-used-to-limit-on-time/87299 for Mark-Mills
+
+switch:
+  - platform: mqtt
+    name: "Shower"
+    state_topic: "stat/pow1/POWER"
+    command_topic: "cmnd/pow1/POWER"
+    availability_topic: "tele/pow1/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
 automation:
   - alias: Scrooge 
     trigger:
