@@ -16,16 +16,20 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 
 - Synology DS1511+ (Docker running Home Assistant)
 - Linksys WRT1900ACS Router [Amazon](https://amzn.to/2AiKSWz)
+- XIAOMI Roborock Vacuum Cleaner Gen 2 [Amazon](https://amzn.to/2C5r5uP) Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
 ### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
 
+- Sonoff RF 433 - WiFi Bridge [Amazon](https://amzn.to/2SDcRIF)
 - Sonoff Basic WiFi Relay [Amazon](https://amzn.to/2KuhDVp)
 - Sonoff 4CH Pro R2 [Amazon](https://amzn.to/2AgIaRm)
 - Sonoff T1 WiFi Wall Switch 1 Gang [Amazon](https://amzn.to/2DMiMXp)
 - Sonoff T1 WiFi Wall Switch 2 Gang [Amazon](https://amzn.to/2P2FLz5)
 - Sonoff T1 WiFi Wall Switch 3 Gang [Amazon](https://amzn.to/2R7Tqa5)
+- Magichome Wifi LED Strip Light Controller [Amazon](https://amzn.to/2C3h3KJ)
 - TECKIN Smart WiFi Plug [Amazon](https://amzn.to/2P0EBEk)
 - 4 Way Powerstrip Manzoku / ZLD-44UK-W [Amazon](https://amzn.to/2KuYbIg)
+- 2 Gang UK Wall Stockets [Amazon Single Pack](https://amzn.to/2SDbJEV) , [Amazon Twin Pack](https://amzn.to/2SBYnsl) , [Amazon 4 Pack](https://amzn.to/2SBYofT)
 
 
 
@@ -33,4 +37,6 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 
 - HikVision DS-2CD2T42WD-I5 [4mm Lense Amazon](https://amzn.to/2DIuUIL) , [6mm Lense Amazon](https://amzn.to/2AkqB2W) , [12mm Lense Amazon](https://amzn.to/2RhGKh6) 
 - HikVision DS-2CD2T42WD-I8 [6mm Lense Amazon](https://amzn.to/2Kugxcf)
-- HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) , [HikVision Version DS-KB6003-WIP at Amazon](https://amzn.to/2P2dkkQ)
+- HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) , HikVision Version DS-KB6003-WIP [Amazon](https://amzn.to/2P2dkkQ)
+- KERUI D026 RF Door/Window Sensor [Amazon](https://amzn.to/2SD1PTN)
+- KERUI P829 RF Motion Sensor [Amazon](https://amzn.to/2CdsjEv)
