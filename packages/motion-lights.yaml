@@ -1,0 +1,57 @@
+input_boolean:
+  block_all_motion_lights:
+
+binary_sensor:
+
+  - platform: mqtt
+    name: "living_room_motion"
+    payload_on: "12348A"
+    device_class: motion
+    state_topic: tele/sonoffBridge/RESULT
+    value_template: '{{ value_json.RfReceived.Data }}'
+    off_delay: 5
+
+  - platform: mqtt
+    name: "hall_motion"
+    payload_on: "12348A"
+    device_class: motion
+    state_topic: tele/sonoffBridge/RESULT
+    value_template: '{{ value_json.RfReceived.Data }}'
+    off_delay: 5
+
+automation:
+  - id: motion_lights
+    alias: Motion Lights
+    trigger:
+      - platform: state
+        entity_id: 
+          - binary_sensor.living_room_motion
+          - binary_sensor.hall_motion
+        to: 'on'
+      - platform: state
+        entity_id:
+          - binary_sensor.living_room_motion
+          - binary_sensor.hall_motion
+        to: 'off'
+        for:
+          minutes: 1
+    condition:
+      ### Ensure Motion Lights aren't disabled and I am at home.
+      ### I will have seperate automation to trigger something based on motion when I am not at home. Email?
+      - condition: state
+        entity_id: input_boolean.block_all_motion_lights
+        state: 'off'
+      - condition: state
+        entity_id: 'group.AllTrackers'
+        state: 'home'
+    action:
+      ### Determine light/group that goes with motion detector
+      - service_template: 'homeassistant.turn_{{trigger.to_state.state}}'
+        data_template:
+          entity_id: >
+            {% set trigger_entity = trigger.entity_id %}
+            {% if trigger_entity == 'binary_sensor.living_room_motion' %}
+              light.LivingroomMaster
+            {% elif trigger_entity == 'binary_sensor.hall_motion' %}
+              light.HallMaster
+            {% endif %}
