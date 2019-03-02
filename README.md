@@ -16,7 +16,8 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 
 ![Screenshot of Virtual Machine](https://github.com/wills106/homeassistant-config/blob/master/screenshots/virtual-machine.jpg)
 <br/>
-Updated to a Synology DS918+ to allow HASSIO running as a Virtual Machine, replacing the Docker Version
+Updated to a Synology DS918+ to allow HASSIO running as a Virtual Machine, replacing the Docker Version.
+I have allocated 1 core and 2GB RAM.
 
 - Synology DS918+ [Amazon](https://amzn.to/2GVe3Vx)
 - pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC [Amazon](https://amzn.to/2NA9cJK)
