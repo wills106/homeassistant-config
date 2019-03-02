@@ -14,8 +14,14 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 
 ## Devices
 
-- Synology DS1511+ (Docker running Home Assistant)
-- Linksys WRT1900ACS Router [Amazon](https://amzn.to/2AiKSWz)
+![Screenshot of Virtual Machine](https://github.com/wills106/homeassistant-config/blob/master/screenshots/virtual-machine.jpg)
+<br/>
+Updated to a Synology DS918+ to allow HASSIO running as a Virtual Machine, replacing the Docker Version
+
+- Synology DS918+ [Amazon](https://amzn.to/2GVe3Vx)
+- pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC [Amazon](https://amzn.to/2NA9cJK)
+- Ubiquiti US-16-150W 16 Poprt PoE Managed Switch [Amazon](https://amzn.to/2EF0bw8)
+- Ubiquiti UniFi nanoHD Access Point [Amazon](https://amzn.to/2XsCwGR)
 - XIAOMI Roborock Vacuum Cleaner Gen 2 [Amazon](https://amzn.to/2C5r5uP) Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
 ### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
@@ -40,3 +46,7 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 - HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) , HikVision Version DS-KB6003-WIP [Amazon](https://amzn.to/2P2dkkQ)
 - KERUI D026 RF Door/Window Sensor [Amazon](https://amzn.to/2SD1PTN)
 - KERUI P829 RF Motion Sensor [Amazon](https://amzn.to/2CdsjEv)
+
+## Retired Devices
+- Synology DS1511+ (Docker running Home Assistant)
+- Linksys WRT1900ACS Router [Amazon](https://amzn.to/2AiKSWz)
