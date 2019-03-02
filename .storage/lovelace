@@ -1,0 +1,233 @@
+{
+    "data": {
+        "config": {
+            "title": "Will's House",
+            "views": [
+                {
+                    "badges": [
+                        "sensor.yr_symbol",
+                        "sensor.outside_temperature",
+                        "sun.sun"
+                    ],
+                    "cards": [
+                        {
+                            "entity": "camera.vacuum_map",
+                            "type": "picture-entity"
+                        },
+                        {
+                            "entity": "climate.heating",
+                            "type": "thermostat"
+                        },
+                        {
+                            "entity": "climate.hot_water",
+                            "type": "thermostat"
+                        },
+                        {
+                            "entities": [
+                                "input_boolean.block_all_motion_lights",
+                                "input_boolean.holiday",
+                                "input_boolean.master_bedroom_window",
+                                "input_boolean.front_door_alarm",
+                                "input_boolean.party",
+                                "input_boolean.master_bedroom_window_alarm",
+                                "input_boolean.rear_door",
+                                "input_boolean.early_shift",
+                                "input_boolean.late_shift",
+                                "input_boolean.weekend",
+                                "input_boolean.heater",
+                                "input_boolean.rear_door_alarm",
+                                "input_boolean.overtime",
+                                "input_boolean.front_door"
+                            ],
+                            "title": "Input boolean",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                "input_select.heating_boost"
+                            ],
+                            "title": "Input select",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "light.06200393b4e62d1ba7be"
+                                },
+                                {
+                                    "entity": "light.06200393b4e62d1ba9f1"
+                                },
+                                {
+                                    "entity": "light.06200393b4e62d1ba7c7"
+                                },
+                                {
+                                    "entity": "light.hallmaster"
+                                },
+                                {
+                                    "entity": "light.hallslave_2"
+                                },
+                                {
+                                    "entity": "switch.prstrlivingroom"
+                                }
+                            ],
+                            "title": "Light",
+                            "type": "entities"
+                        },
+                        {
+                            "entity": "media_player.volumio",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.living_room_tv",
+                            "type": "media-control"
+                        },
+                        {
+                            "entities": [
+                                "person.will"
+                            ],
+                            "title": "",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                "vacuum.rosie"
+                            ],
+                            "title": "Vacuum",
+                            "type": "entities"
+                        }
+                    ],
+                    "icon": "mdi:home-assistant",
+                    "path": "default_view",
+                    "title": "Home"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entity": "camera.driveway",
+                            "type": "picture-entity"
+                        },
+                        {
+                            "entity": "camera.doorbell",
+                            "type": "picture-entity"
+                        },
+                        {
+                            "entity": "camera.garage_door",
+                            "type": "picture-entity"
+                        }
+                    ],
+                    "icon": "mdi:camera",
+                    "title": "Security"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entities": [
+                                "input_select.chromecast_radio_station",
+                                "input_text.custom_station",
+                                "input_select.chromecast_radio_speakers",
+                                "input_number.volume_radio",
+                                "script.play_chromecast_radio",
+                                "script.stop_chromecast_radio"
+                            ],
+                            "show_header_toggle": false,
+                            "title": "ChromeCast Radio",
+                            "type": "entities"
+                        },
+                        {
+                            "entity": "media_player.living_room_speaker",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.bedroom_speaker",
+                            "type": "media-control"
+                        },
+                        {
+                            "entity": "media_player.home_group",
+                            "type": "media-control"
+                        }
+                    ],
+                    "icon": "mdi:music",
+                    "title": "Media"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "entities": [
+                                "sensor.epson_ink_level_black",
+                                "sensor.epson_ink_level_cyan",
+                                "sensor.epson_ink_level_magenta",
+                                "sensor.epson_ink_level_yellow",
+                                "sensor.epson_waste_bin"
+                            ],
+                            "show_header_toggle": false,
+                            "title": "EPSON WF-3540",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "sensor.cpu_load_total"
+                                },
+                                {
+                                    "entity": "sensor.memory_usage_real"
+                                },
+                                {
+                                    "entity": "sensor.volume_used_volume_1"
+                                },
+                                {
+                                    "entity": "sensor.temperature_sdb"
+                                },
+                                {
+                                    "entity": "sensor.temperature_sdc"
+                                },
+                                {
+                                    "entity": "sensor.temperature_sdd"
+                                },
+                                {
+                                    "entity": "sensor.temperature_sde"
+                                },
+                                {
+                                    "entity": "sensor.temperature_sdf"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Synology",
+                            "type": "entities"
+                        }
+                    ],
+                    "icon": "mdi:wrench",
+                    "title": "Technical"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "elements": [
+                                {
+                                    "entity": "binary_sensor.front_door_alarm",
+                                    "style": {
+                                        "left": "28%",
+                                        "top": "63.8%"
+                                    },
+                                    "tap_action": {
+                                        "action": "none"
+                                    },
+                                    "type": "state-icon"
+                                }
+                            ],
+                            "image": "/local/floorplan.png",
+                            "type": "picture-elements"
+                        }
+                    ],
+                    "icon": "mdi:floor-plan",
+                    "title": "Floorplan"
+                }
+            ]
+        }
+    },
+    "key": "lovelace",
+    "version": 1
+}
