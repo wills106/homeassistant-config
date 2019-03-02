@@ -19,11 +19,11 @@ Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I ge
 Updated to a Synology DS918+ to allow HASSIO running as a Virtual Machine, replacing the Docker Version.
 I have allocated 1 core and 2GB RAM.
 
-- Synology DS918+ [Amazon](https://amzn.to/2GVe3Vx)
-- pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC [Amazon](https://amzn.to/2NA9cJK)
-- Ubiquiti US-16-150W 16 Poprt PoE Managed Switch [Amazon](https://amzn.to/2EF0bw8)
-- Ubiquiti UniFi nanoHD Access Point [Amazon](https://amzn.to/2XsCwGR)
-- XIAOMI Roborock Vacuum Cleaner Gen 2 [Amazon](https://amzn.to/2C5r5uP) Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
+- Synology DS918+ [Amazon UK](https://amzn.to/2GVe3Vx) [Amazon US](https://amzn.to/2TgiQHS)
+- pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC [Amazon UK](https://amzn.to/2NA9cJK) [Amazon US](https://amzn.to/2tIElSg)
+- Ubiquiti US-16-150W 16 Poprt PoE Managed Switch [Amazon UK](https://amzn.to/2EF0bw8) [Amazon US](https://amzn.to/2tUBGoR)
+- Ubiquiti UniFi nanoHD Access Point [Amazon UK](https://amzn.to/2XsCwGR) [Amazon US](https://amzn.to/2tJfLAG)
+- XIAOMI Roborock Vacuum Cleaner Gen 2 [Amazon UK](https://amzn.to/2C5r5uP) [Amazon US](https://amzn.to/2UgZ7nM) Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
 ### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
 
@@ -45,8 +45,8 @@ I have allocated 1 core and 2GB RAM.
 - HikVision DS-2CD2T42WD-I5 [4mm Lense Amazon](https://amzn.to/2DIuUIL) , [6mm Lense Amazon](https://amzn.to/2AkqB2W) , [12mm Lense Amazon](https://amzn.to/2RhGKh6) 
 - HikVision DS-2CD2T42WD-I8 [6mm Lense Amazon](https://amzn.to/2Kugxcf)
 - HiWatch DB-120A-IW WiFi Smart Doorbell [Amazon](https://amzn.to/2Rcsnur) , HikVision Version DS-KB6003-WIP [Amazon](https://amzn.to/2P2dkkQ)
-- KERUI D026 RF Door/Window Sensor [Amazon](https://amzn.to/2SD1PTN)
-- KERUI P829 RF Motion Sensor [Amazon](https://amzn.to/2CdsjEv)
+- KERUI D026 RF Door/Window Sensor [Amazon](https://amzn.to/2SD1PTN) [Amazon US](https://amzn.to/2tIQ7MB)
+- KERUI P829 RF Motion Sensor [Amazon UK](https://amzn.to/2CdsjEv) [Amazon US](https://amzn.to/2tLnQEZ)
 
 ## Retired Devices
 - Synology DS1511+ (Docker running Home Assistant)
