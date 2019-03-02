@@ -1,4 +1,3 @@
-
 #######################################
 #                                     #
 # Input_Boolean's                     #
@@ -129,12 +128,12 @@
 - alias: Bedroom Curtains
   trigger:
     - platform: state
-      entity_id: switch.BedroomCurtains
+      entity_id: switch.sonoff
       to: 'on'
   action:
     - delay: '00:00:15'
     - service: switch.turn_off
-      entity_id: switch.BedroomCurtains
+      entity_id: switch.sonoff
 
 - alias: Livingroom Curtains
   trigger:
@@ -191,10 +190,10 @@
   initial_state: 'on'
   trigger:
     - platform: state
-      entity_id: light.HallMaster
+      entity_id: light.hallmaster
       to: 'off'
     - platform: state
-      entity_id: light.HallSlave
+      entity_id: light.hallslave_2
       to: 'off'
   action:
     service: homeassistant.turn_off
@@ -398,7 +397,7 @@
   condition:
     condition: time
     after: '02:00:00'
-    before: '04:44:00'
+    before: '04:25:00'
   action:
   - delay: 00:15:00
   - service: homeassistant.turn_off
@@ -416,7 +415,7 @@
     topic: tele/sonoffBridge/RESULT
   condition:
     condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
+    value_template: '{{ trigger.payload_json.RfReceived.Data == "513D12" }}'
   action:
   - service: homeassistant.toggle
     entity_id: group.BathroomLights
@@ -470,7 +469,7 @@
 - alias: Im Home light me up
   trigger:
     platform: state
-    entity_id: device_tracker.1921681216_001b351326f5
+    entity_id: device_tracker.wills106_willsphone
     from: 'not_home'
     to: 'home'
   condition:
@@ -478,10 +477,31 @@
     conditions:
       - condition: sun
         after: sunset
-        after_offset: "-01:00:00"
+#        after_offset: "-00:15:00"
       - condition: sun
         before: sunrise
   action:
     service: homeassistant.turn_on
     entity_id: group.HallLights
+
+- alias: Tripwire
+  trigger:
+    platform: state
+    entity_id: binary_sensor.driveway_line_crossing
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: or  # 'when dark' condition: either after sunset or before sunrise
+    conditions:
+      - condition: sun
+        after: sunset
+      - condition: sun
+        before: sunrise
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.HallLights
+    - service: camera.snapshot
+      data:
+        entity_id: camera.hikvision__ds2cd2t42wdi8
+        filename: '/local/snapshots/Driveway_{{ now().strftime("%Y%m%d-%H%M%S") }}.jpg'
   
