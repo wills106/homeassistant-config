@@ -27,7 +27,7 @@ I have allocated 1 core and 2GB RAM.
 
 ### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
 
-- Sonoff RF 433 - WiFi Bridge [Amazon](https://amzn.to/2SDcRIF)
+- Sonoff RF 433 - WiFi Bridge [Amazon UK](https://amzn.to/2SDcRIF) , [Amazon US](https://amzn.to/2Ett4dq)
 - Sonoff Basic WiFi Relay [Amazon](https://amzn.to/2KuhDVp)
 - Sonoff 4CH Pro R2 [Amazon](https://amzn.to/2AgIaRm)
 - Sonoff T1 WiFi Wall Switch 1 Gang [Amazon](https://amzn.to/2DMiMXp)
