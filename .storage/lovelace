@@ -5,7 +5,6 @@
             "views": [
                 {
                     "badges": [
-                        "sensor.yr_symbol",
                         "sensor.outside_temperature",
                         "sun.sun"
                     ],
@@ -64,10 +63,10 @@
                                     "entity": "light.hallmaster"
                                 },
                                 {
-                                    "entity": "light.hallslave_2"
+                                    "entity": "light.livingroommaster"
                                 },
                                 {
-                                    "entity": "switch.prstrlivingroom"
+                                    "entity": "light.livingroomwallunit"
                                 }
                             ],
                             "title": "Light",
@@ -156,6 +155,22 @@
                     "cards": [
                         {
                             "entities": [
+                                {
+                                    "entity": "sensor.speedtest_ping"
+                                },
+                                {
+                                    "entity": "sensor.speedtest_download"
+                                },
+                                {
+                                    "entity": "sensor.speedtest_upload"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Speedtest",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
                                 "sensor.epson_ink_level_black",
                                 "sensor.epson_ink_level_cyan",
                                 "sensor.epson_ink_level_magenta",
@@ -167,35 +182,125 @@
                             "type": "entities"
                         },
                         {
-                            "entities": [
+                            "cards": [
                                 {
-                                    "entity": "sensor.cpu_load_total"
+                                    "cards": [
+                                        {
+                                            "entity": "sensor.cpu_load_total",
+                                            "max": 100,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 90,
+                                                "yellow": 60
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        },
+                                        {
+                                            "entity": "sensor.memory_usage_real",
+                                            "max": 100,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 85,
+                                                "yellow": 80
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
                                 },
                                 {
-                                    "entity": "sensor.memory_usage_real"
+                                    "cards": [
+                                        {
+                                            "entity": "sensor.volume_used_volume_1",
+                                            "max": 100,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 85,
+                                                "yellow": 80
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        },
+                                        {
+                                            "entity": "sensor.temperature_sdb",
+                                            "max": 60,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 45,
+                                                "yellow": 35
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
                                 },
                                 {
-                                    "entity": "sensor.volume_used_volume_1"
+                                    "cards": [
+                                        {
+                                            "entity": "sensor.temperature_sdc",
+                                            "max": 60,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 45,
+                                                "yellow": 35
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        },
+                                        {
+                                            "entity": "sensor.temperature_sdd",
+                                            "max": 60,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 45,
+                                                "yellow": 35
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
                                 },
                                 {
-                                    "entity": "sensor.temperature_sdb"
-                                },
-                                {
-                                    "entity": "sensor.temperature_sdc"
-                                },
-                                {
-                                    "entity": "sensor.temperature_sdd"
-                                },
-                                {
-                                    "entity": "sensor.temperature_sde"
-                                },
-                                {
-                                    "entity": "sensor.temperature_sdf"
+                                    "cards": [
+                                        {
+                                            "entity": "sensor.temperature_sde",
+                                            "max": 60,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 45,
+                                                "yellow": 35
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        },
+                                        {
+                                            "entity": "sensor.temperature_sdf",
+                                            "max": 60,
+                                            "min": 0,
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 45,
+                                                "yellow": 35
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        }
+                                    ],
+                                    "type": "horizontal-stack"
                                 }
                             ],
-                            "show_header_toggle": false,
-                            "title": "Synology",
-                            "type": "entities"
+                            "type": "vertical-stack"
                         }
                     ],
                     "icon": "mdi:wrench",

@@ -9,8 +9,8 @@ HallLights:
   view: no
   name: 'Hall Lights'
   entities:
-    - light.hallmaster
-    - light.hallslave_2
+    - light.HallMaster
+    - light.HallSlave
 
 alllights:
   view: no

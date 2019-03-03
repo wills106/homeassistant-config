@@ -1,0 +1,215 @@
+mqtt:
+  broker: !secret host
+  port: 1883
+  keepalive: 60
+  username: !secret mqtt_name
+  password: !secret mqtt_pass
+
+light:
+
+  - platform: mqtt
+    name: "KitchenCupboards"
+    state_topic: "stat/KitchenTwinLight/POWER1"
+    command_topic: "cmnd/KitchenTwinLight/POWER1"
+    availability_topic: "tele/KitchenTwinLight/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "KitchenCeiling"
+    state_topic: "stat/KitchenTwinLight/POWER2"
+    command_topic: "cmnd/KitchenTwinLight/POWER2"
+    availability_topic: "tele/KitchenTwinLight/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "HallMaster"
+    state_topic: "stat/HallMaster/POWER"
+    command_topic: "cmnd/HallMaster/POWER"
+    availability_topic: "tele/HallMaster/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "HallSlave"
+    state_topic: "stat/HallSlave/POWER"
+    command_topic: "cmnd/HallSlave/POWER"
+    availability_topic: "tele/HallSlave/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "KitchenWorktop"
+    command_topic: "cmnd/KitchenWorktop/POWER"
+    state_topic: "tele/KitchenWorktop/STATE"
+    state_value_template: "{{value_json.POWER}}"
+    availability_topic: "tele/KitchenWorktop/LWT"
+    brightness_command_topic: "cmnd/KitchenWorktop/Dimmer"
+    brightness_state_topic: "tele/KitchenWorktop/STATE"
+    brightness_scale: 100
+    on_command_type: "brightness"
+    brightness_value_template: "{{value_json.Dimmer}}"
+    rgb_command_topic: "cmnd/KitchenWorktop/Color2"
+    rgb_state_topic: "tele/KitchenWorktop/STATE"
+    rgb_value_template: "{{value_json.Color.split(',')[0:3]|join(',')}}"
+    effect_command_topic: "cmnd/KitchenWorktop/Scheme"
+    effect_state_topic: "tele/KitchenWorktop/STATE"
+    effect_value_template: "{{value_json.Scheme}}"
+    effect_list:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+
+  - platform: mqtt
+    name: "Kitchen Floor"
+    command_topic: "cmnd/kitchenfloor/POWER"
+    state_topic: "tele/kitchenfloor/STATE"
+    state_value_template: "{{value_json.POWER}}"
+    availability_topic: "tele/kitchenfloor/LWT"
+    brightness_command_topic: "cmnd/kitchenfloor/Dimmer"
+    brightness_state_topic: "tele/kitchenfloor/STATE"
+    brightness_scale: 100
+    on_command_type: "brightness"
+    brightness_value_template: "{{value_json.Dimmer}}"
+    rgb_command_topic: "cmnd/kitchenfloor/Color2"
+    rgb_state_topic: "tele/kitchenfloor/STATE"
+    rgb_value_template: "{{value_json.Color.split(',')[0:3]|join(',')}}"
+    effect_command_topic: "cmnd/kitchenfloor/Scheme"
+    effect_state_topic: "tele/kitchenfloor/STATE"
+    effect_value_template: "{{value_json.Scheme}}"
+    effect_list:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+
+  - platform: mqtt
+    name: "LivingroomMaster"
+    state_topic: "stat/LivingroomMaster/POWER"
+    command_topic: "cmnd/LivingroomMaster/POWER"
+    availability_topic: "tele/LivingroomMaster/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+  - platform: mqtt
+    name: "LivingroomSlave"
+    state_topic: "stat/LivingroomSlave/POWER"
+    command_topic: "cmnd/LivingroomSlave/POWER"
+    availability_topic: "tele/LivingroomSlave/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+  - platform: mqtt
+    name: "MasterBedroom"
+    state_topic: "stat/MasterBedroom/POWER"
+    command_topic: "cmnd/MasterBedroom/POWER"
+    availability_topic: "tele/MasterBedroom/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "LivingRoomWallUnit"
+    state_topic: "stat/PrStrLivingRoom/POWER1"
+    command_topic: "cmnd/PrStrLivingRoom/POWER1"
+    availability_topic: "tele/PrStrLivingRoom/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+  - platform: mqtt
+    name: "MasterBedroomWall"
+    state_topic: "stat/MasterBedroomWall/POWER"
+    command_topic: "cmnd/MasterBedroomWall/POWER"
+    availability_topic: "tele/MasterBedroomWall/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+switch:
+
+  - platform: mqtt
+    name: "BedroomCurtains"
+    state_topic: "stat/wallsocket1/POWER1"
+    command_topic: "cmnd/wallsocket1/POWER1"
+    availability_topic: "tele/wallsocket1/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+    icon: mdi:blinds
+
+  - platform: mqtt
+    name: "LivingroomCurtains"
+    state_topic: "stat/LivingroomCurtains/POWER"
+    command_topic: "cmnd/LivingroomCurtains/POWER"
+    availability_topic: "tele/LivingroomCurtains/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+    icon: mdi:blinds
+
+  - platform: mqtt
+    name: "LivingRoomUSB"
+    state_topic: "stat/PrStrLivingRoom/POWER5"
+    command_topic: "cmnd/PrStrLivingRoom/POWER5"
+    availability_topic: "tele/PrStrLivingRoom/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+    icon: mdi:usb

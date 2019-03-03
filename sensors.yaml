@@ -12,14 +12,13 @@
     - battery.charge
     - battery.voltage
 
-- platform: speedtest
+# Monitor the disk temps, CPU Load, RAM etc on Synology NAS
+- platform: synologydsm
+  host: !secret host
+  username: !secret syn_name
+  password: !secret syn_pass
   monitored_conditions:
-    - ping
-    - download
-    - upload
-
-- platform: pi_hole
-  host: !secret pi_host
-#  port: 8888
-  location: admin
-  verify_ssl: false
+    - cpu_total_load
+    - memory_real_usage
+    - disk_temp
+    - volume_percentage_used

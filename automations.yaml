@@ -190,10 +190,10 @@
   initial_state: 'on'
   trigger:
     - platform: state
-      entity_id: light.hallmaster
+      entity_id: light.HallMaster
       to: 'off'
     - platform: state
-      entity_id: light.hallslave_2
+      entity_id: light.HallSlave
       to: 'off'
   action:
     service: homeassistant.turn_off
