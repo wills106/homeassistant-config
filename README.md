@@ -26,7 +26,7 @@ I have allocated 1 core and 2GB RAM.
 - XIAOMI Roborock Vacuum Cleaner Gen 2 [Amazon UK](https://amzn.to/2C5r5uP) , [Amazon US](https://amzn.to/2UgZ7nM) Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
 ### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
-
+I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash new devices over the air (OTA)
 - Sonoff RF 433 - WiFi Bridge [Amazon UK](https://amzn.to/2SDcRIF) , [Amazon US](https://amzn.to/2Ett4dq)
 - Sonoff Basic WiFi Relay [Amazon](https://amzn.to/2KuhDVp)
 - Sonoff 4CH Pro R2 [Amazon](https://amzn.to/2AgIaRm)
