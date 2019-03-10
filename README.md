@@ -20,7 +20,7 @@ Updated to a Synology DS918+ to allow HASSIO running as a Virtual Machine, repla
 I have allocated 1 core and 2GB RAM.
 
 - Synology DS918+ [Amazon UK](https://amzn.to/2GVe3Vx) , [Amazon US](https://amzn.to/2TgiQHS)
-- 6x WB 8TB "External drives removed / lots cheaper!" [Amazon UK](https://amzn.to/2NEJZ0I)
+- 6x WD 8TB "External drives removed / lots cheaper!" [Amazon UK](https://amzn.to/2NEJZ0I)
 - pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC [Amazon UK](https://amzn.to/2NA9cJK) , [Amazon US](https://amzn.to/2tIElSg)
 - Ubiquiti US-16-150W 16 Poprt PoE Managed Switch [Amazon UK](https://amzn.to/2EF0bw8) , [Amazon US](https://amzn.to/2tUBGoR)
 - Ubiquiti UniFi nanoHD Access Point [Amazon UK](https://amzn.to/2XsCwGR) , [Amazon US](https://amzn.to/2tJfLAG)
