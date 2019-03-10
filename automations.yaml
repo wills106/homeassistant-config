@@ -128,12 +128,12 @@
 - alias: Bedroom Curtains
   trigger:
     - platform: state
-      entity_id: switch.sonoff
+      entity_id: switch.BedroomCurtains
       to: 'on'
   action:
     - delay: '00:00:15'
     - service: switch.turn_off
-      entity_id: switch.sonoff
+      entity_id: switch.BedroomCurtains
 
 - alias: Livingroom Curtains
   trigger:

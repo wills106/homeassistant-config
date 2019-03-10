@@ -25,8 +25,11 @@ frontend:
 #introduction:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-# http:
-#   base_url: example.duckdns.org:8123
+#http:
+#  base_url: !secret base_url
+#  server_port: 8123
+#  ssl_certificate: /ssl/fullchain.pem
+#  ssl_key: /ssl/privkey.pem
 
 # Text to speech
 tts:
@@ -75,6 +78,8 @@ input_boolean:
   weekend:
   heater:
     icon: mdi:radiator
+  willsbed:
+  otherbed:
 
 vacuum:
   - platform: xiaomi_miio
@@ -91,6 +96,10 @@ media_player:
     port: 3000
 
 speedtestdotnet:
+  monitored_conditions:
+    - ping
+    - download
+    - upload
 
 group: !include groups.yaml
 automation: !include automations.yaml

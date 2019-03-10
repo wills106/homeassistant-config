@@ -201,6 +201,24 @@ light:
     payload_not_available: "Offline"
     retain: false
 
+  - platform: mqtt
+    name: "LivingroomDimmer"
+    command_topic: "cmnd/LivingroomDimmer/POWER"
+    state_topic: "tele/LivingroomDimmer/STATE"
+    state_value_template: "{{value_json.POWER}}"
+    availability_topic: "tele/LivingroomDimmer/LWT"
+    brightness_command_topic: "cmnd/LivingroomDimmer/Dimmer"
+    brightness_state_topic: "tele/LivingroomDimmer/STATE"
+    brightness_scale: 100
+    on_command_type: "brightness"
+    brightness_value_template: "{{value_json.Dimmer}}"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
+
 switch:
 
   - platform: mqtt
