@@ -33,12 +33,13 @@ frontend:
 
 # Text to speech
 tts:
-  - platform: google
+  - platform: google_translate
+    service_name: google_say
 
-tuya:
-  username: !secret user_name
-  password: !secret tuya_pass
-  country_code: 44
+#tuya:
+#  username: !secret user_name
+#  password: !secret tuya_pass
+#  country_code: 44
 
 # Track calendar false is needed to prevent Hass from overwriting the google_calendar.yaml file.
 google:
@@ -63,11 +64,13 @@ camera:
     timeout: 15
     verify_ssl: False
 
-  - platform: generic
-    name: Vacuum Map
-    still_image_url: !secret rosie_map
-    content_type: image/png
-    framerate: 1
+#  - platform: generic
+#    name: Vacuum Map
+#    still_image_url: !secret rosie_map
+#    content_type: image/png
+#    framerate: 1
+
+stream:
 
 input_boolean:        
   early_shift:
@@ -81,11 +84,11 @@ input_boolean:
   willsbed:
   otherbed:
 
-vacuum:
-  - platform: xiaomi_miio
-    host: !secret rosie_host
-    token: !secret rosie_token
-    name: Rosie
+#vacuum:
+#  - platform: xiaomi_miio
+#    host: !secret rosie_host
+#    token: !secret rosie_token
+#    name: Rosie
 
 ifttt:
   key: !secret ifttt_token

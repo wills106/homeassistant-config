@@ -119,34 +119,6 @@
 
 #######################################
 #                                     #
-# Curtain On/Off Control              #
-#                                     #
-#######################################
-
-# Due to curtain controller needing to be turned off in order for it to run again
-# a timer is setup to automaticaly turn it off, so it can run again with same call.
-- alias: Bedroom Curtains
-  trigger:
-    - platform: state
-      entity_id: switch.BedroomCurtains
-      to: 'on'
-  action:
-    - delay: '00:00:15'
-    - service: switch.turn_off
-      entity_id: switch.BedroomCurtains
-
-- alias: Livingroom Curtains
-  trigger:
-    - platform: state
-      entity_id: switch.LivingroomCurtains
-      to: 'on'
-  action:
-    - delay: '00:00:30'
-    - service: switch.turn_off
-      entity_id: switch.LivingroomCurtains
-
-#######################################
-#                                     #
 # 2 Way Light Control                 #
 #                                     #
 #######################################
@@ -217,7 +189,7 @@
 - alias: "LightsOnMorningEarly"
   trigger:
     platform: time
-    at: '04:45:00'
+    at: '04:30:00'
   condition:
     condition: state
     entity_id: input_boolean.early_shift
@@ -225,9 +197,6 @@
   action:
     - service: homeassistant.turn_on
       entity_id: group.HallLights
-    - delay: 00:00:10
-    - service: homeassistant.turn_on
-      entity_id: light.KitchenCeiling
 
 # Time for work...
 - alias: "LightsOutWorkEarly"
