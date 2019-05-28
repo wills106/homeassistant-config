@@ -1,0 +1,81 @@
+binary_sensor:
+  - platform: template
+    sensors:
+      bedroomcurtainsensor:
+        device_class: opening
+        value_template: >-
+          {{ is_state('input_boolean.bedroomcurtainstate', 'on') }}
+
+input_boolean:        
+  bedroomcurtainstate:
+
+input_datetime:
+  open_bedroomcurtain_time:
+    has_date: false
+    has_time: true
+  close_bedroomcurtain_time:
+    has_date: false
+    has_time: true
+
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
+
+automation:
+
+# Due to curtain controller needing to be turned off in order for it to run again
+# a timer is setup to automaticaly turn it off, so it can run again with same call.
+- alias: Bedroom Curtains
+  trigger:
+    - platform: state
+      entity_id: switch.BedroomCurtains
+      to: 'on'
+  action:
+    - delay: '00:00:15'
+    - service: switch.turn_off
+      entity_id: switch.BedroomCurtains
+
+- alias: Livingroom Curtains
+  trigger:
+    - platform: state
+      entity_id: switch.LivingroomCurtains
+      to: 'on'
+  action:
+    - delay: '00:00:30'
+    - service: switch.turn_off
+      entity_id: switch.LivingroomCurtains
+
+# As we don't know if the curtains are open or closed we are using a input_boolean to record the state.
+- alias: BedroomCurtainState
+  trigger:
+    - platform: state
+      entity_id: switch.BedroomCurtains
+      to: 'on'
+  action:
+    - service: homeassistant.toggle
+      entity_id: input_boolean.bedroomcurtainstate
+
+# Automation to Open and Close the curtain in the morning / evening.
+# The automation checks if they are already Open / Close, if they are already Open / Closed at the time it doesn't run.
+- alias: Open Bedroom Curtains
+  trigger:
+    - platform: template
+      value_template: "{{ states('sensor.time') == (states.input_datetime.open_bedroomcurtain_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+  condition:
+    condition: template
+    value_template: "{{ states('binary_sensor.bedroomcurtainsensor') == 'off' }}"
+  action:
+    - service: switch.turn_on
+      entity_id: switch.BedroomCurtains
+
+- alias: Close Bedroom Curtains
+  trigger:
+    - platform: template
+      value_template: "{{ states('sensor.time') == (states.input_datetime.close_bedroomcurtain_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+  condition:
+    condition: template
+    value_template: "{{ states('binary_sensor.bedroomcurtainsensor') == 'on' }}"
+  action:
+    - service: switch.turn_on
+      entity_id: switch.BedroomCurtains
