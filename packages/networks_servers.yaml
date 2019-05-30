@@ -1,0 +1,120 @@
+speedtestdotnet:
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+sensor:
+
+# Monitor the UPS attached to my Synology NAS
+  - platform: nut
+    name: Syno UPS
+    host: !secret host
+    port: 3493
+    alias: ups
+    username: !secret nut_name
+    password: !secret nut_pass
+    resources:
+      - ups.load
+      - ups.status.display
+      - input.voltage
+      - battery.charge
+      - battery.voltage
+
+# Monitor the disk temps, CPU Load, RAM etc on Synology NAS
+  - platform: synologydsm
+    host: !secret host
+    username: !secret syn_name
+    password: !secret syn_pass
+    monitored_conditions:
+      - cpu_total_load
+      - memory_real_usage
+      - disk_temp
+      - volume_percentage_used
+
+# Monitor Ink Levels on WF-3540 Printer
+  - platform: epsonworkforce
+    host: !secret printer_host
+    monitored_conditions:
+     - black
+     - yellow
+     - magenta
+     - cyan
+     - clean
+
+# SNMP Monitoring section.
+
+  - platform: snmp
+    name: 'Printer uptime'
+    host: !secret printer_host
+    baseoid: 1.3.6.1.2.1.1.3.0
+    accept_errors: true
+    unit_of_measurement: 'minutes'
+    value_template: '{{((value | int) / 6000) | int}}'
+
+  - platform: snmp
+    name: 'Server Room Switch Temperature'
+    host: !secret switch_host
+    community: !secret syn_name
+    baseoid: 1.3.6.1.4.1.4413.1.1.43.1.8.1.5.1.0
+    accept_errors: true
+    unit_of_measurement: "°C"
+
+  - platform: snmp
+    host: !secret switch_host
+    community: !secret syn_name
+    name: 'Server Room Switch Uptime'
+    baseoid: 1.3.6.1.2.1.1.3.0
+    accept_errors: true
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+# Ubiquiti NanoHD does not monitor Temp, so only Uptime is checked.
+  - platform: snmp
+    host: !secret ap_host
+    community: !secret syn_name
+    name: 'NanoHD Uptime'
+    baseoid: 1.3.6.1.2.1.1.3.0
+    accept_errors: true
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: !secret host
+    community: !secret syn_name
+    name: 'Synology Uptime'
+    baseoid: 1.3.6.1.2.1.25.1.1.0
+    accept_errors: true
+    value_template: >
+      {%- set time = value | int // 100 %}
+      {%- set minutes = ((time % 3600) // 60) %}
+      {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
+      {%- set hours = ((time % 86400) // 3600) %}
+      {%- set hours = '{}hr '.format(hours) if hours > 0 else '' %}
+      {%- set days = (time // 86400) %}
+      {%- set days = '{}d '.format(days) if days > 0 else '' %}
+      {{ 'Less than 1 min' if time < 60 else days + hours + minutes }}
+
+  - platform: snmp
+    host: !secret host
+    community: !secret syn_name
+    name: 'Synology Temperature'
+    unit_of_measurement: "°C"
+    baseoid: 1.3.6.1.4.1.6574.1.2.0
+    accept_errors: true
+
+
