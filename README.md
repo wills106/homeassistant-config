@@ -31,7 +31,7 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 - Sonoff RF 433 - WiFi Bridge [Amazon UK](https://amzn.to/2WnEudV) , [Amazon US](https://amzn.to/2Ett4dq)
 - Sonoff Basic WiFi Relay [Amazon UK](https://amzn.to/2YRYDpP)
 - Sonoff 4CH Pro R2 [Amazon UK](https://amzn.to/2W9QmRb)
-- Tuya Dimmer Switch 1 Gang [Amazon UK](https://amzn.to/2W9KLdX)
+- Tuya Dimmer Switch 1 Gang [Amazon UK](https://amzn.to/2HGScAh)
 - Sonoff T1 WiFi Wall Switch 1 Gang [Amazon UK](https://amzn.to/2Wa0nOl)
 - Sonoff T1 WiFi Wall Switch 2 Gang [Amazon UK](https://amzn.to/30QLoYD)
 - Sonoff T1 WiFi Wall Switch 3 Gang [Amazon UK](https://amzn.to/30OHqj9)
