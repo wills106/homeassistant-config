@@ -98,12 +98,6 @@ media_player:
     host: !secret volumio_host
     port: 3000
 
-speedtestdotnet:
-  monitored_conditions:
-    - ping
-    - download
-    - upload
-
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

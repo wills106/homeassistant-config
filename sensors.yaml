@@ -1,24 +1,11 @@
-- platform: nut
-  name: Syno UPS
-  host: !secret host
-  port: 3493
-  alias: ups
-  username: !secret nut_name
-  password: !secret nut_pass
-  resources:
-    - ups.load
-    - ups.status.display
-    - input.voltage
-    - battery.charge
-    - battery.voltage
-
-# Monitor the disk temps, CPU Load, RAM etc on Synology NAS
-- platform: synologydsm
-  host: !secret host
-  username: !secret syn_name
-  password: !secret syn_pass
-  monitored_conditions:
-    - cpu_total_load
-    - memory_real_usage
-    - disk_temp
-    - volume_percentage_used
+- platform: mqtt
+  name: "SonoffBridge values"
+  value_template: "{{ value_json.value }}"
+  state_topic: "home/OpenMQTTGateway/SRFBtoMQTT"
+  json_attributes: 
+    - "raw"
+    - "value"
+    - "delay"
+    - "val_Thigh"
+    - "val_Tlow"
+  qos: 1
