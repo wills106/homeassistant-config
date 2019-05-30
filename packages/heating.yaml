@@ -36,7 +36,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 20
+          temperature: 19
 
 # Automation for variable time heating boost, uses input selects above to determin how long heating gets boosted for.
 # Still not woking how I want it to.           
@@ -65,15 +65,19 @@ automation:
         to: '04:00:00'
         
     action:
-      - service: climate.set_temperature
+      - service_template: climate.set_operation_mode
+        data_template:
+          entity_id: climate.heating
+          operation_mode: 'heat'
+      - service_template: climate.set_temperature
         entity_id: climate.heating
         data_template:
           temperature: 19
-      - delay: '{{ states.input_select.heating_boost | int }}'
-      - service: climate.set_temperature
-        entity_id: climate.heating
+      - delay: "{{ states.input_select.heating_boost.state | float }}"
+      - service_template: climate.set_operation_mode
         data_template:
-          temperature: 7        
+          entity_id: climate.heating
+          operation_mode: 'auto'        
         
 #############################
 #                           #
@@ -85,27 +89,7 @@ automation:
   - alias: "HeatOnMorningEarly"
     trigger:
       platform: time
-      at: '04:20:00'
-    condition:
-      condition: state
-      entity_id: input_boolean.early_shift
-      state: 'on'
-    action:
-      - service: climate.set_temperature
-        entity_id: climate.heating
-        data_template:
-          temperature: 18
-      - delay: 00:30:00
-      - service: climate.set_temperature
-        entity_id: climate.heating
-        data_template:
-          temperature: 7
-  
-  # Automation for when to turn heating on in the evening on early shift.
-  - alias: "HeatOnEveningEarly"
-    trigger:
-      platform: time
-      at: '15:00:00'
+      at: '04:00:00'
     condition:
       condition: state
       entity_id: input_boolean.early_shift
@@ -115,7 +99,89 @@ automation:
         entity_id: climate.heating
         data_template:
           temperature: 19
-      - delay: 04:00:00
+      - delay: 00:45:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7
+  
+  # Automation for when to turn heating on in the afternoon on early shift.
+  - alias: "HeatOnAfternoonEarly"
+    trigger:
+      platform: time
+      at: '13:30:00'
+    condition:
+      - condition: state
+        entity_id: input_boolean.early_shift
+        state: 'on'
+      - condition: template
+        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: time
+        weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 18
+      - delay: 1:00:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7
+
+  # Automation for when to turn heating on in the evening on early shift.
+  - alias: "HeatOnEveningEarly"
+    trigger:
+      platform: time
+      at: '17:00:00'
+    condition:
+      - condition: state
+        entity_id: input_boolean.early_shift
+        state: 'on'
+      - condition: template
+        value_template: '{{ states.sensor.outside_temperature.state < 12 }}'
+      - condition: time
+        weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 18.5
+      - delay: 4:00:00
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 7
+
+  # Automation for when to turn heating on in the evening on early shift - Friday.
+  - alias: "HeatOnAfternoonFriday"
+    trigger:
+      platform: time
+      at: '12:00:00'
+    condition:
+      - condition: state
+        entity_id: input_boolean.early_shift
+        state: 'on'
+      - condition: template
+        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: time
+        weekday:
+          - fri
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.heating
+        data_template:
+          temperature: 18
+      - delay: 02:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
@@ -137,15 +203,19 @@ automation:
       entity_id: input_boolean.late_shift
       state: 'on'
     action:
+      - service: climate.set_operation_mode
+        data:
+          entity_id: climate.heating
+          operation_mode: 'heat'
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
           temperature: 19
       - delay: 00:45:00
-      - service: climate.set_temperature
-        entity_id: climate.heating
-        data_template:
-          temperature: 7
+      - service: climate.set_operation_mode
+        data:
+          entity_id: climate.heating
+          operation_mode: 'auto'
   
   # Automation for when to turn heating on in the evening on late shift.
   - alias: "HeatOnEveningLates"
@@ -157,15 +227,19 @@ automation:
       entity_id: input_boolean.late_shift
       state: 'on'
     action:
+      - service: climate.set_operation_mode
+        data:
+          entity_id: climate.heating
+          operation_mode: 'heat'
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 01:00:00
-      - service: climate.set_temperature
-        entity_id: climate.heating
-        data_template:
-          temperature: 7
+      - service: climate.set_operation_mode
+        data:
+          entity_id: climate.heating
+          operation_mode: 'auto'
   
   #############################
   #                           #
@@ -177,7 +251,7 @@ automation:
   - alias: "HeatOnMorningOvertime"
     trigger:
       platform: time
-      at: '04:20:00'
+      at: '04:10:00'
     condition:
       condition: state
       entity_id: input_boolean.overtime
@@ -206,7 +280,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -226,7 +300,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18.5
       - delay: 05:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -272,7 +346,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -292,7 +366,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18.5
       - delay: 06:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -344,7 +418,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -364,7 +438,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18.5
       - delay: 06:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
