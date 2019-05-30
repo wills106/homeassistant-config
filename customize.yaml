@@ -12,3 +12,18 @@ switch.prstrlivingroom:
   icon: mdi:spotlight-beam
 switch.sonoff:
   icon: mdi:blinds
+sensor.ink_level_black:
+  entity_picture:
+    /local/devices/epson/ink_k.png
+sensor.ink_level_magenta:
+  entity_picture:
+    /local/devices/epson/ink_m.png
+sensor.ink_level_cyan:
+  entity_picture:
+    /local/devices/epson/ink_c.png
+sensor.ink_level_yellow:
+  entity_picture:
+    /local/devices/epson/ink_y.png
+sensor.cleaning_level:
+  entity_picture:
+    /local/devices/epson/wb.png
