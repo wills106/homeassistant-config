@@ -41,7 +41,11 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 - 4 Way Powerstrip Manzoku / ZLD-44UK-W
 - 2 Gang UK Wall Stockets [Amazon UK Single Pack](https://amzn.to/30Nc0cY) , [Amazon UK Twin Pack](https://amzn.to/2W7aEuO) , [Amazon UK 4 Pack](https://amzn.to/2W9GDKQ)
 
-
+### Z-Wave Devices
+- Z-WAVE.ME ZMEEUZB1 Z-Wave USB dongle [Amazon UK](https://amzn.to/2M7YtZt)
+- Living Connect LC-13 Z-Wave TRV [Amazon UK](https://amzn.to/2M0N90Y)
+- Yale Conexis L1 Smart Lock [Amazon UK](https://amzn.to/31pUcnL)
+- Yale Z-Wave Module 2 [Amazon UK](https://amzn.to/2T59gUR)
 
 ### Security
 
