@@ -1,0 +1,13 @@
+# Adopting 123's (Taras) on community.home-assistant.io method of Strategy 2: Demultiplexer for RF Codes
+# https://community.home-assistant.io/t/sonoff-rf-bridge-strategies-for-receiving-data/108181
+# Simplifies RF Sensors and their automations and if you don't publish this file on your GitHub,
+# you can keep your RF Codes to your self!
+automation:
+- alias: 'rfbridge_demultiplexer'
+  trigger:
+  - platform: mqtt
+    topic: tele/sonoffBridge/RESULT
+  action:
+  - service: python_script.rfbridge_demux
+    data_template:
+      payload: '{{trigger.payload_json.RfReceived.Data}}'
