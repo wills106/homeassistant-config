@@ -1,0 +1,244 @@
+# blakeblackshear's frigate person detection setup using Google Coral as a TPU
+# https://github.com/blakeblackshear/frigate
+# Also including inspiration from miikkajo's frigate-history / swipe card setup
+# https://github.com/miikkajo/frigate-history
+homeassistant:
+  whitelist_external_dirs:
+    - /config/www
+
+
+binary_sensor:
+  - name: frigate_drive_person
+    platform: mqtt
+    state_topic: "frigate/drive/objects"
+    value_template: '{{ value_json.person }}'
+    device_class: motion
+    availability_topic: "frigate/available"
+
+  - name: frigate_garage_person
+    platform: mqtt
+    state_topic: "frigate/garage/objects"
+    value_template: '{{ value_json.person }}'
+    device_class: motion
+    availability_topic: "frigate/available"
+
+  - name: frigate_doorbell_person
+    platform: mqtt
+    state_topic: "frigate/doorbell/objects"
+    value_template: '{{ value_json.person }}'
+    device_class: motion
+    availability_topic: "frigate/available"
+
+camera:
+# Drive
+  - platform: mjpeg
+    name: frigate_drive
+    mjpeg_url: !secret frigate_drive_url 
+  - platform: local_file
+    name: frigate_drive_history1
+    file_path: /config/www/frigate_drive_image1.jpg    
+  - platform: local_file
+    name: frigate_drive_history2
+    file_path: /config/www/frigate_drive_image2.jpg    
+  - platform: local_file
+    name: frigate_drive_history3
+    file_path: /config/www/frigate_drive_image3.jpg    
+  - platform: local_file
+    name: frigate_drive_history4
+    file_path: /config/www/frigate_drive_image4.jpg    
+  - platform: local_file
+    name: frigate_drive_history5
+    file_path: /config/www/frigate_drive_image5.jpg
+# Garage
+  - platform: mjpeg
+    name: frigate_garage
+    mjpeg_url: !secret frigate_garage_url 
+  - platform: local_file
+    name: frigate_garage_history1
+    file_path: /config/www/frigate_garage_image1.jpg    
+  - platform: local_file
+    name: frigate_garage_history2
+    file_path: /config/www/frigate_garage_image2.jpg    
+  - platform: local_file
+    name: frigate_garage_history3
+    file_path: /config/www/frigate_garage_image3.jpg    
+  - platform: local_file
+    name: frigate_garage_history4
+    file_path: /config/www/frigate_garage_image4.jpg    
+  - platform: local_file
+    name: frigate_garage_history5
+    file_path: /config/www/frigate_garage_image5.jpg
+# Doorbell
+  - platform: mjpeg
+    name: frigate_doorbell
+    mjpeg_url: !secret frigate_doorbell_url 
+  - platform: local_file
+    name: frigate_doorbell_history1
+    file_path: /config/www/frigate_doorbell_image1.jpg    
+  - platform: local_file
+    name: frigate_doorbell_history2
+    file_path: /config/www/frigate_doorbell_image2.jpg    
+  - platform: local_file
+    name: frigate_doorbell_history3
+    file_path: /config/www/frigate_doorbell_image3.jpg    
+  - platform: local_file
+    name: frigate_doorbell_history4
+    file_path: /config/www/frigate_doorbell_image4.jpg    
+  - platform: local_file
+    name: frigate_doorbell_history5
+    file_path: /config/www/frigate_doorbell_image5.jpg
+
+automation:
+
+-  alias: create_drive_history 
+   trigger:
+   - entity_id: binary_sensor.frigate_drive_person
+     from: 'off'
+     platform: state
+     to: 'on'
+   action:
+   - data:
+       entity_id: camera.frigate_drive_history2
+       filename: /config/www/frigate_drive_image1.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_drive_history3
+       filename: /config/www/frigate_drive_image2.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_drive_history4 
+       filename: /config/www/frigate_drive_image3.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_drive_history5
+       filename: /config/www/frigate_drive_image4.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_drive         
+       filename: /config/www/frigate_drive_image5.jpg
+     service: camera.snapshot
+
+-  alias: create_garage_history 
+   trigger:
+   - entity_id: binary_sensor.frigate_garage_person
+     from: 'off'
+     platform: state
+     to: 'on'
+   action:
+   - data:
+       entity_id: camera.frigate_garage_history2
+       filename: /config/www/frigate_garage_image1.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_garage_history3
+       filename: /config/www/frigate_garage_image2.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_garage_history4 
+       filename: /config/www/frigate_garage_image3.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_garage_history5
+       filename: /config/www/frigate_garage_image4.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_garage         
+       filename: /config/www/frigate_garage_image5.jpg
+     service: camera.snapshot
+
+-  alias: create_doorbell_history 
+   trigger:
+   - entity_id: binary_sensor.frigate_doorbell_person
+     from: 'off'
+     platform: state
+     to: 'on'
+   action:
+   - data:
+       entity_id: camera.frigate_doorbell_history2
+       filename: /config/www/frigate_doorbell_image1.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_doorbell_history3
+       filename: /config/www/frigate_doorbell_image2.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_doorbell_history4 
+       filename: /config/www/frigate_doorbell_image3.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_doorbell_history5
+       filename: /config/www/frigate_doorbell_image4.jpg
+     service: camera.snapshot
+   - data:
+       entity_id: camera.frigate_doorbell         
+       filename: /config/www/frigate_doorbell_image5.jpg
+     service: camera.snapshot
+    
+script:
+  setup_frigate_drive_history:
+    sequence:
+      - data:
+          entity_id: camera.frigate_drive         
+          filename: /config/www/frigate_drive_image5.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_drive         
+          filename: /config/www/frigate_drive_image4.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_drive        
+          filename: /config/www/frigate_drive_image3.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_drive         
+          filename: /config/www/frigate_drive_image2.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_drive         
+          filename: /config/www/frigate_drive_image1.jpg
+        service: camera.snapshot
+  setup_frigate_garage_history:
+   sequence:
+      - data:
+          entity_id: camera.frigate_garage         
+          filename: /config/www/frigate_garage_image5.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_garage         
+          filename: /config/www/frigate_garage_image4.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_garage        
+          filename: /config/www/frigate_garage_image3.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_garage         
+          filename: /config/www/frigate_garage_image2.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_garage         
+          filename: /config/www/frigate_garage_image1.jpg
+        service: camera.snapshot
+
+  setup_frigate_doorbell_history:
+    sequence:
+      - data:
+          entity_id: camera.frigate_doorbell         
+          filename: /config/www/frigate_doorbell_image5.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_doorbell         
+          filename: /config/www/frigate_doorbell_image4.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_doorbell        
+          filename: /config/www/frigate_doorbell_image3.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_doorbell         
+          filename: /config/www/frigate_doorbell_image2.jpg
+        service: camera.snapshot
+      - data:
+          entity_id: camera.frigate_doorbell         
+          filename: /config/www/frigate_doorbell_image1.jpg
+        service: camera.snapshot
