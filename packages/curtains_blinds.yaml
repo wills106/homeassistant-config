@@ -1,19 +1,35 @@
-binary_sensor:
-  - platform: template
-    sensors:
-      bedroomcurtainsensor:
-        device_class: opening
-        value_template: >-
-          {{ is_state('input_boolean.bedroomcurtainstate', 'on') }}
+# Replaced cheap ebay Curtain motor with proper Motorised curtain tracks using
+# Dooya DT82TV and Sonoff RF Bridge with Portisch Firmware
+# https://community.home-assistant.io/t/dooya-dt82tv-curtain-motors-with-sonoff-rf-bridge/97555
+cover:
+  - platform: mqtt
+    device_class: curtain
+    name: "Master Bedroom Curtains"
+    command_topic: "cmnd/sonoffBridge/backlog"
+    payload_open: "rfraw AA B0 35 05 08 12AC 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3B2B2A3A3B2B 55;rfraw off"
+    payload_close: "rfraw AA B0 35 05 08 12B6 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3A3B2A3A3A3B 55;rfraw off"
+    payload_stop: "rfraw AA B0 35 05 08 12AC 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3B2A3B2A3B2A3B 55;rfraw off"
+    position_topic: "433/Master_Bedroom_Curtain"
 
-input_boolean:        
-  bedroomcurtainstate:
+  - platform: mqtt
+    device_class: curtain
+    name: "Livingroom Curtains"
+    command_topic: "cmnd/sonoffBridge/backlog"
+    payload_open: "rfraw AA B0 35 05 08 1324 05FA 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2A3A3B2B2A3A 55;rfraw off"
+    payload_close: "rfraw AA B0 35 05 08 131A 05F0 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2B2A3B2B2B2A 55;rfraw off"
+    payload_stop: "rfraw AA B0 35 05 08 132E 05FA 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2A3B2A3B2A3B2A 55;rfraw off"
+    set_position_template: "50"
+    position_topic: "433/Livingroom_Curtain"
 
+# Using input_datetime to allow changing of times in front end
 input_datetime:
-  open_bedroomcurtain_time:
+  open_curtains_time:
     has_date: false
     has_time: true
-  close_bedroomcurtain_time:
+  open_curtains_time_early:
+    has_date: false
+    has_time: true
+  close_curtains_time:
     has_date: false
     has_time: true
 
@@ -24,58 +40,92 @@ sensor:
 
 automation:
 
-# Due to curtain controller needing to be turned off in order for it to run again
-# a timer is setup to automaticaly turn it off, so it can run again with same call.
-- alias: Bedroom Curtains
+- id: publish_mqtt_from_master_bedroom_curtain_codes
+  alias: Publish MQTT From Master Bedroom Curtain Codes
   trigger:
-    - platform: state
-      entity_id: switch.BedroomCurtains
-      to: 'on'
+    - platform: mqtt
+      topic: 'cmnd/sonoffBridge/backlog'
+  condition:
+    - condition: template
+      value_template: "{{ trigger.payload in ('rfraw AA B0 35 05 08 12AC 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3B2B2A3A3B2B 55;rfraw off', 'rfraw AA B0 35 05 08 12B6 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3A3B2A3A3A3B 55;rfraw off', 'rfraw AA B0 35 05 08 12AC 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3B2A3B2A3B2A3B 55;rfraw off') }}"
   action:
-    - delay: '00:00:15'
-    - service: switch.turn_off
-      entity_id: switch.BedroomCurtains
+    - service: mqtt.publish
+      data_template:
+        topic: "433/Master_Bedroom_Curtain"
+        payload: >-
+          {%- if trigger.payload == 'rfraw AA B0 35 05 08 12AC 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3B2B2A3A3B2B 55;rfraw off' -%}
+            100
+          {%- elif trigger.payload == 'rfraw AA B0 35 05 08 12B6 05E6 1234 1234 1234 481A3A3A3B2B2B2B2A3B2A3A3B2A3A3A3B2B2B2B2A3A3B2B2A3A3A3A3A3A3B2A3B2A3A3A3B2A3A3A3B 55;rfraw off' -%}
+            0
+          {%- else -%}
+            50
+          {%- endif -%}
+        retain: True
 
-- alias: Livingroom Curtains
+- id: publish_mqtt_from_livingroom_curtain_codes
+  alias: Publish MQTT From Livingroom Curtain Codes
   trigger:
-    - platform: state
-      entity_id: switch.LivingroomCurtains
-      to: 'on'
+    - platform: mqtt
+      topic: 'cmnd/sonoffBridge/backlog'
+  condition:
+    - condition: template
+      value_template: "{{ trigger.payload in ('rfraw AA B0 35 05 08 1324 05FA 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2A3A3B2B2A3A 55;rfraw off', 'rfraw AA B0 35 05 08 131A 05F0 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2B2A3B2B2B2A 55;rfraw off', 'rfraw AA B0 35 05 08 132E 05FA 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2A3B2A3B2A3B2A 55;rfraw off') }}"
   action:
-    - delay: '00:00:30'
-    - service: switch.turn_off
-      entity_id: switch.LivingroomCurtains
-
-# As we don't know if the curtains are open or closed we are using a input_boolean to record the state.
-- alias: BedroomCurtainState
-  trigger:
-    - platform: state
-      entity_id: switch.BedroomCurtains
-      to: 'on'
-  action:
-    - service: homeassistant.toggle
-      entity_id: input_boolean.bedroomcurtainstate
+    - service: mqtt.publish
+      data_template:
+        topic: "433/Livingroom_Curtain"
+        payload: >-
+          {%- if trigger.payload == 'rfraw AA B0 35 05 08 1324 05FA 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2A3A3B2B2A3A 55;rfraw off' -%}
+            100
+          {%- elif trigger.payload == 'rfraw AA B0 35 05 08 131A 05F0 1234 1234 1234 481A3B2A3A3B2B2B2A3A3B2B2A3B2B2B2B2A3A3A3B2B2A3A3B2B2B2B2B2B2A3B2A3B2B2B2A3B2B2B2A 55;rfraw off' -%}
+            0
+          {%- else -%}
+            50
+          {%- endif -%}
+        retain: True
 
 # Automation to Open and Close the curtain in the morning / evening.
-# The automation checks if they are already Open / Close, if they are already Open / Closed at the time it doesn't run.
-- alias: Open Bedroom Curtains
+- alias: Open Curtains Early
   trigger:
     - platform: template
-      value_template: "{{ states('sensor.time') == (states.input_datetime.open_bedroomcurtain_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+      value_template: "{{ states('sensor.time') == (states.input_datetime.open_curtains_time_early.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
   condition:
-    condition: template
-    value_template: "{{ states('binary_sensor.bedroomcurtainsensor') == 'off' }}"
+    condition: state
+    entity_id: input_boolean.early_shift
+    state: 'on'
   action:
-    - service: switch.turn_on
-      entity_id: switch.BedroomCurtains
+    - service: cover.open_cover
+      entity_id: cover.master_bedroom_curtains
+    - delay: '00:00:01'
+    - service: cover.open_cover
+      entity_id: cover.livingroom_curtains
 
-- alias: Close Bedroom Curtains
+- alias: Open Curtains
   trigger:
     - platform: template
-      value_template: "{{ states('sensor.time') == (states.input_datetime.close_bedroomcurtain_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+      value_template: "{{ states('sensor.time') == (states.input_datetime.open_curtains_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
   condition:
-    condition: template
-    value_template: "{{ states('binary_sensor.bedroomcurtainsensor') == 'on' }}"
+    condition: state
+    entity_id: input_boolean.early_shift
+    state: 'off'
   action:
-    - service: switch.turn_on
-      entity_id: switch.BedroomCurtains
+    - service: cover.open_cover
+      entity_id: cover.master_bedroom_curtains
+    - delay: '00:00:01'
+    - service: cover.open_cover
+      entity_id: cover.livingroom_curtains
+
+- alias: Close Curtains
+  trigger:
+    - platform: template
+      value_template: "{{ states('sensor.time') == (states.input_datetime.close_curtains_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    - platform: sun
+      event: sunset
+      # 45min before sunset
+      offset: "-00:30:00"
+  action:
+    - service: cover.close_cover
+      entity_id: cover.master_bedroom_curtains
+    - delay: '00:00:01'
+    - service: cover.close_cover
+      entity_id: cover.livingroom_curtains
