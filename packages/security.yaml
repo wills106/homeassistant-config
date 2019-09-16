@@ -6,176 +6,91 @@
 
 ##########
 #
-# Start of Input_Booleans
+# The following Automation will be used for a future TTS setup were I get informed if any doors / windows
+# are open before I leave the house.
+# Inspired from https://community.home-assistant.io/t/help-creating-a-template-that-will-determine-what-gate-is-left-open/136078
 #
 ##########
 
 input_boolean:
-  master_bedroom_window:
-  master_bedroom_window_alarm:
-  front_door:
-  front_door_alarm:
-  rear_door:
-  rear_door_alarm:
-
-##########
-#
-# Automations
-#
-##########
+  gate_test:
 
 automation:
+- alias: 'Speak which sensor is open'
+  trigger:
+    platform: state
+    entity_id: input_boolean.gate_test
+    from: 'off'
+    to: 'on'
+  action:
+  - service: tts.marytts_say
+    entity_id: media_player.home_group
+    data_template:
+      message: >
+        {% set sensor = [states.binary_sensor.master_bedroom_window, states.binary_sensor.computer_room_window,
+        states.binary_sensor.front_door, states.binary_sensor.rear_door] %}
+        {% if (sensor | selectattr('state','eq','off') | list | count) == 4 %}
+          All sensors are closed
+        {% else %}
+          {% set open_sensor = sensor | selectattr('state','eq','on') | list %}
+          {% if open_sensor | count > 1 %}
+             {% set x = 'sensors are' %}
+             {% set y = ' and ' %}
+          {% else %}
+             {% set x = 'sensor is' %}
+             {% set y = '' %}
+          {% endif %}
+          The following {{ x }} open. The {{ open_sensor | map(attribute='attributes.friendly_name') | join(y) }}.
+        {% endif %}
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.gate_test
 
-##########
-# Start of Master Bedroom Window
-##########
-- alias: master_bedroom_window_open
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.master_bedroom_window
-- alias: master_bedroom_window_close
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234E7" }}'
-  action:
-    service: homeassistant.turn_off
-    entity_id: input_boolean.master_bedroom_window
-- alias: master_bedroom_window_alarm
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EB" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.master_bedroom_window_alarm
-
-##########
-# Start of Front Door
-##########
-- alias: front_door_open
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.front_door
-- alias: front_door_close
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_off
-    entity_id: input_boolean.front_door
-- alias: front_door_alarm
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.front_door_alarm
-
-##########
-# Start of Rear Door
-##########
-- alias: rear_door_open
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.rear_door
-- alias: rear_door_close
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_off
-    entity_id: input_boolean.rear_door
-- alias: rear_door_alarm
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "123456" }}'
-  action:
-    service: homeassistant.turn_on
-    entity_id: input_boolean.rear_door_alarm
 
 ##########
 #
-# Start of Binary_Sensors
+# Adopting 123's (Taras) on community.home-assistant.io method of Strategy 2: Demultiplexer for RF Codes
+# https://community.home-assistant.io/t/sonoff-rf-bridge-strategies-for-receiving-data/108181
 #
 ##########
 
 binary_sensor:
-  - platform: template
-    sensors:
 
-##########
-# Start of Master Bedroom Window
-##########
-      master_bedroom_window:
-        friendly_name: "Master Bedroom Window"
-        device_class: window
-        value_template: >-
-          {{ is_state('input_boolean.master_bedroom_window', 'on') }}
-      master_bedroom_window_alarm:
-        friendly_name: "Master Bedroom Window Alarm"
-        device_class: problem
-        value_template: >-
-          {{ is_state('input_boolean.master_bedroom_window_alarm', 'on') }}
+  - platform: mqtt
+    name: 'Master Bedroom Window'
+    state_topic: 'home/sensor1'
+    device_class: window
 
-##########
-# Start of Front Door
-##########
-      front_door:
-        friendly_name: "Front Door"
-        device_class: door
-        value_template: >-
-          {{ is_state('input_boolean.front_door', 'on') }}
-      front_door_alarm:
-        friendly_name: "Front Door Alarm"
-        device_class: problem
-        value_template: >-
-          {{ is_state('input_boolean.front_door_alarm', 'on') }}
+  - platform: mqtt
+    name: 'Master Bedroom Window Alarm'
+    state_topic: 'home/sensor2'
+    device_class: problem
 
-##########
-# Start of Rear Door
-##########
-      rear_door:
-        friendly_name: "Rear Door"
-        device_class: door
-        value_template: >-
-          {{ is_state('input_boolean.rear_door', 'on') }}
-      rear_door_alarm:
-        friendly_name: "Rear Door Alarm"
-        device_class: problem
-        value_template: >-
-          {{ is_state('input_boolean.rear_door_alarm', 'on') }}
+  - platform: mqtt
+    name: 'Front Door'
+    state_topic: 'home/sensor3'
+    device_class: window
+
+  - platform: mqtt
+    name: 'Front Door Alarm'
+    state_topic: 'home/sensor4'
+    device_class: problem
+
+  - platform: mqtt
+    name: 'Rear Door'
+    state_topic: 'home/sensor5'
+    device_class: window
+
+  - platform: mqtt
+    name: 'Rear Door Alarm'
+    state_topic: 'home/sensor6'
+    device_class: problem
+
+  - platform: mqtt
+    name: 'Computer Room Window'
+    state_topic: 'home/sensor7'
+    device_class: window
+
+  - platform: mqtt
+    name: 'Computer Room Window Alarm'
+    state_topic: 'home/sensor8'
+    device_class: problem
