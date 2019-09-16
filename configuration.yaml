@@ -1,15 +1,4 @@
 homeassistant:
-  # Name of the location where Home Assistant is running
-  name: Home
-  # Location required to calculate the time the sun rises and sets
-  latitude: !secret latitude
-  longitude: !secret longitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 207
-  # metric for Metric, imperial for Imperial
-  unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: Europe/London
   # Customization file
   customize: !include customize.yaml
   packages: !include_dir_named packages
@@ -21,40 +10,8 @@ default_config:
 frontend:
   themes: !include_dir_merge_named themes/
 
-# Show the introduction message on startup.
-#introduction:
-
-# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-#http:
-#  base_url: !secret base_url
-#  server_port: 8123
-#  ssl_certificate: /ssl/fullchain.pem
-#  ssl_key: /ssl/privkey.pem
-
-# Text to speech
-tts:
-  - platform: google_translate
-    service_name: google_say
-
-#tuya:
-#  username: !secret user_name
-#  password: !secret tuya_pass
-#  country_code: 44
-
-# Track calendar false is needed to prevent Hass from overwriting the google_calendar.yaml file.
-google:
-  client_id: !secret calendar_id
-  client_secret: !secret calendar_secret
-  track_new_calendar: false
-
-google_assistant:
-  project_id: !secret google_assistant_project_id
-  api_key: !secret google_assistant_api
-  exposed_domains:
-    - switch
-    - light
-    - group
-    - vacuum
+http:
+  base_url: !secret base_url
 
 camera:
   - platform: synology
@@ -64,13 +21,32 @@ camera:
     timeout: 15
     verify_ssl: False
 
-#  - platform: generic
-#    name: Vacuum Map
-#    still_image_url: !secret rosie_map
-#    content_type: image/png
-#    framerate: 1
+  - name: Camera Last Person Drive
+    platform: mqtt
+    topic: frigate/drive/snapshot
 
-stream:
+  - name: Camera Last Person Garage
+    platform: mqtt
+    topic: frigate/garage/snapshot
+
+  - name: Camera Last Person Doorbell
+    platform: mqtt
+    topic: frigate/doorbell/snapshot
+
+  - platform: generic
+    still_image_url: !secret frigate_doorbell_url
+    stream_source: !secret doorbell_rtsp
+
+ffmpeg:
+
+# Track calendar false is needed to prevent Hass from overwriting the google_calendar.yaml file.
+google:
+  client_id: !secret calendar_id
+  client_secret: !secret calendar_secret
+  track_new_calendar: false
+
+ifttt:
+  key: !secret ifttt_token
 
 input_boolean:        
   early_shift:
@@ -84,19 +60,59 @@ input_boolean:
   willsbed:
   otherbed:
 
-#vacuum:
-#  - platform: xiaomi_miio
-#    host: !secret rosie_host
-#    token: !secret rosie_token
-#    name: Rosie
-
-ifttt:
-  key: !secret ifttt_token
+logger:
+  default: info
+  logs:
+    homeassistant.components.withings: critical
 
 media_player:
   - platform: volumio
-    host: !secret volumio_host
+    host: homeaudio.local
     port: 3000
+
+notify:
+  - platform: synology_chat
+    name: hass_synochat
+    verify_ssl: false
+    resource: !secret syno_chat
+
+python_script:
+
+stream:
+
+# Text to speech
+tts:
+  - platform: marytts
+    host: !secret host
+    port: 59125
+    codec: 'wav'
+    voice: 'cmu-slt-hsmm'
+    language: 'en-US'
+    
+  - platform: google_translate
+    language: 'en'
+
+tuya:
+  username: !secret user_name
+  password: !secret tuya_pass
+  country_code: 44
+
+unifi:
+  controllers:
+    - host: !secret host
+      site: Default
+      dont_track_devices: true
+      dont_track_wired_clients: true
+
+withings:
+  client_id: !secret withings_id
+  client_secret: !secret withings_secret
+  profiles:
+    - William
+
+zwave:
+  usb_path: /dev/ttyACM0
+  device_config: !include zwave_device_config.yaml
 
 group: !include groups.yaml
 automation: !include automations.yaml
