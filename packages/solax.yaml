@@ -13,56 +13,56 @@ sensor:
 - platform: modbus
   scan_interval: 1
   registers:
-    - name: SolaX Grid Voltage
+    - name: SolaX Inverter Voltage
       hub: SolaX
-      unit_of_measurement: v
+      unit_of_measurement: V
       register: 0
       register_type: input
       scale: 0.1
       precision: 1
-    - name: SolaX Grid Current
+    - name: SolaX Inverter Current
       hub: SolaX
-      unit_of_measurement: a
+      unit_of_measurement: A
       register: 1
       register_type: input
       scale: 0.1
       precision: 1
     - name: Solax Inverter Power
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 2
       register_type: input
     - name: SolaX PV1 Voltage
       hub: SolaX
-      unit_of_measurement: v
+      unit_of_measurement: V
       register: 3
       register_type: input
       scale: 0.1
       precision: 1
     - name: SolaX PV2 Voltage
       hub: SolaX
-      unit_of_measurement: v
+      unit_of_measurement: V
       register: 4
       register_type: input
       scale: 0.1
       precision: 1
     - name: SolaX PV1 Current
       hub: SolaX
-      unit_of_measurement: a
+      unit_of_measurement: A
       register: 5
       register_type: input
-      offset: 1
+      scale: 0.1
       precision: 1
     - name: SolaX PV2 Current
       hub: SolaX
-      unit_of_measurement: a
+      unit_of_measurement: A
       register: 6
       register_type: input
-      offset: 1
+      scale: 0.1
       precision: 1
-    - name: SolaX Grid Frequency
+    - name: SolaX Inverter Frequency
       hub: SolaX
-      unit_of_measurement: hz
+      unit_of_measurement: Hz
       register: 7
       register_type: input
       scale: 0.01
@@ -72,37 +72,41 @@ sensor:
       unit_of_measurement: °C
       register: 8
       register_type: input
+# Run Mode 0 - Waiting
+# Run Mode 1 - Checking
+# Run Mode 2 - Normal Mode
+# Run Mode 9 - Idle Mode
     - name: SolaX Run Mode
       hub: SolaX
       register: 9
       register_type: input
     - name: Solax PV1 Power
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 10
       register_type: input
     - name: Solax PV2 Power
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 11
       register_type: input
     - name: Solax Battery Voltage
       hub: SolaX
-      unit_of_measurement: v
+      unit_of_measurement: V
       register: 20
       register_type: input
       scale: 0.1
       precision: 1
     - name: Solax Battery Current
       hub: SolaX
-      unit_of_measurement: a
+      unit_of_measurement: A
       register: 21
       register_type: input
       scale: 0.1
       precision: 1
     - name: Solax Battery Power
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 22
       register_type: input
     - name: Solax Charger Board Temperature
@@ -125,23 +129,23 @@ sensor:
       unit_of_measurement: "%"
       register: 28
       register_type: input
+# Don't Understand this Value
     - name: Solax Battery Energy Charged
       hub: SolaX
-      unit_of_measurement: a
-      register: 28
+      register: 29
       register_type: input
     - name: Solax BMS Warning
       hub: SolaX
       register: 31
       register_type: input
+# Don't Understand this Value
     - name: Solax Battery Energy Discharged
       hub: SolaX
-      unit_of_measurement: a
       register: 32
       register_type: input
+# Don't Understand this Value
     - name: Solax Battery State of Health
       hub: SolaX
-      unit_of_measurement: "%"
       register: 35
       register_type: input
     - name: Solax Inverter Fault
@@ -156,65 +160,98 @@ sensor:
       hub: SolaX
       register: 65
       register_type: input
+# Negative pulling from Grid, Possative exportng to the Grid
     - name: SolaX Measured Power
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 70
       register_type: input
+# Exported energy to the Grid
     - name: SolaX Feed In Energy
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: kWh
       register: 72
       register_type: input
+      scale: 0.01
+      precision: 2
+# Imported energy from the Grid
     - name: SolaX Consumed Energy
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: kWh
       register: 74
       register_type: input
+      scale: 0.01
+      precision: 2
     - name: SolaX EPS Voltage
       hub: SolaX
-      unit_of_measurement: v
+      unit_of_measurement: V
       register: 76
       register_type: input
     - name: SolaX EPS Current
       hub: SolaX
-      unit_of_measurement: a
+      unit_of_measurement: A
       register: 77
       register_type: input
     - name: SolaX EPS VA
       hub: SolaX
-      unit_of_measurement: va
+      unit_of_measurement: VA
       register: 78
       register_type: input
     - name: SolaX EPS Frequency
       hub: SolaX
-      unit_of_measurement: hz
+      unit_of_measurement: Hz
       register: 79
       register_type: input
     - name: SolaX Energy Today
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: kWh
       register: 80
       register_type: input
+      scale: 0.1
+      precision: 1
     - name: SolaX Energy Total
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: kWh
       register: 82
       register_type: input
+      scale: 0.1
+      precision: 1
+# Don't Understand this Value
+# Perhaps for aditional Batteries?
     - name: SolaX Battery Temperature
       hub: SolaX
       unit_of_measurement: °C
       register: 85
       register_type: input
+# Don't Understand this Value
     - name: SolaX Solar Energy Total
       hub: SolaX
-      unit_of_measurement: w
+      unit_of_measurement: W
       register: 112
       register_type: input
 
 - platform: template
   sensors:
-    powermon_totalsolar:
-      friendly_name: "Solar Generation - Total"
+    solax_pv_total_power:
+      friendly_name: "Solax PV Total Power"
       value_template: "{{ states('sensor.solax_pv1_power') | int + states('sensor.solax_pv2_power') | int }}"
-      unit_of_measurement: 'w'
+      unit_of_measurement: 'W'
+
+- platform: template
+  sensors:
+    solax_run_mode_template:
+      friendly_name: "SolaX Run Mode"
+      value_template: >-
+        {% if is_state('sensor.solax_run_mode', '0') %}
+          Waiting
+        {% elif is_state('sensor.solax_run_mode', '1') %}
+          Checking
+        {% elif is_state('sensor.solax_run_mode', '2') %}
+          Normal Mode
+        {% elif is_state('sensor.solax_run_mode', '9') %}
+          Idle Mode
+        {% else %}
+          Unknown
+        {% endif %}
+
+
