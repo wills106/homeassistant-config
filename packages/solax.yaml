@@ -75,6 +75,8 @@ sensor:
 # Run Mode 0 - Waiting
 # Run Mode 1 - Checking
 # Run Mode 2 - Normal Mode
+# Run Mode 3 - Off Mode
+# Run Mode 7 - EPS Mode
 # Run Mode 9 - Idle Mode
     - name: SolaX Run Mode
       hub: SolaX
@@ -97,6 +99,7 @@ sensor:
       register_type: input
       scale: 0.1
       precision: 1
+# Minus Number Discharging, Positive Number Charging
     - name: Solax Battery Current
       hub: SolaX
       unit_of_measurement: A
@@ -104,6 +107,7 @@ sensor:
       register_type: input
       scale: 0.1
       precision: 1
+# Minus Number Discharging, Positive Number Charging
     - name: Solax Battery Power
       hub: SolaX
       unit_of_measurement: W
@@ -130,19 +134,26 @@ sensor:
       register: 28
       register_type: input
 # Don't Understand this Value
+# Sits at 116 when discharged
     - name: Solax Battery Energy Charged
       hub: SolaX
       register: 29
       register_type: input
+      scale: 0.1
+      precision: 1
     - name: Solax BMS Warning
       hub: SolaX
       register: 31
       register_type: input
 # Don't Understand this Value
+# Perhaps 0 - Offline
+# 2 - Empty (Well set vale, mine stops at 30%)
     - name: Solax Battery Energy Discharged
       hub: SolaX
       register: 32
       register_type: input
+      scale: 0.1
+      precision: 1
 # Don't Understand this Value
     - name: Solax Battery State of Health
       hub: SolaX
@@ -160,7 +171,7 @@ sensor:
       hub: SolaX
       register: 65
       register_type: input
-# Negative pulling from Grid, Possative exportng to the Grid
+# Negative pulling from Grid, Positive exportng to the Grid
     - name: SolaX Measured Power
       hub: SolaX
       unit_of_measurement: W
@@ -187,11 +198,15 @@ sensor:
       unit_of_measurement: V
       register: 76
       register_type: input
+      scale: 0.1
+      precision: 1
     - name: SolaX EPS Current
       hub: SolaX
       unit_of_measurement: A
       register: 77
       register_type: input
+      scale: 0.1
+      precision: 1
     - name: SolaX EPS VA
       hub: SolaX
       unit_of_measurement: VA
@@ -202,6 +217,8 @@ sensor:
       unit_of_measurement: Hz
       register: 79
       register_type: input
+      scale: 0.01
+      precision: 2
     - name: SolaX Energy Today
       hub: SolaX
       unit_of_measurement: kWh
@@ -223,12 +240,16 @@ sensor:
       unit_of_measurement: °C
       register: 85
       register_type: input
+      scale: 0.1
+      precision: 1
 # Don't Understand this Value
     - name: SolaX Solar Energy Total
       hub: SolaX
       unit_of_measurement: W
       register: 112
       register_type: input
+      scale: 0.1
+      precision: 1
 
 - platform: template
   sensors:
@@ -248,10 +269,13 @@ sensor:
           Checking
         {% elif is_state('sensor.solax_run_mode', '2') %}
           Normal Mode
+        {% elif is_state('sensor.solax_run_mode', '3') %}
+          Off Mode
+        {% elif is_state('sensor.solax_run_mode', '7') %}
+          EPS Mode
         {% elif is_state('sensor.solax_run_mode', '9') %}
           Idle Mode
         {% else %}
           Unknown
         {% endif %}
-
 
