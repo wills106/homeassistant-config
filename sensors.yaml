@@ -1,11 +1,12 @@
-- platform: mqtt
-  name: "SonoffBridge values"
-  value_template: "{{ value_json.value }}"
-  state_topic: "home/OpenMQTTGateway/SRFBtoMQTT"
-  json_attributes: 
-    - "raw"
-    - "value"
-    - "delay"
-    - "val_Thigh"
-    - "val_Tlow"
-  qos: 1
+# Octopus.Energy SMART Meter Readings
+# https://community.home-assistant.io/t/templates-in-command-line-sensor-octopus-energy-api/96141/46
+- platform: command_line
+  name: electricity
+  unit_of_measurement: 'kWh'
+  scan_interval: 600
+  command: 'sh /config/bash_scripts/electricity.sh'
+- platform: command_line
+  name: gas
+  unit_of_measurement: 'm3'
+  scan_interval: 600
+  command: 'sh /config/bash_scripts/gas.sh'
