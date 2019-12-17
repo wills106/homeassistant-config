@@ -91,14 +91,17 @@ automation:
       platform: time
       at: '04:00:00'
     condition:
-      condition: state
-      entity_id: input_boolean.early_shift
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.early_shift
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 12
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 00:45:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -114,8 +117,9 @@ automation:
       - condition: state
         entity_id: input_boolean.early_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
       - condition: time
         weekday:
           - mon
@@ -142,8 +146,9 @@ automation:
       - condition: state
         entity_id: input_boolean.early_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
       - condition: time
         weekday:
           - mon
@@ -155,7 +160,7 @@ automation:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18.5
+          temperature: 18
       - delay: 4:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -171,8 +176,9 @@ automation:
       - condition: state
         entity_id: input_boolean.early_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
       - condition: time
         weekday:
           - fri
@@ -202,8 +208,9 @@ automation:
       - condition: state
         entity_id: input_boolean.late_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -224,8 +231,9 @@ automation:
       - condition: state
         entity_id: input_boolean.late_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
       - condition: time
         weekday:
           - mon
@@ -245,13 +253,14 @@ automation:
   - alias: "HeatOnEveningLatesFri"
     trigger:
       platform: time
-      at: '18:00:00'
+      at: '16:30:00'
     condition:
       - condition: state
         entity_id: input_boolean.late_shift
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
       - condition: time
         weekday:
           - fri
@@ -281,8 +290,9 @@ automation:
       - condition: state
         entity_id: input_boolean.overtime
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -303,8 +313,9 @@ automation:
       - condition: state
         entity_id: input_boolean.overtime
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -325,8 +336,9 @@ automation:
       - condition: state
         entity_id: input_boolean.overtime
         state: 'on'
-      - condition: template
-        value_template: '{{ states.sensor.outside_temperature.state < 10 }}'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -350,9 +362,12 @@ automation:
       platform: time
       at: '07:30:00'
     condition:
-      condition: state
-      entity_id: input_boolean.holiday
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.holiday
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -370,9 +385,12 @@ automation:
       platform: time
       at: '12:00:00'
     condition:
-      condition: state
-      entity_id: input_boolean.holiday
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.holiday
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -390,9 +408,12 @@ automation:
       platform: time
       at: '17:00:00'
     condition:
-      condition: state
-      entity_id: input_boolean.holiday
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.holiday
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -422,14 +443,17 @@ automation:
       platform: time
       at: '07:30:00'
     condition:
-      condition: state
-      entity_id: input_boolean.weekend
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.weekend
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 19
+          temperature: 18
       - delay: 01:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -442,9 +466,12 @@ automation:
       platform: time
       at: '12:00:00'
     condition:
-      condition: state
-      entity_id: input_boolean.weekend
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.weekend
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
@@ -462,14 +489,17 @@ automation:
       platform: time
       at: '17:00:00'
     condition:
-      condition: state
-      entity_id: input_boolean.weekend
-      state: 'on'
+      - condition: state
+        entity_id: input_boolean.weekend
+        state: 'on'
+      - condition: numeric_state
+        entity_id: 'sensor.outside_temperature'
+        below: 10
     action:
       - service: climate.set_temperature
         entity_id: climate.heating
         data_template:
-          temperature: 18.5
+          temperature: 18
       - delay: 06:00:00
       - service: climate.set_temperature
         entity_id: climate.heating
