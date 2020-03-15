@@ -2,12 +2,22 @@
 # Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus registers used on Solax Inverters.
 # I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the web API is unavailable.
 # But the Inverter can communicate to the cloud ok somehow? I do not have a Pocket WiFi module.
+# Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
 
 modbus:
   name: SolaX
-  type: tcp
-  host: !secret inverter_ip
-  port: 502
+  type: tcp # Comment out for RS485
+  host: !secret inverter_ip # Comment out for RS485
+  port: 502 # Comment out for RS485
+
+# Uncomment for USB - RS485 dongle
+#  type: serial
+#  method: rtu
+#  port: /dev/ttyUSB0
+#  baudrate: 9600
+#  stopbits: 1
+#  bytesize: 8
+#  parity: N
 
 sensor:
 - platform: modbus
