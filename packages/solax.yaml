@@ -6,7 +6,7 @@
 modbus:
   name: SolaX
   type: tcp
-  host: ip_address
+  host: !secret inverter_ip
   port: 502
 
 sensor:
@@ -72,12 +72,6 @@ sensor:
       unit_of_measurement: °C
       register: 8
       register_type: input
-# Run Mode 0 - Waiting
-# Run Mode 1 - Checking
-# Run Mode 2 - Normal Mode
-# Run Mode 3 - Off Mode
-# Run Mode 7 - EPS Mode
-# Run Mode 9 - Idle Mode
     - name: SolaX Run Mode
       hub: SolaX
       register: 9
@@ -242,15 +236,93 @@ sensor:
       register_type: input
       scale: 0.1
       precision: 1
-# Don't Understand this Value
-    - name: SolaX Solar Energy Total
+# Extra Values for X3 Model / 3 Phase
+    - name: Inverter phase R Voltage
       hub: SolaX
-      unit_of_measurement: W
+      unit_of_measurement: V
+      register: 106
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase R Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 107
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase R Power
+      hub: SolaX
+      unit_of_measurement: kWh
+      register: 108
+      register_type: input
+      scale: 0.001
+      precision: 1
+    - name: Inverter phase R Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 109
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase S Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 110
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase S Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 111
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase S Power
+      hub: SolaX
+      unit_of_measurement: kWh
       register: 112
+      register_type: input
+      scale: 0.001
+      precision: 1
+    - name: Inverter phase S Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 113
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase T Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 114
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase T Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 115
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Inverter phase T Power
+      hub: SolaX
+      unit_of_measurement: kWh
+      register: 116
+      register_type: input
+      scale: 0.001
+      precision: 1
+    - name: Inverter phase T Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 117
       register_type: input
       scale: 0.1
       precision: 1
 
+# Compine PV1 and PV2 power
 - platform: template
   sensors:
     solax_pv_total_power:
@@ -279,3 +351,86 @@ sensor:
           Unknown
         {% endif %}
 
+input_boolean:
+  prevent_charging:
+    name: Prevent House Battery Charging
+    initial: off
+  prevent_discharge:
+    name: Prevent House Battery Discharge
+    initial: off
+
+automation:
+  - alias: Prevent House Battery Charging
+    trigger:
+      platform: state
+      entity_id: input_boolean.prevent_charging
+      to: 'on'
+    action:
+    - service: modbus.write_register # Enter User Password
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '0'
+        value: '2014'
+    - service: modbus.write_register # Manual Control Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+    - service: modbus.write_register # Battery Charge 0
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '81'
+        value: '0'
+
+  - alias: Prevent House Battery Discharge
+    trigger:
+      platform: state
+      entity_id: input_boolean.prevent_discharge
+      to: 'on'
+    action:
+    - service: modbus.write_register # Enter User Password
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '0'
+        value: '2014'
+    - service: modbus.write_register # Manual Control Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+    - service: modbus.write_register # Battery Output 0
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '82'
+        value: '0'
+
+  - alias: Resume normal Mode
+    trigger:
+      platform: state
+      entity_id: input_boolean.prevent_charging
+      to: 'off'
+      platform: state
+      entity_id: input_boolean.prevent_discharge
+      to: 'off'
+      platform: state
+      entity_id: input_boolean.allow_gridcharge
+      to: 'off'
+    action:
+    - service: modbus.write_register
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '0'
+        value: '2014'
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
