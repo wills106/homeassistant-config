@@ -1,4 +1,4 @@
-# https://github.com/wills106/homeassistant-config/blob/master/packages/solax.yaml
+# https://github.com/wills106/homeassistant-config/blob/master/packages/solax_hybrid_g3.yaml
 # Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus Read Only Registers used on Solax Inverters.
 # I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the local web API is unavailable.
 # The Inverter communicate's to the cloud through MQTT on port 8883. I do not have a Pocket WiFi module.
