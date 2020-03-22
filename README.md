@@ -57,7 +57,7 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 
 - SolaX X1-Hybrid-5.0-D-E (Gen3)
 - 1 x SolaX Gen2 Tripple Power HV 4.5kWh battery
-- 16 x JA Solar 305w
+- 16 x JA Solar 305w PV Panels
 
 ## Retired Devices
 - Synology DS1511+ (Docker running Home Assistant)
