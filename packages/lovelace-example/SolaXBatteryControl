@@ -1,0 +1,9 @@
+type: entities
+title: SolaX Battery Control
+show_header_toggle: false
+entities:
+  - entity: input_number.solax_battery_min_energy
+  - entity: input_number.solax_battery_charge
+  - entity: input_number.solax_battery_discharge
+  - entity: input_boolean.solax_backup
+  - entity: input_boolean.solax_forcetime

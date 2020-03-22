@@ -1,0 +1,15 @@
+type: entities
+title: SolaX 3-Phase
+entities:
+  - entity: sensor.solax_phase_r_voltage
+  - entity: sensor.solax_phase_r_current
+  - entity: sensor.solax_phase_r_power
+  - entity: sensor.solax_phase_r_frequency
+  - entity: sensor.solax_phase_s_voltage
+  - entity: sensor.solax_phase_s_current
+  - entity: sensor.solax_phase_s_power
+  - entity: sensor.solax_phase_s_frequency
+  - entity: sensor.solax_phase_t_voltage
+  - entity: sensor.solax_phase_t_current
+  - entity: sensor.solax_phase_t_power
+  - entity: sensor.solax_phase_t_frequency

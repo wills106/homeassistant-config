@@ -1,3 +1,5 @@
+type: entities
+title: SolaX
 entities:
   - entity: sensor.solax_inverter_voltage
   - entity: sensor.solax_inverter_current
@@ -15,17 +17,7 @@ entities:
   - entity: sensor.solax_battery_voltage
   - entity: sensor.solax_battery_current
   - entity: sensor.solax_battery_power
-  - entity: sensor.solax_charger_board_temperature
-  - entity: sensor.solax_charger_battery_temperature
-  - entity: sensor.solax_charger_boost_temperature
   - entity: sensor.solax_battery_capacity
-  - entity: sensor.solax_battery_energy_charged
-  - entity: sensor.solax_bms_warning
-  - entity: sensor.solax_battery_energy_discharged
-  - entity: sensor.solax_battery_state_of_health
-  - entity: sensor.solax_inverter_fault
-  - entity: sensor.solax_charger_fault
-  - entity: sensor.solax_manager_fault
   - entity: sensor.solax_measured_power
   - entity: sensor.solax_feed_in_energy
   - entity: sensor.solax_consumed_energy
@@ -35,6 +27,3 @@ entities:
   - entity: sensor.solax_eps_frequency
   - entity: sensor.solax_energy_today
   - entity: sensor.solax_energy_total
-  - entity: sensor.solax_battery_temperature
-  - entity: sensor.solax_solar_energy_total
-type: entities
