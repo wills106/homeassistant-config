@@ -10,6 +10,8 @@ default_config:
 frontend:
   themes: !include_dir_merge_named themes/
 
+hassio:
+
 http:
   base_url: !secret base_url
 
@@ -21,21 +23,20 @@ camera:
     timeout: 15
     verify_ssl: False
 
-  - name: Camera Last Person Drive
-    platform: mqtt
-    topic: frigate/drive/snapshot
-
-  - name: Camera Last Person Garage
-    platform: mqtt
-    topic: frigate/garage/snapshot
-
-  - name: Camera Last Person Doorbell
-    platform: mqtt
-    topic: frigate/doorbell/snapshot
-
   - platform: generic
     still_image_url: !secret frigate_doorbell_url
     stream_source: !secret doorbell_rtsp
+
+discovery:
+
+emoncms_history:
+  api_key: !secret emoncms_api
+  url: !secret emoncms_host
+  inputnode: 19
+  whitelist:
+    - sensor.emon_pv_total_power
+    - sensor.electricity
+    - sensor.emon_measured_power
 
 ffmpeg:
 
@@ -47,6 +48,18 @@ google:
 
 ifttt:
   key: !secret ifttt_token
+
+influxdb:
+  host: !secret host
+  port: 8086
+  database: homeassistant
+  username: homeassistant
+  password: !secret password
+  max_retries: 3
+  default_measurement: state
+  include:
+    domains:
+      - sensor
 
 input_boolean:        
   early_shift:
@@ -61,20 +74,25 @@ input_boolean:
   otherbed:
 
 logger:
-  default: info
-  logs:
-    homeassistant.components.withings: critical
 
 media_player:
   - platform: volumio
-    host: homeaudio.local
+    host: Volumio-livingroom.local
     port: 3000
 
 notify:
-  - platform: synology_chat
-    name: hass_synochat
-    verify_ssl: false
-    resource: !secret syno_chat
+  - name: signal
+    platform: signal_messenger
+    url: !secret signal_host
+    number: !secret signal_number
+    recipients: # one or more recipients
+      - !secret signal_recipient1
+
+panel_custom:
+  - name: zwavegraph2
+    sidebar_title: Z-Wave Graph
+    sidebar_icon: mdi:access-point-network
+    url_path: zwave
 
 python_script:
 
@@ -85,16 +103,16 @@ tts:
   - platform: marytts
     host: !secret host
     port: 59125
-    codec: 'wav'
+    codec: 'WAVE_FILE'
     voice: 'cmu-slt-hsmm'
-    language: 'en-US'
+    language: 'en_GB'
     
   - platform: google_translate
     language: 'en'
 
 tuya:
   username: !secret user_name
-  password: !secret tuya_pass
+  password: !secret password
   country_code: 44
 
 unifi:
@@ -112,7 +130,7 @@ withings:
 
 zwave:
   usb_path: /dev/ttyACM0
-  device_config: !include zwave_device_config.yaml
+  network_key: !secret zwave_network 
 
 group: !include groups.yaml
 automation: !include automations.yaml
