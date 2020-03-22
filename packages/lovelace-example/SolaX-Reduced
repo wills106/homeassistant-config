@@ -1,0 +1,22 @@
+type: entities
+title: SolaX
+entities:
+  - entity: sensor.solax_inverter_voltage
+  - entity: sensor.solax_inverter_current
+  - entity: sensor.solax_inverter_power
+  - entity: sensor.solax_pv1_voltage
+  - entity: sensor.solax_pv2_voltage
+  - entity: sensor.solax_pv1_current
+  - entity: sensor.solax_pv2_current
+  - entity: sensor.solax_inverter_frequency
+  - entity: sensor.solax_inner_temp
+  - entity: sensor.solax_run_mode_template
+  - entity: sensor.solax_pv1_power
+  - entity: sensor.solax_pv2_power
+  - entity: sensor.solax_pv_total_power
+  - entity: sensor.solax_battery_voltage
+  - entity: sensor.solax_battery_current
+  - entity: sensor.solax_battery_power
+  - entity: sensor.solax_battery_capacity
+  - entity: sensor.solax_measured_power
+  - entity: sensor.solax_energy_today
