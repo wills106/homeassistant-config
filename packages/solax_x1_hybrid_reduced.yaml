@@ -1,0 +1,337 @@
+# https://github.com/wills106/homeassistant-config/blob/master/packages/solax_hybrid_g3.yaml
+# Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus Read Only Registers used on Solax Inverters.
+# I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the local web API is unavailable.
+# The Inverter communicate's to the cloud through MQTT on port 8883. I do not have a Pocket WiFi module.
+# Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
+# The X1 Hybrid Gen 3 apears to use different registers to control the charge and discharge compared to the older SU5000.
+
+modbus:
+  name: SolaX
+  type: tcp # Comment out for RS485
+  host: !secret inverter_ip # Comment out for RS485
+  port: 502 # Comment out for RS485
+
+# Uncomment for USB - RS485 dongle
+#  type: serial
+#  method: rtu
+#  port: /dev/ttyUSB0
+#  baudrate: 9600
+#  stopbits: 1
+#  bytesize: 8
+#  parity: N
+
+sensor:
+- platform: modbus
+  scan_interval: 1
+  registers:
+    - name: SolaX Inverter Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 0
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX Inverter Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 1
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Solax Inverter Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 2
+      register_type: input
+    - name: SolaX PV1 Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 3
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX PV2 Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 4
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX PV1 Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 5
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX PV2 Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 6
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX Inverter Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 7
+      register_type: input
+      scale: 0.01
+      precision: 2
+    - name: SolaX Inner Temp
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 8
+      register_type: input
+    - name: SolaX Run Mode
+      hub: SolaX
+      register: 9
+      register_type: input
+    - name: Solax PV1 Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 10
+      register_type: input
+    - name: Solax PV2 Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 11
+      register_type: input
+    - name: Solax Battery Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 20
+      register_type: input
+      scale: 0.1
+      precision: 1
+# Minus Number Discharging, Positive Number Charging
+    - name: Solax Battery Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 21
+      register_type: input
+      scale: 0.1
+      precision: 1
+# Minus Number Discharging, Positive Number Charging
+    - name: Solax Battery Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 22
+      register_type: input
+    - name: Solax Charger Board Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 23
+      register_type: input
+    - name: Solax Charger Battery Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 24
+      register_type: input
+    - name: Solax Charger Boost Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 25
+      register_type: input
+    - name: Solax Battery Capacity
+      hub: SolaX
+      unit_of_measurement: "%"
+      register: 28
+      register_type: input
+# Negative pulling from Grid, Positive exportng to the Grid
+    - name: SolaX Measured Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 70
+      register_type: input
+    - name: SolaX EPS Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 76
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX EPS Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 77
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX EPS VA
+      hub: SolaX
+      unit_of_measurement: VA
+      register: 78
+      register_type: input
+    - name: SolaX EPS Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 79
+      register_type: input
+      scale: 0.01
+      precision: 2
+# Generated Solar and Energy used from battery
+    - name: SolaX Energy Today
+      hub: SolaX
+      unit_of_measurement: kWh
+      register: 80
+      register_type: input
+      scale: 0.1
+      precision: 1
+
+# Compine PV1 and PV2 power
+- platform: template
+  sensors:
+    solax_pv_total_power:
+      friendly_name: "Solax PV Total Power"
+      value_template: "{{ states('sensor.solax_pv1_power') | int + states('sensor.solax_pv2_power') | int }}"
+      unit_of_measurement: 'W'
+# Following two sensors are ideal for feeding emoncms as they are in kWh
+    emon_pv_total_power:
+      friendly_name: "Emon PV Power"
+      value_template: "{{ ( states('sensor.solax_pv_total_power') | float /1000 ) | round(2) }}"
+      unit_of_measurement: 'kWh'
+    emon_measured_power:
+      friendly_name: "Emon Measured Power"
+      value_template: "{{ ( states('sensor.solax_measured_power') | float /1000 ) | round(2) }}"
+      unit_of_measurement: 'kWh'
+
+- platform: template
+  sensors:
+    solax_run_mode_template:
+      friendly_name: "SolaX Run Mode"
+      value_template: >-
+        {% if is_state('sensor.solax_run_mode', '0') %}
+          Waiting
+        {% elif is_state('sensor.solax_run_mode', '1') %}
+          Checking
+        {% elif is_state('sensor.solax_run_mode', '2') %}
+          Normal Mode
+        {% elif is_state('sensor.solax_run_mode', '3') %}
+          Off Mode
+        {% elif is_state('sensor.solax_run_mode', '7') %}
+          EPS Mode
+        {% elif is_state('sensor.solax_run_mode', '9') %}
+          Idle Mode
+        {% else %}
+          Unknown
+        {% endif %}
+
+input_boolean:
+  solax_backup:
+    name: SolaX Backup Mode
+    initial: off
+  solax_forcetime:
+    name: SolaX Force Time
+    initial: off
+
+input_number:
+  solax_battery_charge:
+    name: SolaX Battery Charge A
+    initial: 20
+    min: 0
+    max: 25 # Technical Datasheet states Max Charge is 30A, but recommend 25A
+    step: 0.1
+
+  solax_battery_discharge:
+    name: SolaX Battery Disharge A
+    initial: 20
+    min: 0
+    max: 25 # Technical Datasheet states Max Discharge is 30A, but recommend 25A
+    step: 0.1
+
+  solax_battery_min_energy:
+    name: "SolaX Battery Min Energy Level %"
+    initial: 30
+    min: 10 # Technical Datasheet states Max DOD is 90%
+    max: 70
+    step: 5
+
+automation:
+  - alias: House Battery Charge Rate
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_charge
+    action:
+    - service: modbus.write_register # Battery Charge Amps
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: House Battery Disharge Rate
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_discharge
+    action:
+    - service: modbus.write_register # Battery Discharge 0
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: "House Battery Min Energy %"
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_min_energy
+    action:
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+
+  - alias: Solax Backup
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+
+  - alias: Solax Backup Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+  - alias: Solax ForceTime
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'on'
+    action:
+    - service: modbus.write_register # Force Time Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '1'
+
+  - alias: Solax ForceTime Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
