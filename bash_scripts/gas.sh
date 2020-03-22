@@ -6,7 +6,7 @@ COUNT=`curl -H "Authorization: Basic API_KEY" "https://api.octopus.energy/v1/gas
 
 if [[ "$COUNT" == 48 ]]
 then
-curl -H "Authorization: Basic API_KEY" "https://api.octopus.energy/v1/gas-meter-points/MPAN/meters/SERIAL/consumption/?period_from=$STARTDATE&period_to=$ENDDATE" | jq '[.. | objects | .consumption] | add' | awk '{printf "%0.2f\n",$1/11.36}' 
+curl -H "Authorization: Basic API_KEY" "https://api.octopus.energy/v1/gas-meter-points/MPAN/meters/SERIAL/consumption/?period_from=$STARTDATE&period_to=$ENDDATE" | jq '[.. | objects | .consumption] | add' | awk '{printf "%0.2f\n",$1}' 
 else
-curl -H "Authorization: Basic API_KEY" "https://api.octopus.energy/v1/gas-meter-points/MPAN/meters/SERIAL/consumption/?period_from=$STARTDATEPREV&period_to=$ENDDATEPREV" | jq '[.. | objects | .consumption] | add' | awk '{printf "%0.2f\n",$1/11.36}'  
+curl -H "Authorization: Basic API_KEY" "https://api.octopus.energy/v1/gas-meter-points/MPAN/meters/SERIAL/consumption/?period_from=$STARTDATEPREV&period_to=$ENDDATEPREV" | jq '[.. | objects | .consumption] | add' | awk '{printf "%0.2f\n",$1}'  
 fi
