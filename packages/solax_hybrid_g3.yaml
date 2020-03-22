@@ -376,6 +376,9 @@ input_boolean:
   solax_forcetime:
     name: SolaX Force Time
     initial: off
+#  solax_forcetime_gridcharge:
+#    name: SolaX Forc Time Grid Charge
+#    initial: off
 
 input_number:
   solax_battery_charge:
@@ -439,10 +442,10 @@ automation:
   - alias: Solax Backup
     trigger:
       platform: state
-      entity_id: input_boolean.solax_forcetime
+      entity_id: input_boolean.solax_backup
       to: 'on'
     action:
-    - service: modbus.write_register # Force Time Mode
+    - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
         unit: '255'
@@ -465,10 +468,10 @@ automation:
   - alias: Solax ForceTime
     trigger:
       platform: state
-      entity_id: input_boolean.solax_backup
+      entity_id: input_boolean.solax_forcetime
       to: 'on'
     action:
-    - service: modbus.write_register # Backup Mode
+    - service: modbus.write_register # Force Time Mode
       data_template:
         hub: SolaX
         unit: '255'
