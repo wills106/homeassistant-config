@@ -339,6 +339,7 @@ sensor:
       friendly_name: "Solax PV Total Power"
       value_template: "{{ states('sensor.solax_pv1_power') | int + states('sensor.solax_pv2_power') | int }}"
       unit_of_measurement: 'W'
+# Following two sensors are ideal for feeding emoncms as they are in kWh
     emon_pv_total_power:
       friendly_name: "Emon PV Power"
       value_template: "{{ ( states('sensor.solax_pv_total_power') | float /1000 ) | round(2) }}"
@@ -376,29 +377,26 @@ input_boolean:
   solax_forcetime:
     name: SolaX Force Time
     initial: off
-#  solax_forcetime_gridcharge:
-#    name: SolaX Forc Time Grid Charge
-#    initial: off
 
 input_number:
   solax_battery_charge:
     name: SolaX Battery Charge A
     initial: 20
     min: 0
-    max: 20
+    max: 25 # Technical Datasheet states Max Charge is 30A, but recommend 25A
     step: 0.1
 
   solax_battery_discharge:
     name: SolaX Battery Disharge A
     initial: 20
     min: 0
-    max: 20
+    max: 25 # Technical Datasheet states Max Discharge is 30A, but recommend 25A
     step: 0.1
 
   solax_battery_min_energy:
     name: "SolaX Battery Min Energy Level %"
     initial: 30
-    min: 10
+    min: 10 # Technical Datasheet states Max DOD is 90%
     max: 70
     step: 5
 
