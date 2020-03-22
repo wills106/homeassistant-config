@@ -139,7 +139,7 @@ sensor:
       register: 28
       register_type: input
 # Don't Understand this Value
-# Sits at 116 when discharged
+# Perhaps total Energy recieved into battery
     - name: Solax Battery Energy Charged
       hub: SolaX
       register: 29
@@ -151,8 +151,7 @@ sensor:
       register: 31
       register_type: input
 # Don't Understand this Value
-# Perhaps 0 - Offline
-# 2 - Empty (Well set vale, mine stops at 30%)
+# Perhaps Energy discharged on a dail basis as resets around 00:30
     - name: Solax Battery Energy Discharged
       hub: SolaX
       register: 32
@@ -182,7 +181,7 @@ sensor:
       unit_of_measurement: W
       register: 70
       register_type: input
-# Exported energy to the Grid
+# Yearly Exported energy to the Grid?
     - name: SolaX Feed In Energy
       hub: SolaX
       unit_of_measurement: kWh
@@ -190,7 +189,7 @@ sensor:
       register_type: input
       scale: 0.01
       precision: 2
-# Imported energy from the Grid
+# Yearly self consumed Solar energy?
     - name: SolaX Consumed Energy
       hub: SolaX
       unit_of_measurement: kWh
@@ -224,6 +223,7 @@ sensor:
       register_type: input
       scale: 0.01
       precision: 2
+# Generated Solar and Energy used from battery
     - name: SolaX Energy Today
       hub: SolaX
       unit_of_measurement: kWh
@@ -238,8 +238,7 @@ sensor:
       register_type: input
       scale: 0.1
       precision: 1
-# Don't Understand this Value
-# Perhaps for aditional Batteries?
+# Always sits at 0C perhaps not used
     - name: SolaX Battery Temperature
       hub: SolaX
       unit_of_measurement: °C
@@ -340,6 +339,14 @@ sensor:
       friendly_name: "Solax PV Total Power"
       value_template: "{{ states('sensor.solax_pv1_power') | int + states('sensor.solax_pv2_power') | int }}"
       unit_of_measurement: 'W'
+    emon_pv_total_power:
+      friendly_name: "Emon PV Power"
+      value_template: "{{ ( states('sensor.solax_pv_total_power') | float /1000 ) | round(2) }}"
+      unit_of_measurement: 'kWh'
+    emon_measured_power:
+      friendly_name: "Emon Measured Power"
+      value_template: "{{ ( states('sensor.solax_measured_power') | float /1000 ) | round(2) }}"
+      unit_of_measurement: 'kWh'
 
 - platform: template
   sensors:
@@ -369,9 +376,6 @@ input_boolean:
   solax_forcetime:
     name: SolaX Force Time
     initial: off
-#  solax_forcetime_gridcharge:
-#    name: SolaX Forc Time Grid Charge
-#    initial: off
 
 input_number:
   solax_battery_charge:
@@ -438,7 +442,7 @@ automation:
       entity_id: input_boolean.solax_forcetime
       to: 'on'
     action:
-    - service: modbus.write_register # Auto Mode
+    - service: modbus.write_register # Force Time Mode
       data_template:
         hub: SolaX
         unit: '255'
@@ -464,7 +468,7 @@ automation:
       entity_id: input_boolean.solax_backup
       to: 'on'
     action:
-    - service: modbus.write_register # Auto Mode
+    - service: modbus.write_register # Backup Mode
       data_template:
         hub: SolaX
         unit: '255'
@@ -483,30 +487,3 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-
-#  - alias: Solax Force Grid Charge
-#    trigger:
-#      platform: state
-#      entity_id: input_boolean.solax_forcetime_gridcharge
-#      to: 'on'
-#    action:
-#    - service: modbus.write_register # Auto Mode
-#      data_template:
-#        hub: SolaX
-#        unit: '255'
-#        address: '62'
-#        value: '1'
-
-#  - alias: Solax Force Grid Charge Off
-#    trigger:
-#      platform: state
-#      entity_id: input_boolean.solax_forcetime_gridcharge
-#      to: 'off'
-#    action:
-#    - service: modbus.write_register # Auto Mode
-#      data_template:
-#        hub: SolaX
-#        unit: '255'
-#        address: '62'
-#        value: '0'
-
