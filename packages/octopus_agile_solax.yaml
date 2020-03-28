@@ -1,0 +1,48 @@
+# https://github.com/wills106/homeassistant-config/new/master/packages/octopus_agile_solax.yaml
+# Simple example created to Grid charge SolaX Battery when price drops below 0p on Octopus Agile Tariff
+# Change "E-1R-AGILE-18-02-21-E" to your electric region if you do no live in the West Midlands
+# Half Hourly Octopus Agile Electricity rate
+sensor:
+  - platform: command_line
+    name: agile_electric_cost
+    scan_interval: 86400
+    command: curl \"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-E/standard-unit-rates/?period_from={{ now().year }}-{{ now().month }}-{{ now().day }}T{{ now().hour }}:{% if now().minute <30 %}00{% else %}30{% endif %}&period_to={{ now().year }}-{{ now().month }}-{% if (now().hour == 23) and (now().minute >=30) %}{{ now().day+1 }}{% else %}{{ now().day }}{% endif %}T{% if (now().hour == 23) and (now().minute >=30) %}00{% elif now().minute >=30 %}{{ now().hour+1}}{% else %}{{ now().hour}}{% endif %}:{% if now().minute >=30 %}00{% else %}30{% endif %}\"
+    value_template: '{{ (value_json.results[0].value_inc_vat) | round(2) }}'
+    unit_of_measurement: 'p/KWH'
+
+automation:
+  - alias: Update Octopus Agile Price
+    description: ''
+    trigger:
+    - hours: '*'
+      minutes: '30'
+      platform: time_pattern
+      seconds: '0'
+    - hours: '*'
+      minutes: '0'
+      platform: time_pattern
+      seconds: '0'
+    action:
+    - data:
+        entity_id: sensor.agile_electric_cost
+      service: homeassistant.update_entity
+
+  - alias: Dump Electricity into Battery
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.agile_electric_cost
+      below: 0
+    action:
+      service: homeassistant.turn_on
+      entity_id:
+        - input_boolean.solax_forcetime
+
+  - alias: Turn off Electricity Dump
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.agile_electric_cost
+      above: 1
+    action:
+      service: homeassistant.turn_off
+      entity_id:
+        - input_boolean.solax_forcetime
