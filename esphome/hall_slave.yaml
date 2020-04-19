@@ -1,0 +1,13 @@
+# Sonnof T1 Hall Slave
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "hall_slave"
+  friendly_name: "Hall Slave"
+  master_light: "hall_master"
+  # Icon
+  main_icon: "ceiling-light"
+  device_ip: "192.168.1.x"
+
+<<: !include common/slave_light.yaml

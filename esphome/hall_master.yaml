@@ -1,0 +1,12 @@
+# Sonnof T1 Hall Master
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "hall_master"
+  friendly_name: "Hall Master"
+  device_ip: "192.168.1.x"
+  # Icon
+  main_icon: "ceiling-light"
+
+<<: !include common/sonoff_t1_1g_light.yaml

@@ -1,0 +1,52 @@
+# Basic Config
+esphome:
+  name: "${device_name}"
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  use_address: "${device_ip}"
+  manual_ip:
+    static_ip: "${device_ip}"
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+logger:
+api:
+  password: !secret password
+ota:
+  password: !secret password
+
+time:
+  - platform: sntp
+    id: sntp_time
+
+# Device Specific Config
+binary_sensor:
+  # Push Button (Toggles Relay When Pressed)
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "${friendly_name} Button"
+    on_press:
+      then:
+        - homeassistant.service:
+            service: homeassistant.toggle
+            data:
+              entity_id: light.${master_light}
+  - platform: status
+    name: "${friendly_name} Server Status"
+
+sensor:
+  # WiFi Signal Sensor
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Status"
+    update_interval: 60s
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes

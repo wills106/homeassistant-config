@@ -1,0 +1,18 @@
+# Maxcio W-UK007S
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "maxico_w_uk007s_1"
+  friendly_name: "Maxico W-UK007S 1"
+  # Icon
+  main_icon: "power-socket-uk"
+  # Default Relay State
+  # Aka: `restore_mode` in documentation
+  # Options: `RESTORE_DEFAULT_OFF`, `RESTORE_DEFAULT_ON`, `ALWAYS_ON` & `ALWAYS_OFF`
+  default_state: "ALWAYS_ON"
+  # Activity State Threshold
+  # Threshold (number) that the device will change from `Idle` to `Active` if power is greater than or equal to
+  activity_threshold: "5"
+
+<<: !include common/w_uk007s.yaml

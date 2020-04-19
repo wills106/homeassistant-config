@@ -1,0 +1,62 @@
+# Sonoff T1 1G Light switch
+esphome:
+  name: "${device_name}"
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  use_address: "${device_ip}"
+  manual_ip:
+    static_ip: "${device_ip}"
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+
+logger:
+
+api:
+  password: !secret password
+
+ota:
+  password: !secret password
+
+time:
+  - platform: sntp
+    id: sntp_time
+
+# Device Specific Config
+binary_sensor:
+  # Push Button (Toggles Relay When Pressed)
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "${friendly_name} Button"
+    on_press:
+      - light.toggle: light_1
+  - platform: status
+    name: "${friendly_name} Server Status"
+
+output:
+  - platform: gpio
+    pin: GPIO12
+    id: relay_1
+
+light:
+  - platform: binary
+    name: "${friendly_name}"
+    id: light_1
+    output: relay_1
+
+sensor:
+  # WiFi Signal Sensor
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Status"
+    update_interval: 60s
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
