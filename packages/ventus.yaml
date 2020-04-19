@@ -1,0 +1,83 @@
+sensor:
+  - platform: mqtt
+    name: Ventus Temperature
+    state_topic: "Ventus/Ventus/Temp"
+    device_class: temperature
+    unit_of_measurement: °C
+  - platform: mqtt
+    name: Ventus Humidity
+    state_topic: "Ventus/Ventus/Humidity"
+    device_class: humidity
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: Ventus Wind Direction
+    icon: mdi:compass-rose
+    state_topic: "Ventus/Wind/WindDirection"
+  - platform: mqtt
+    name: Ventus Wind Average Speed ms
+    icon: mdi:weather-windy
+    state_topic: "Ventus/Wind/WindAverageSpeed"
+  - platform: mqtt
+    name: Ventus Wind Gust ms
+    icon: mdi:weather-windy
+    state_topic: "Ventus/Wind/WindGust"
+  - platform: mqtt
+    name: Ventus Total Rain
+    icon: mdi:weather-rainy
+    unit_of_measurement: mm
+    state_topic: "Ventus/Rain/TotalRain"
+  - platform: mqtt
+    name: Ventus Rain Past Hour
+    icon: mdi:weather-rainy
+    unit_of_measurement: mm
+    state_topic: "Ventus/Rain/RainPastHour"
+  - platform: mqtt
+    name: Ventus UV
+    icon: mdi:weather-sunny-alert
+    state_topic: "Ventus/UV/UV"
+  - platform: mqtt
+    name: Ventus Lightning Strike Counter
+    icon: mdi:flash
+    state_topic: "Ventus/Lightning/StrikeCounter"
+  - platform: mqtt
+    name: Ventus Lightning Strike Past 5 minutes
+    icon: mdi:flash
+    state_topic: "Ventus/Lightning/StrikePast5m"
+  - platform: mqtt
+    name: Ventus Lightning Distance km
+    icon: mdi:flash
+    state_topic: "Ventus/Lightning/Distance"
+
+  - platform: template
+    sensors:
+      wind_dir:
+        friendly_name: 'Wind Direction'
+        icon_template: mdi:compass-rose
+        value_template: >-
+         {% set wind_dir = states.sensor.ventus_wind_direction.state %}
+         {% if wind_dir | float<=23 %}North
+         {% elif wind_dir | float>338 %}North
+         {% elif 23 < (wind_dir|float) <=68 %}NE
+         {% elif 68 < (wind_dir|float) <=113 %}East
+         {% elif 113 < (wind_dir|float) <=158 %}SE
+         {% elif 158 < (wind_dir|float) <=203 %}South
+         {% elif 203 < (wind_dir|float) <=248 %}SW
+         {% elif 248 < (wind_dir|float) <=293 %}West
+         {% elif 293 < (wind_dir|float) <=338 %}NW
+         {%- endif %}
+
+      ventus_wind_average_speed_mph:
+        friendly_name: "Ventus Wind Average Speed"
+        icon_template: mdi:weather-windy
+        unit_of_measurement: Mph
+        value_template: "{{ ( states('sensor.ventus_wind_average_speed_ms') | float *2.23694 ) | round(2) }}"
+      ventus_wind_gust_mph:
+        friendly_name: "Ventus Wind Gust"
+        icon_template: mdi:weather-windy
+        unit_of_measurement: Mph
+        value_template: "{{ ( states('sensor.ventus_wind_gust_ms') | float *2.23694 ) | round(2) }}"
+      ventus_lightning_distance:
+        friendly_name: "Ventus Lightning Distance"
+        icon_template: mdi:flash
+        unit_of_measurement: miles
+        value_template: "{{ ( states('sensor.ventus_lightning_distance_km') | float /1.609 ) | round(2) }}"
