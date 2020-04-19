@@ -66,6 +66,20 @@ sensor:
          {% elif 293 < (wind_dir|float) <=338 %}NW
          {%- endif %}
 
+  - platform: template
+    sensors:
+      uv_level:
+        friendly_name: 'UV Level'
+        icon_template: mdi:weather-sunny-alert
+        value_template: >-
+         {% set uv_level = states.sensor.ventus_uv.state %}
+         {% if uv_level | float<=2.9 %}Low
+         {% elif 3 < (uv_level|float) <=5.9 %}Moderate
+         {% elif 6 < (uv_level|float) <=7.9 %}High
+         {% elif 8 < (uv_level|float) <=10.9 %}Bacon
+         {% elif uv_level | float>11 %}Death
+         {%- endif %}
+
       ventus_wind_average_speed_mph:
         friendly_name: "Ventus Wind Average Speed"
         icon_template: mdi:weather-windy
