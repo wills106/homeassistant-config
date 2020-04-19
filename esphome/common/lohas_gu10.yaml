@@ -1,0 +1,64 @@
+# Basic Lohas GU10 RGBW Config
+esphome:
+  name: "${device_name}"
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  manual_ip:
+    static_ip: "${device_ip}"
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+
+web_server:
+  port: 80
+  auth:
+    username: !secret username
+    password: !secret password
+
+logger:
+
+api:
+  password: !secret password
+
+ota:
+  password: !secret password
+
+time:
+  - platform: sntp
+    id: sntp_time
+  
+my9231:
+ data_pin: GPIO13
+ clock_pin: GPIO15
+ num_channels: 4
+ num_chips: 2
+
+output:
+  - platform: my9231
+    id: output_blue
+    channel: 1
+  - platform: my9231
+    id: output_red
+    channel: 3
+  - platform: my9231
+    id: output_green
+    channel: 2
+  - platform: my9231
+    id: output_white
+    channel: 0
+
+light:
+  - platform: rgb
+    name: "${friendly_name} RGB"
+    default_transition_length: 0s
+    red: output_red
+    green: output_green
+    blue: output_blue
+
+  - platform: monochromatic
+    name: "${friendly_name} White"
+    output: output_white

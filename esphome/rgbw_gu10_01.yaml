@@ -1,0 +1,10 @@
+# Lohas RGBW GU10 Bathroom 1
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "rgbw_gu10_01"
+  friendly_name: "Bathroom RGBW 1"
+  device_ip: "192.168.1.x"
+
+<<: !include common/lohas_gu10.yaml
