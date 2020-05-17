@@ -21,7 +21,7 @@ camera:
     username: !secret syn_name
     password: !secret syn_pass
     timeout: 15
-    verify_ssl: False
+    verify_ssl: false
 
   - platform: generic
     still_image_url: !secret frigate_doorbell_url
@@ -34,9 +34,9 @@ emoncms_history:
   url: !secret emoncms_host
   inputnode: 19
   whitelist:
-    - sensor.emon_pv_total_power
+    - sensor.solax_measured_power
     - sensor.electricity
-    - sensor.emon_measured_power
+    - sensor.solax_pv_total_power
 
 ffmpeg:
 
@@ -74,6 +74,7 @@ input_boolean:
   otherbed:
 
 logger:
+  default: critical
 
 media_player:
   - platform: volumio
@@ -96,6 +97,10 @@ panel_custom:
 
 python_script:
 
+solcast:
+  api_key: !secret solcast_api
+  resource_id: !secret solcast_id
+
 stream:
 
 # Text to speech
@@ -109,18 +114,6 @@ tts:
     
   - platform: google_translate
     language: 'en'
-
-tuya:
-  username: !secret user_name
-  password: !secret password
-  country_code: 44
-
-unifi:
-  controllers:
-    - host: !secret host
-      site: Default
-      dont_track_devices: true
-      dont_track_wired_clients: true
 
 withings:
   client_id: !secret withings_id
