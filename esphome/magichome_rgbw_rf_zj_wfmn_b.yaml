@@ -1,0 +1,155 @@
+# MagicHome RGBW-RF ZJ-WFMN-B v1.1
+esphome:
+  name: "Garage RGBW"
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: 192.168.x.x
+    gateway: 192.168.x.x
+    subnet: 255.255.255.0
+
+web_server:
+  port: 80
+  auth:
+    username: !secret username
+    password: !secret password
+
+logger:
+
+api:
+  password: !secret password
+
+ota:
+  password: !secret password
+
+time:
+  - platform: sntp
+    id: sntp_time
+  
+remote_receiver:
+  pin: GPIO4
+  dump: rc_switch
+
+binary_sensor:
+  - platform: remote_receiver
+    name: "Turn On RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on: garage_rgbw
+    rc_switch_raw:
+      code: '001000010100000100000001'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "Turn Off RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_off: garage_rgbw
+    rc_switch_raw:
+      code: '001000010100000100000011'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "Red RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on:
+            id: garage_rgbw
+            red: 100%
+            green: 0%
+            blue: 0%
+    rc_switch_raw:
+      code: '001000010100000100001010'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "Green RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on:
+            id: garage_rgbw
+            red: 0%
+            green: 100%
+            blue: 0%
+    rc_switch_raw:
+      code: '001000010100000100001011'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "BLue RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on:
+            id: garage_rgbw
+            red: 0%
+            green: 0%
+            blue: 100%
+    rc_switch_raw:
+      code: '001000010100000100001100'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "White RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on:
+            id: garage_rgbw
+            red: 100%
+            green: 100%
+            blue: 100%
+            white: 100%
+    rc_switch_raw:
+      code: '001000010100000100010101'
+      protocol: 4
+
+  - platform: remote_receiver
+    name: "Yellow RF"
+    internal: true
+    on_press:
+      then:
+        - light.turn_on:
+            id: garage_rgbw
+            red: 100%
+            green: 100%
+            blue: 0%
+    rc_switch_raw:
+      code: '001000010100000100010011'
+      protocol: 4
+
+output:
+  - platform: esp8266_pwm
+    pin: GPIO5
+    frequency: 1000 Hz
+    id: pwm_green
+  - platform: esp8266_pwm
+    pin: GPIO14
+    frequency: 1000 Hz
+    id: pwm_red
+  - platform: esp8266_pwm
+    pin: GPIO12
+    frequency: 1000 Hz
+    id: pwm_blue
+  - platform: esp8266_pwm
+    pin: GPIO13
+    frequency: 1000 Hz
+    id: pwm_white
+
+light:
+  - platform: rgbw
+    name: "garage_rgbw"
+    id: "garage_rgbw"
+    default_transition_length: 0s
+    red: pwm_red
+    green: pwm_green
+    blue: pwm_blue
+    white: pwm_white
