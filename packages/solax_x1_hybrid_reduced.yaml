@@ -22,7 +22,7 @@ modbus:
 
 sensor:
 - platform: modbus
-  scan_interval: 1
+  scan_interval: 2
   registers:
     - name: SolaX Inverter Voltage
       hub: SolaX
@@ -138,6 +138,14 @@ sensor:
       unit_of_measurement: "%"
       register: 28
       register_type: input
+    - name: Solax Test 1
+      hub: SolaX
+      register: 31
+      register_type: holding
+    - name: Solax Test 2
+      hub: SolaX
+      register: 32
+      register_type: holding
 # Negative pulling from Grid, Positive exportng to the Grid
     - name: SolaX Measured Power
       hub: SolaX
@@ -191,10 +199,16 @@ sensor:
       friendly_name: "Emon PV Power"
       value_template: "{{ ( states('sensor.solax_pv_total_power') | float /1000 ) | round(2) }}"
       unit_of_measurement: 'kWh'
-    emon_measured_power:
-      friendly_name: "Emon Measured Power"
-      value_template: "{{ ( states('sensor.solax_measured_power') | float /1000 ) | round(2) }}"
-      unit_of_measurement: 'kWh'
+#    emon_measured_power:
+#      friendly_name: "Emon Measured Power"
+#      value_template: "{{ ( states('sensor.solax_measured_power') | float /1000 ) | round(2) }}"
+#      unit_of_measurement: 'kWh'
+    solcast_post:
+      entity_id:
+        - sensor.date_time_iso
+        - sensor.pv_stats
+      value_template: >
+        {{ '{"measurement": {"period_end": "' ~ as_timestamp(states.sensor.date_time_iso.state)|timestamp_custom ('%Y-%m-%dT%H:%M:%SZ', false) ~ '", "period": "PT5M","total_power": ' ~ state_attr('sensor.pv_stats', 'mean') ~ '}}' }}
 
 - platform: template
   sensors:
@@ -216,6 +230,15 @@ sensor:
         {% else %}
           Unknown
         {% endif %}
+
+###Solar production estimates from SolCast - live###
+
+##5 minute average for production
+- platform: statistics
+  entity_id: sensor.emon_pv_total_power
+  name: pv_stats
+  max_age:
+    minutes: 5
 
 input_boolean:
   solax_backup:
@@ -246,6 +269,16 @@ input_number:
     min: 10 # Technical Datasheet states Max DOD is 90%
     max: 70
     step: 5
+
+###Automation for REST commands - SolCast
+#Send current solar production to SolCast for tuning
+rest_command:
+  solcast_tune:
+    url: https://api.solcast.com.au/rooftop_sites/c018-07d5-d6b1-0f11/measurements?api_key=jKev-w-kxkqmNwHen0aLlYMFYRQia7qA
+    method: POST
+    headers:
+      Content-Type: application/json
+    payload: "{{states('sensor.solcast_post')}}"
 
 automation:
   - alias: House Battery Charge Rate
@@ -322,6 +355,13 @@ automation:
         unit: '255'
         address: '31'
         value: '1'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '1'
 
   - alias: Solax ForceTime Off
     trigger:
@@ -335,3 +375,27 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+#Run data upload every 5 minutes
+  - alias: solcast-upload
+    trigger:
+      platform: time_pattern
+      minutes: "/5"
+    condition:
+      condition: and
+      conditions:
+        - condition: sun
+          before: sunset
+          before_offset: "+00:30:00"
+        - condition: sun
+          after: sunrise
+          after_offset: "-00:30:00"
+    action:
+      service: rest_command.solcast_tune
