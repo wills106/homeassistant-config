@@ -437,7 +437,7 @@ automation:
         address: '32'
         value: "{{ trigger.to_state.state | int }}"
 
-  - alias: Solax Backup
+  - alias: SolaX Backup
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -449,8 +449,15 @@ automation:
         unit: '255'
         address: '31'
         value: '2'
-
-  - alias: Solax Backup Off
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+        
+  - alias: SolaX Backup Off
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -462,8 +469,15 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-
-  - alias: Solax ForceTime
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+        
+  - alias: SolaX ForceTime
     trigger:
       platform: state
       entity_id: input_boolean.solax_forcetime
@@ -475,7 +489,14 @@ automation:
         unit: '255'
         address: '31'
         value: '1'
-
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '1
+        
   - alias: Solax ForceTime Off
     trigger:
       platform: state
@@ -483,6 +504,13 @@ automation:
       to: 'off'
     action:
     - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
