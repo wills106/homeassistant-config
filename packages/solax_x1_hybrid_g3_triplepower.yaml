@@ -317,7 +317,7 @@ automation:
         address: '32'
         value: "{{ trigger.to_state.state | int }}"
 
-  - alias: Solax Backup
+  - alias: SolaX Backup
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -329,8 +329,15 @@ automation:
         unit: '255'
         address: '31'
         value: '2'
-
-  - alias: Solax Backup Off
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+        
+  - alias: SolaX Backup Off
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -342,8 +349,15 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-
-  - alias: Solax ForceTime
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+        
+  - alias: SolaX ForceTime
     trigger:
       platform: state
       entity_id: input_boolean.solax_forcetime
@@ -361,8 +375,8 @@ automation:
         hub: SolaX
         unit: '255'
         address: '31'
-        value: '1'
-
+        value: '1
+        
   - alias: Solax ForceTime Off
     trigger:
       platform: state
@@ -382,20 +396,3 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-
-#Run data upload every 5 minutes
-  - alias: solcast-upload
-    trigger:
-      platform: time_pattern
-      minutes: "/5"
-    condition:
-      condition: and
-      conditions:
-        - condition: sun
-          before: sunset
-          before_offset: "+00:30:00"
-        - condition: sun
-          after: sunrise
-          after_offset: "-00:30:00"
-    action:
-      service: rest_command.solcast_tune
