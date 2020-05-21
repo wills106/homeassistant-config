@@ -10,6 +10,10 @@ sensor:
     value_template: '{{ (value_json.results[0].value_inc_vat) | round(2) }}'
     unit_of_measurement: 'p/KWH'
 
+  - platform: time_date
+    display_options:
+      - 'time'
+
 automation:
   - alias: Update Octopus Agile Price
     description: ''
@@ -31,7 +35,7 @@ automation:
     trigger:
       platform: numeric_state
       entity_id: sensor.agile_electric_cost
-      below: 0
+      below: 0.0
     action:
       service: homeassistant.turn_on
       entity_id:
@@ -41,7 +45,7 @@ automation:
     trigger:
       platform: numeric_state
       entity_id: sensor.agile_electric_cost
-      above: 1
+      above: 0.1
     action:
       service: homeassistant.turn_off
       entity_id:
