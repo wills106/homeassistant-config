@@ -1,3 +1,6 @@
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V51QQOL)
+Don't feel like you have to Donate, I have only added it due to requests.
+
 # Home Assistant Configuration
 
 My [Home Assistant](https://home-assistant.io/) Configuration Files
