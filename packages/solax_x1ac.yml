@@ -1,0 +1,198 @@
+# https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1ac.yaml
+#
+# Initial attempt to control older Inverters that use "Remote Control" method.
+#
+
+modbus:
+  name: SolaX
+#  type: tcp # Comment out for RS485
+#  host: !secret inverter_ip # Comment out for RS485
+#  port: 502 # Comment out for RS485
+
+# Uncomment for USB - RS485 dongle
+  type: serial
+  method: rtu
+  port: /dev/ttyUSB0
+  baudrate: 115200
+  stopbits: 1
+  bytesize: 8
+  parity: N
+
+sensor:
+- platform: modbus
+  scan_interval: 5
+  registers:
+    - name: SolaX Inverter Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 0
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: SolaX Inverter Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 1
+      register_type: input
+      scale: 0.1
+      precision: 1
+    - name: Solax Inverter Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 2
+      register_type: input
+    - name: SolaX Inverter Frequency
+      hub: SolaX
+      unit_of_measurement: Hz
+      register: 7
+      register_type: input
+      scale: 0.01
+      precision: 2
+    - name: SolaX Inner Temp
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 8
+      register_type: input
+    - name: SolaX Run Mode
+      hub: SolaX
+      register: 9
+      register_type: input
+    - name: Solax Battery Voltage
+      hub: SolaX
+      unit_of_measurement: V
+      register: 20
+      register_type: input
+      scale: 0.1
+      precision: 1
+# Minus Number Discharging, Positive Number Charging
+    - name: Solax Battery Current
+      hub: SolaX
+      unit_of_measurement: A
+      register: 21
+      register_type: input
+      scale: 0.1
+      precision: 1
+# Minus Number Discharging, Positive Number Charging
+    - name: Solax Battery Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 22
+      register_type: input
+    - name: Solax Charger Board Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 23
+      register_type: input
+    - name: Solax Charger Battery Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 24
+      register_type: input
+    - name: Solax Charger Boost Temperature
+      hub: SolaX
+      unit_of_measurement: °C
+      register: 25
+      register_type: input
+    - name: Solax Battery Capacity
+      hub: SolaX
+      unit_of_measurement: "%"
+      register: 28
+      register_type: input
+# Negative pulling from Grid, Positive exportng to the Grid
+    - name: SolaX Measured Power
+      hub: SolaX
+      unit_of_measurement: W
+      register: 70
+      register_type: input
+# Generated Solar and Energy used from battery
+    - name: SolaX Energy Today
+      hub: SolaX
+      unit_of_measurement: kWh
+      register: 80
+      register_type: input
+      scale: 0.1
+      precision: 1
+
+- platform: template
+  sensors:
+    solax_run_mode_template:
+      friendly_name: "SolaX Run Mode"
+      value_template: >-
+        {% if is_state('sensor.solax_run_mode', '0') %}
+          Waiting
+        {% elif is_state('sensor.solax_run_mode', '1') %}
+          Checking
+        {% elif is_state('sensor.solax_run_mode', '2') %}
+          Normal Mode
+        {% elif is_state('sensor.solax_run_mode', '3') %}
+          Off Mode
+        {% elif is_state('sensor.solax_run_mode', '7') %}
+          EPS Mode
+        {% elif is_state('sensor.solax_run_mode', '9') %}
+          Idle Mode
+        {% else %}
+          Unknown
+        {% endif %}
+
+input_boolean:
+  solax_remote_control:
+    name: SolaX Remote Control
+    initial: off
+  solax_grid_charge:
+    name: SolaX Grid Charge
+    initial: off
+
+automation:
+  - alias: Solax - Enable Remote Control
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_remote_control
+      to: 'on'
+    action:
+    - service: modbus.write_register # Installer password
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '0'
+        value: '2014' # try 6868 if that doesn't work
+    - service: modbus.write_register # Turn remote on
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '2'
+  
+  - alias: Solax - Enable Grid Charge
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_grid_charge
+      to: 'on'
+    action:
+    - service: modbus.write_register # Wake inverter up
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '144'
+        value: '1'
+    - service: modbus.write_register # Enable Grid Charge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '146'
+        value: '1'
+
+  - alias: Solax - Resume Normal Mode
+    trigger:
+      - platform: state
+        entity_id: input_boolean.solax_grid_charge
+        to: 'off'
+      - platform: state
+        entity_id: input_boolean.solax_remote_control
+        to: 'off'
+    action:
+    - service: modbus.write_register # Resume normal mode
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '0'
