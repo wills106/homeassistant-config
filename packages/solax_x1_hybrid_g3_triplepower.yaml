@@ -138,14 +138,6 @@ sensor:
       unit_of_measurement: "%"
       register: 28
       register_type: input
-    - name: Solax Test 1
-      hub: SolaX
-      register: 31
-      register_type: holding
-    - name: Solax Test 2
-      hub: SolaX
-      register: 32
-      register_type: holding
 # Negative pulling from Grid, Positive exportng to the Grid
     - name: SolaX Measured Power
       hub: SolaX
@@ -194,21 +186,6 @@ sensor:
       friendly_name: "Solax PV Total Power"
       value_template: "{{ states('sensor.solax_pv1_power') | int + states('sensor.solax_pv2_power') | int }}"
       unit_of_measurement: 'W'
-# Following two sensors are ideal for feeding emoncms as they are in kWh
-    emon_pv_total_power:
-      friendly_name: "Emon PV Power"
-      value_template: "{{ ( states('sensor.solax_pv_total_power') | float /1000 ) | round(2) }}"
-      unit_of_measurement: 'kWh'
-#    emon_measured_power:
-#      friendly_name: "Emon Measured Power"
-#      value_template: "{{ ( states('sensor.solax_measured_power') | float /1000 ) | round(2) }}"
-#      unit_of_measurement: 'kWh'
-    solcast_post:
-      entity_id:
-        - sensor.date_time_iso
-        - sensor.pv_stats
-      value_template: >
-        {{ '{"measurement": {"period_end": "' ~ as_timestamp(states.sensor.date_time_iso.state)|timestamp_custom ('%Y-%m-%dT%H:%M:%SZ', false) ~ '", "period": "PT5M","total_power": ' ~ state_attr('sensor.pv_stats', 'mean') ~ '}}' }}
 
 - platform: template
   sensors:
@@ -231,15 +208,6 @@ sensor:
           Unknown
         {% endif %}
 
-###Solar production estimates from SolCast - live###
-
-##5 minute average for production
-- platform: statistics
-  entity_id: sensor.emon_pv_total_power
-  name: pv_stats
-  max_age:
-    minutes: 5
-
 input_boolean:
   solax_backup:
     name: SolaX Backup Mode
@@ -254,31 +222,21 @@ input_number:
     initial: 20
     min: 0
     max: 25 # Technical Datasheet states Max Charge is 30A, but recommend 25A
-    step: 0.1
+    step: 1
 
   solax_battery_discharge:
     name: SolaX Battery Disharge A
     initial: 20
     min: 0
     max: 25 # Technical Datasheet states Max Discharge is 30A, but recommend 25A
-    step: 0.1
+    step: 1
 
   solax_battery_min_energy:
     name: "SolaX Battery Min Energy Level %"
-    initial: 30
+    initial: 25
     min: 10 # Technical Datasheet states Max DOD is 90%
     max: 70
     step: 5
-
-###Automation for REST commands - SolCast
-#Send current solar production to SolCast for tuning
-rest_command:
-  solcast_tune:
-    url: https://api.solcast.com.au/rooftop_sites/c018-07d5-d6b1-0f11/measurements?api_key=jKev-w-kxkqmNwHen0aLlYMFYRQia7qA
-    method: POST
-    headers:
-      Content-Type: application/json
-    payload: "{{states('sensor.solcast_post')}}"
 
 automation:
   - alias: House Battery Charge Rate
@@ -286,7 +244,14 @@ automation:
       platform: state
       entity_id: input_number.solax_battery_charge
     action:
-    - service: modbus.write_register # Battery Charge Amps
+    - service: modbus.write_register # Battery Charge
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeast Battery Charge incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
@@ -298,7 +263,14 @@ automation:
       platform: state
       entity_id: input_number.solax_battery_discharge
     action:
-    - service: modbus.write_register # Battery Discharge 0
+    - service: modbus.write_register # Battery Discharge
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeat Battery Discharge incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
@@ -317,7 +289,7 @@ automation:
         address: '32'
         value: "{{ trigger.to_state.state | int }}"
 
-  - alias: SolaX Backup
+  - alias: Solax Backup
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -329,15 +301,8 @@ automation:
         unit: '255'
         address: '31'
         value: '2'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '255'
-        address: '31'
-        value: '2'
-        
-  - alias: SolaX Backup Off
+
+  - alias: Solax Backup Off
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -349,15 +314,8 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '255'
-        address: '31'
-        value: '0'
-        
-  - alias: SolaX ForceTime
+
+  - alias: Solax ForceTime
     trigger:
       platform: state
       entity_id: input_boolean.solax_forcetime
@@ -375,8 +333,8 @@ automation:
         hub: SolaX
         unit: '255'
         address: '31'
-        value: '1
-        
+        value: '1'
+
   - alias: Solax ForceTime Off
     trigger:
       platform: state
