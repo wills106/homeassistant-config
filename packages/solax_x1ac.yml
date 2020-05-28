@@ -135,18 +135,62 @@ sensor:
         {% endif %}
 
 input_boolean:
-  solax_remote_control:
-    name: SolaX Remote Control
+  solax_test1:
+    name: SolaX Test 1
     initial: off
-  solax_grid_charge:
-    name: SolaX Grid Charge
+  solax_test2:
+    name: SolaX Test 2
     initial: off
 
+# If address as per page 44 of https://www.solaxpower.com/wp-content/uploads/2018/10/X1-AC-user-manual.pdf
+# is different to 1 change all the below " unit: '1' " to the corresponding number.
+    
 automation:
-  - alias: Solax - Enable Remote Control
+
+  - alias: SolaX Test 1 on
     trigger:
       platform: state
-      entity_id: input_boolean.solax_remote_control
+      entity_id: input_boolean.solax_test1
+      to: 'on'
+    action:
+    - service: modbus.write_register # Force Time Mode
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '1'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '1'
+
+  - alias: SolaX Test 1 off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_test1
+      to: 'off'
+    action:
+    - service: modbus.write_register # Force Time Mode
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
+        value: '0'        
+
+  - alias: Solax - Test 2 on
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_test2
       to: 'on'
     action:
     - service: modbus.write_register # Installer password
@@ -155,25 +199,21 @@ automation:
         unit: '1'
         address: '0'
         value: '2014' # try 6868 if that doesn't work
+    - delay: '00:00:01' 
     - service: modbus.write_register # Turn remote on
       data_template:
         hub: SolaX
         unit: '1'
         address: '31'
         value: '2'
-  
-  - alias: Solax - Enable Grid Charge
-    trigger:
-      platform: state
-      entity_id: input_boolean.solax_grid_charge
-      to: 'on'
-    action:
+    - delay: '00:00:01'
     - service: modbus.write_register # Wake inverter up
       data_template:
         hub: SolaX
         unit: '1'
         address: '144'
         value: '1'
+    - delay: '00:00:01'
     - service: modbus.write_register # Enable Grid Charge
       data_template:
         hub: SolaX
@@ -181,15 +221,19 @@ automation:
         address: '146'
         value: '1'
 
-  - alias: Solax - Resume Normal Mode
+  - alias: Solax - Test 2 off
     trigger:
       - platform: state
-        entity_id: input_boolean.solax_grid_charge
-        to: 'off'
-      - platform: state
-        entity_id: input_boolean.solax_remote_control
+        entity_id: input_boolean.solax_test2
         to: 'off'
     action:
+    - service: modbus.write_register # Enable Grid Charge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '146'
+        value: '0'
+    - delay: '00:00:01'
     - service: modbus.write_register # Resume normal mode
       data_template:
         hub: SolaX
