@@ -289,6 +289,11 @@ sensor:
           Unknown
         {% endif %}
 
+# Backup mode will prioritise charging battery before export and prevent battery discharge.
+#
+# ForceTime mode if you follow https://community.home-assistant.io/t/solax-inverter-by-modbus-no-pocket-wifi/140143/45
+# will gridcharge the battery and the house load will use the grid as well.
+
 input_boolean:
   solax_backup:
     name: SolaX Backup Mode
@@ -349,7 +354,14 @@ automation:
         unit: '255'
         address: '36'
         value: "{{ (trigger.to_state.state | float * 100) | int }}"
-
+    - delay: '00:00:01'
+    - service: modbus.write_register # Battery Charge Amps
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 100) | int }}"
+        
   - alias: House Battery Disharge Rate
     trigger:
       platform: state
@@ -361,7 +373,14 @@ automation:
         unit: '255'
         address: '37'
         value: "{{ (trigger.to_state.state | float * 100) | int }}"
-
+    - delay: '00:00:01'
+    - service: modbus.write_register # Battery Discharge 0
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 100) | int }}"
+    
   - alias: "House Battery Min Energy %"
     trigger:
       platform: state
@@ -373,7 +392,14 @@ automation:
         unit: '255'
         address: '32'
         value: "{{ trigger.to_state.state | int }}"
-
+    - delay: '00:00:01'
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+    
   - alias: SolaX Backup
     trigger:
       platform: state

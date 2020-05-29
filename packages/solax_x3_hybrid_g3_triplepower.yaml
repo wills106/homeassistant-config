@@ -370,6 +370,11 @@ sensor:
           Unknown
         {% endif %}
 
+# Backup mode will prioritise charging battery before export and prevent battery discharge.
+#
+# ForceTime mode if you follow https://community.home-assistant.io/t/solax-inverter-by-modbus-no-pocket-wifi/140143/45
+# will gridcharge the battery and the house load will use the grid as well.
+
 input_boolean:
   solax_backup:
     name: SolaX Backup Mode
@@ -406,7 +411,14 @@ automation:
       platform: state
       entity_id: input_number.solax_battery_charge
     action:
-    - service: modbus.write_register # Battery Charge Amps
+    - service: modbus.write_register # Battery Charge
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeast Battery Charge incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
@@ -418,7 +430,14 @@ automation:
       platform: state
       entity_id: input_number.solax_battery_discharge
     action:
-    - service: modbus.write_register # Battery Discharge 0
+    - service: modbus.write_register # Battery Discharge
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeat Battery Discharge incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
@@ -436,8 +455,15 @@ automation:
         unit: '255'
         address: '32'
         value: "{{ trigger.to_state.state | int }}"
-
-  - alias: SolaX Backup
+    - delay: '00:00:01'
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+    
+  - alias: Solax Backup
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -449,15 +475,8 @@ automation:
         unit: '255'
         address: '31'
         value: '2'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '255'
-        address: '31'
-        value: '2'
-        
-  - alias: SolaX Backup Off
+
+  - alias: Solax Backup Off
     trigger:
       platform: state
       entity_id: input_boolean.solax_backup
@@ -469,15 +488,8 @@ automation:
         unit: '255'
         address: '31'
         value: '0'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '255'
-        address: '31'
-        value: '0'
-        
-  - alias: SolaX ForceTime
+
+  - alias: Solax ForceTime
     trigger:
       platform: state
       entity_id: input_boolean.solax_forcetime
@@ -495,8 +507,8 @@ automation:
         hub: SolaX
         unit: '255'
         address: '31'
-        value: '1
-        
+        value: '1'
+
   - alias: Solax ForceTime Off
     trigger:
       platform: state

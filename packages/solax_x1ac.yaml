@@ -1,6 +1,6 @@
 # https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1ac.yaml
 #
-# Initial attempt to control older Inverters that use "Remote Control" method.
+# Reduced Registers for the X1-AC
 #
 
 modbus:
@@ -133,108 +133,162 @@ sensor:
         {% else %}
           Unknown
         {% endif %}
-
+    
+# Backup mode will prioritise charging battery before export and prevent battery discharge.
+#
+# ForceTime mode will gridcharge the battery.
+      
 input_boolean:
-  solax_test1:
-    name: SolaX Test 1
+  solax_backup:
+    name: SolaX Backup Mode
     initial: off
-  solax_test2:
-    name: SolaX Test 2
+  solax_forcetime:
+    name: SolaX Force Time
     initial: off
+
+input_number:
+  solax_battery_charge:
+    name: SolaX Battery Charge A
+    initial: 20
+    min: 0
+    max: 25 # Technical Datasheet states Max Charge is 30A, but recommend 25A
+    step: 1
+
+  solax_battery_discharge:
+    name: SolaX Battery Disharge A
+    initial: 20
+    min: 0
+    max: 25 # Technical Datasheet states Max Discharge is 30A, but recommend 25A
+    step: 1
+
+  solax_battery_min_energy:
+    name: "SolaX Battery Min Energy Level %"
+    initial: 25
+    min: 10 # Technical Datasheet states Max DOD is 90%
+    max: 70
+    step: 5
 
 # If address as per page 44 of https://www.solaxpower.com/wp-content/uploads/2018/10/X1-AC-user-manual.pdf
 # is different to 1 change all the below " unit: '1' " to the corresponding number.
-    
+
 automation:
-
-  - alias: SolaX Test 1 on
+  - alias: House Battery Charge Rate
     trigger:
       platform: state
-      entity_id: input_boolean.solax_test1
+      entity_id: input_number.solax_battery_charge
+    action:
+    - service: modbus.write_register # Battery Charge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeast Battery Charge incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: House Battery Disharge Rate
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_discharge
+    action:
+    - service: modbus.write_register # Battery Discharge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeat Battery Discharge incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: "House Battery Min Energy %"
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_min_energy
+    action:
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+    
+  - alias: Solax Backup
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
       to: 'on'
     action:
-    - service: modbus.write_register # Force Time Mode
-      data_template:
-        hub: SolaX
-        unit: '1'
-        address: '31'
-        value: '1'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '1'
-        address: '31'
-        value: '1'
-
-  - alias: SolaX Test 1 off
-    trigger:
-      platform: state
-      entity_id: input_boolean.solax_test1
-      to: 'off'
-    action:
-    - service: modbus.write_register # Force Time Mode
-      data_template:
-        hub: SolaX
-        unit: '1'
-        address: '31'
-        value: '0'
-    - delay: '00:00:01'
-    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
-      data_template:
-        hub: SolaX
-        unit: '1'
-        address: '31'
-        value: '0'        
-
-  - alias: Solax - Test 2 on
-    trigger:
-      platform: state
-      entity_id: input_boolean.solax_test2
-      to: 'on'
-    action:
-    - service: modbus.write_register # Installer password
-      data_template:
-        hub: SolaX
-        unit: '1'
-        address: '0'
-        value: '2014' # try 6868 if that doesn't work
-    - delay: '00:00:01' 
-    - service: modbus.write_register # Turn remote on
+    - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
         unit: '1'
         address: '31'
         value: '2'
-    - delay: '00:00:01'
-    - service: modbus.write_register # Wake inverter up
+
+  - alias: Solax Backup Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
       data_template:
         hub: SolaX
         unit: '1'
-        address: '144'
+        address: '31'
+        value: '0'
+
+  - alias: Solax ForceTime
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'on'
+    action:
+    - service: modbus.write_register # Force Time Mode
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '31'
         value: '1'
     - delay: '00:00:01'
-    - service: modbus.write_register # Enable Grid Charge
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '1'
-        address: '146'
+        address: '31'
         value: '1'
 
-  - alias: Solax - Test 2 off
+  - alias: Solax ForceTime Off
     trigger:
-      - platform: state
-        entity_id: input_boolean.solax_test2
-        to: 'off'
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'off'
     action:
-    - service: modbus.write_register # Enable Grid Charge
+    - service: modbus.write_register # Auto Mode
       data_template:
         hub: SolaX
         unit: '1'
-        address: '146'
+        address: '31'
         value: '0'
     - delay: '00:00:01'
-    - service: modbus.write_register # Resume normal mode
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '1'
