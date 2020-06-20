@@ -1,0 +1,13 @@
+# Sonnof Basic Example
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "sonoff_example"
+  friendly_name: "Sonoff Example"
+# Icon for the switch, uses https://materialdesignicons.com/ remove the # below. main_icon: should be 2 spaces in
+  #main_icon: "power-socket-uk"
+# For manual IP address setup remove the # below. device_ip: should be 2 spaces in, don't forget to edit sonoff_basic.yaml
+  #device_ip: "192.168.1.x"
+
+<<: !include common/sonoff_basic.yaml
