@@ -3,10 +3,10 @@
 # Change "E-1R-AGILE-18-02-21-E" to your electric region if you do no live in the West Midlands
 # Half Hourly Octopus Agile Electricity rate
 sensor:
-  - platform: command_line
+  - platform: rest
     name: agile_electric_cost
     scan_interval: 86400
-    command: curl \"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-E/standard-unit-rates/?period_from={{ now().year }}-{{ now().month }}-{{ now().day }}T{{ now().hour }}:{% if now().minute <30 %}00{% else %}30{% endif %}&period_to={{ now().year }}-{{ now().month }}-{% if (now().hour == 23) and (now().minute >=30) %}{{ now().day+1 }}{% else %}{{ now().day }}{% endif %}T{% if (now().hour == 23) and (now().minute >=30) %}00{% elif now().minute >=30 %}{{ now().hour+1}}{% else %}{{ now().hour}}{% endif %}:{% if now().minute >=30 %}00{% else %}30{% endif %}\"
+    resource_template: "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-E/standard-unit-rates/?period_from={% set ts_now = ((as_timestamp(utcnow())/1800)|round(0,'floor')|int * 1800) %}{{ ts_now |timestamp_custom ('%Y-%m-%dT%H:%M:%SZ', False) }}&period_to={{ (ts_now + 1800) |timestamp_custom ('%Y-%m-%dT%H:%M:%SZ', False) }}"
     value_template: '{{ (value_json.results[0].value_inc_vat) | round(2) }}'
     unit_of_measurement: 'p/KWH'
 
