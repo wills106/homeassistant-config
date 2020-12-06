@@ -1,0 +1,12 @@
+# Sonnof T1 Kitchen Twin
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "kitchen_twin"
+  friendly_name: "Kitchen Twin"
+  device_ip: "192.168.xx.xx"
+  # Icon
+  main_icon: "ceiling-light"
+
+<<: !include common/sonoff_t1_2g_light.yaml
