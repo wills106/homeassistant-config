@@ -1,6 +1,6 @@
 homeassistant:
   # Customization file
-  customize: !include customize.yaml
+#  customize: !include customize.yaml
   packages: !include_dir_named packages
 
 # Configure a default setup of Home Assistant (frontend, api, etc)
@@ -10,33 +10,20 @@ default_config:
 frontend:
   themes: !include_dir_merge_named themes/
 
-hassio:
-
-http:
-  base_url: !secret base_url
-
 camera:
-  - platform: synology
-    url: !secret syn_host
-    username: !secret syn_name
-    password: !secret syn_pass
-    timeout: 15
-    verify_ssl: false
+  - platform: generic
+    name: Drive
+    still_image_url: !secret frigate_drive_url
+    stream_source: !secret drive_rtsp
 
   - platform: generic
+    name: Doorbell
     still_image_url: !secret frigate_doorbell_url
     stream_source: !secret doorbell_rtsp
-
-discovery:
-
-emoncms_history:
-  api_key: !secret emoncms_api
-  url: !secret emoncms_host
-  inputnode: 19
-  whitelist:
-    - sensor.solax_measured_power
-    - sensor.electricity
-    - sensor.solax_pv_total_power
+  - platform: generic
+    name: Garage
+    still_image_url: !secret frigate_garage_url
+    stream_source: !secret garage_rtsp
 
 ffmpeg:
 
@@ -46,22 +33,19 @@ google:
   client_secret: !secret calendar_secret
   track_new_calendar: false
 
-ifttt:
-  key: !secret ifttt_token
+hive:
+  username: !secret user_name
+  password: !secret hive_pass
 
-influxdb:
-  host: !secret host
-  port: 8086
-  database: homeassistant
-  username: homeassistant
-  password: !secret password
-  max_retries: 3
-  default_measurement: state
-  include:
-    domains:
-      - sensor
+http:
+  cors_allowed_origins:
+    - https://domain_name
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.xx.xx
 
-input_boolean:        
+
+input_boolean:
   early_shift:
   late_shift:
   overtime:
@@ -73,14 +57,6 @@ input_boolean:
   willsbed:
   otherbed:
 
-logger:
-  default: critical
-
-media_player:
-  - platform: volumio
-    host: Volumio-livingroom.local
-    port: 3000
-
 notify:
   - name: signal
     platform: signal_messenger
@@ -88,18 +64,24 @@ notify:
     number: !secret signal_number
     recipients: # one or more recipients
       - !secret signal_recipient1
+      - !secret signal_recipient2
 
-panel_custom:
-  - name: zwavegraph2
-    sidebar_title: Z-Wave Graph
-    sidebar_icon: mdi:access-point-network
-    url_path: zwave
+octopusagile:
+  region_code: "E"
+  mpan: MPAN
+  serial: SERIAL
+  auth: API_KEY
+  startdate: "2020-04-25"
 
 python_script:
+
+recorder:
+  db_url: mysql://username:password@core-mariadb/homeassistant?charset=utf8
 
 solcast:
   api_key: !secret solcast_api
   resource_id: !secret solcast_id
+  api_limit: 15
 
 stream:
 
@@ -109,23 +91,17 @@ tts:
     host: !secret host
     port: 59125
     codec: 'WAVE_FILE'
-    voice: 'cmu-slt-hsmm'
+    voice: 'dfki-spike-hsmm'
     language: 'en_GB'
-    
-  - platform: google_translate
-    language: 'en'
 
 withings:
   client_id: !secret withings_id
   client_secret: !secret withings_secret
-  profiles:
-    - William
+  use_webhook: true
 
-zwave:
-  usb_path: /dev/ttyACM0
-  network_key: !secret zwave_network 
 
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 sensor: !include sensors.yaml
+scene: !include scenes.yaml
