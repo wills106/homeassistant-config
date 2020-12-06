@@ -6,6 +6,11 @@
   scan_interval: 600
   command: 'sh /config/bash_scripts/electricity.sh'
 - platform: command_line
+  name: export
+  unit_of_measurement: 'kWh'
+  scan_interval: 600
+  command: 'sh /config/bash_scripts/export.sh'
+- platform: command_line
   name: gas
   unit_of_measurement: 'm3'
   scan_interval: 600
