@@ -52,13 +52,10 @@ output:
     channel: 0
 
 light:
-  - platform: rgb
+  - platform: rgbw
     name: "${friendly_name} RGB"
-    default_transition_length: 0s
     red: output_red
     green: output_green
     blue: output_blue
-
-  - platform: monochromatic
-    name: "${friendly_name} White"
-    output: output_white
+    white: output_white
+    color_interlock: true
