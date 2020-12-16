@@ -1,9 +1,8 @@
-# https://github.com/wills106/homeassistant-config/blob/master/packages/solax_hybrid_g3.yaml
-# Using https://github.com/InfernoEmbedded/PowerScraper as a basis for the Modbus Read Only Registers used on Solax Inverters.
-# I created this as I am using the Ethernet port on the Inverter for Modnbus over TCP as the local web API is unavailable.
-# The Inverter communicate's to the cloud through MQTT on port 8883. I do not have a Pocket WiFi module.
-# Only tested with ModBus over TCP, no reason why USB - RS485 shouldn't work
-# The X1 Hybrid Gen 3 apears to use different registers to control the charge and discharge compared to the older SU5000.
+# New group register reads.
+# Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_triplepower.yaml
+#
+# Will not work prior to 2020.12.0 version of Home Assistant
+#
 
 modbus:
   name: SolaX
@@ -409,7 +408,8 @@ input_number:
 #Send current solar production to SolCast for tuning
 rest_command:
   solcast_tune:
-    url: https://api.solcast.com.au/rooftop_sites/<your site id>/measurements?api_key=<your api key>
+#   url: https://api.solcast.com.au/rooftop_sites/<your site id>/measurements?api_key=<your api key>
+    url: !secret solcast_url
     method: POST
     headers:
       Content-Type: application/json
