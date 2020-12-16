@@ -409,7 +409,7 @@ input_number:
 #Send current solar production to SolCast for tuning
 rest_command:
   solcast_tune:
-    url: https://api.solcast.com.au/rooftop_sites/c018-07d5-d6b1-0f11/measurements?api_key=jKev-w-kxkqmNwHen0aLlYMFYRQia7qA
+    url: https://api.solcast.com.au/rooftop_sites/<your site id>/measurements?api_key=<your api key>
     method: POST
     headers:
       Content-Type: application/json
