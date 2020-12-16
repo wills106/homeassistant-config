@@ -1,0 +1,55 @@
+entities:
+  - entity: sensor.solax_run_mode_template
+  - entity: sensor.solax_inverter_temperature
+  - entity: sensor.solax_energy_today
+  - entity: sensor.solax_feedin_power
+  - entity: sensor.solax_inverter_load
+  - entity: sensor.solax_inverter_voltage
+  - entity: sensor.solax_inverter_current
+  - entity: sensor.solax_grid_frequency
+  - entity: sensor.solax_pv_total_power
+  - entity: sensor.solax_pv_power_1
+  - entity: sensor.solax_pv_power_2
+  - entity: sensor.solax_pv_voltage_1
+  - entity: sensor.solax_pv_voltage_2
+  - entity: sensor.solax_pv_current_1
+  - entity: sensor.solax_pv_current_2
+title: SolaX
+type: entities
+
+entities:
+  - entity: sensor.solax_charger_use_mode_template
+  - entity: sensor.solax_battery_capacity_charge
+  - entity: sensor.solax_battery_temperature
+  - entity: sensor.solax_bms_connect_state_template
+  - entity: sensor.solax_battery_type_template
+  - entity: sensor.solax_battery_power_charge
+  - entity: sensor.solax_battery_voltage_charge
+  - entity: sensor.solax_battery_current_charge
+  - entity: sensor.solax_battery_min_capacity
+  - entity: input_number.solax_battery_min_energy
+  - entity: sensor.solax_battery_charge_max_current
+  - entity: input_number.solax_battery_charge
+  - entity: sensor.solax_battery_discharge_max_current
+  - entity: input_number.solax_battery_discharge
+  - entity: input_boolean.solax_forcetime
+  - entity: input_boolean.solax_backup
+show_header_toggle: false
+title: SolaX Battery
+type: entities
+
+type: entities
+entities:
+  - entity: sensor.solax_battery_charge_float_voltage
+  - entity: sensor.solax_battery_discharge_cut_off_voltage
+  - entity: sensor.solax_charger_start_time_1
+  - entity: sensor.solax_charger_end_time_1
+  - entity: sensor.solax_charger_start_time_2
+  - entity: sensor.solax_charger_end_time_2
+  - entity: sensor.solax_allow_grid_charge_template
+  - entity: sensor.solax_export_control_factory_limit
+  - entity: sensor.solax_export_control_user_limit
+  - entity: sensor.solax_eps_mute_template
+  - entity: sensor.solax_eps_set_frequency_template
+  - entity: sensor.solax_language_template
+title: Solax Feedback
