@@ -1,7 +1,8 @@
 # New group register reads.
-# Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_hybrid_g3.yaml
-# Will not work with current built in ModBus Component prior to 1.0.0
-# Requires custom_component
+# Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_triplepower.yaml
+#
+# Will not work prior to 2020.12.0 version of Home Assistant
+#
 
 modbus:
   name: SolaX
@@ -38,15 +39,15 @@ sensor:
       structure: ">8H"
 
   # Input Registers
-    - name: SolaX Group B
+    - name: SolaX Group i1
       hub: SolaX
       register: 0
       register_type: input
       count: 30
       data_type: custom
       structure: ">H2h5Hh3Hh7H3hHh5H"
-
-    - name: SolaX Group C
+    
+    - name: SolaX Group i2
       hub: SolaX
       register: 70
       register_type: input
@@ -123,118 +124,118 @@ sensor:
       friendly_name: "SolaX Language / Sprache"
       value_template: "{{ states('sensor.solax_group_h2').split(',')[7] }}"
 
-# SolaX Group B
+# SolaX Group I1
     solax_inverter_voltage:
       friendly_name: "SolaX Inverter Voltage"
       unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_b').split(',')[0]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[0]| float / 10 }}"
     solax_inverter_current:
       friendly_name: "SolaX Inverter Current"
       unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_b').split(',')[1]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[1]| float / 10 }}"
     solax_inverter_load:
       friendly_name: "SolaX House Load"
       unit_of_measurement: W
-      value_template: "{{ states('sensor.solax_group_b').split(',')[2] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[2] }}"
     solax_pv_voltage_1:
       friendly_name: "SolaX PV Voltage 1"
       unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_b').split(',')[3]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[3]| float / 10 }}"
     solax_pv_voltage_2:
       friendly_name: "SolaX PV Voltage 2"
       unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_b').split(',')[4]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[4]| float / 10 }}"
     solax_pv_current_1:
       friendly_name: "SolaX PV Current 1"
       unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_b').split(',')[5]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[5]| float / 10 }}"
     solax_pv_current_2:
       friendly_name: "SolaX PV Current 2"
       unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_b').split(',')[6]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[6]| float / 10 }}"
     solax_grid_frequency:
       friendly_name: "SolaX Grid Frequency"
       unit_of_measurement: Hz
-      value_template: "{{ states('sensor.solax_group_b').split(',')[7]| float / 100 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[7]| float / 100 }}"
     solax_inverter_temperature:
       friendly_name: "SolaX Inverter Temperature"
       unit_of_measurement: °C
-      value_template: "{{ states('sensor.solax_group_b').split(',')[8] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[8] }}"
     solax_run_mode:
       friendly_name: "SolaX Run Mode"
-      value_template: "{{ states('sensor.solax_group_b').split(',')[9] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[9] }}"
     solax_pv_power_1:
       friendly_name: "SolaX Power Power 1"
       unit_of_measurement: W
-      value_template: "{{ states('sensor.solax_group_b').split(',')[10] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[10] }}"
     solax_pv_power_2:
       friendly_name: "SolaX Power Power 2"
       unit_of_measurement: W
-      value_template: "{{ states('sensor.solax_group_b').split(',')[11] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[11] }}"
     solax_time_count_down:
       friendly_name: "SolaX Time Count Down"
       unit_of_measurement: s
-      value_template: "{{ states('sensor.solax_group_b').split(',')[19]| float / 1000 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[19]| float / 1000 }}"
     solax_battery_voltage_charge:
       friendly_name: "SolaX Battery Voltage"
       unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_b').split(',')[20]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[20]| float / 10 }}"
     solax_battery_current_charge:
       friendly_name: "SolaX Battery Curent"
       unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_b').split(',')[21]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[21]| float / 10 }}"
     solax_battery_power_charge:
       friendly_name: "SolaX Battery Power"
       unit_of_measurement: W
-      value_template: "{{ states('sensor.solax_group_b').split(',')[22] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[22] }}"
     solax_bms_connect_state:
       friendly_name: "SolaX BMS Connect State"
-      value_template: "{{ states('sensor.solax_group_b').split(',')[23] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[23] }}"
     solax_battery_temperature:
       friendly_name: "SolaX Battery Temperature"
       unit_of_measurement: °C
-      value_template: "{{ states('sensor.solax_group_b').split(',')[24] }}"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[24] }}"
     solax_battery_capacity_charge:
       friendly_name: "SolaX Battery Capacity"
       unit_of_measurement: "%"
-      value_template: "{{ states('sensor.solax_group_b').split(',')[28] }}"
-# SolaX Group C
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[28] }}"
+# SolaX Group I2
     solax_feedin_power:
       friendly_name: "SolaX Measured Power"
       unit_of_measurement: W
-      value_template: "{{ states('sensor.solax_group_c').split(',')[0] }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[0] }}"
     solax_feedin_energy_total:
       friendly_name: "SolaX Feedin Energy Total"
       unit_of_measurement: kWh
-      value_template: "{{ states('sensor.solax_group_c').split(',')[2]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[2]| float / 10 }}"
     solax_consumed_energy_total:
       friendly_name: "SolaX Consumed Energy Total"
       unit_of_measurement: kWh
-      value_template: "{{ states('sensor.solax_group_c').split(',')[4]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[4]| float / 10 }}"
     solax_eps_volatge:
       friendly_name: "SolaX EPS Voltage"
       unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_c').split(',')[6]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[6]| float / 10 }}"
     solax_eps_current:
       friendly_name: "SolaX EPS Current"
       unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_c').split(',')[7]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[7]| float / 10 }}"
     solax_eps_power:
       friendly_name: "SolaX EPS Power"
       unit_of_measurement: VA
-      value_template: "{{ states('sensor.solax_group_c').split(',')[8] }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[8] }}"
     solax_eps_frequency:
       friendly_name: "SolaX EPS Frequency"
       unit_of_measurement: Hz
-      value_template: "{{ states('sensor.solax_group_c').split(',')[9]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[9]| float / 10 }}"
     solax_energy_today:
       friendly_name: "SolaX Today's Yield"
       unit_of_measurement: kWh
-      value_template: "{{ states('sensor.solax_group_c').split(',')[10]| float / 10 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[10]| float / 10 }}"
     solax_total_energy_to_grid:
       friendly_name: "SolaX Total Export"
       unit_of_measurement: kWh
-      value_template: "{{ states('sensor.solax_group_c').split(',')[12]| float / 1000 }}"
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[12]| float / 1000 }}"
 
 
 
@@ -407,7 +408,8 @@ input_number:
 #Send current solar production to SolCast for tuning
 rest_command:
   solcast_tune:
-    url: https://api.solcast.com.au/rooftop_sites/<your site id>/measurements?api_key=<your api key>
+#   url: https://api.solcast.com.au/rooftop_sites/<your site id>/measurements?api_key=<your api key>
+    url: !secret solcast_url
     method: POST
     headers:
       Content-Type: application/json
