@@ -2,6 +2,8 @@ How to use [Packages](https://www.home-assistant.io/docs/configuration/packages/
 
 I have some example Lovelace views in the lovelace-example folder.
 
+[myengeri.yaml](https://github.com/wills106/homeassistant-config/blob/master/packages/myengeri.yaml) Read the Status of myEnergi Eddi & Zappi2.0
+
 SolaX Inverter versions:
 
 [solax_x1ac.yaml](https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1ac.yaml) is formatted for the X1-AC with SolaX Triple Power Batteries and defaulting to ModBus over RS485.
