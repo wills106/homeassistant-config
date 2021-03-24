@@ -1,14 +1,18 @@
+##########
+#
 # New group register reads.
 # Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_triplepower.yaml
 #
 # Will not work prior to 2020.12.0 version of Home Assistant
 #
+##########
 
 modbus:
   name: SolaX
   type: tcp # Comment out for RS485
   host: !secret inverter_ip # Comment out for RS485
   port: 502 # Comment out for RS485
+  timeout: 5
 
 # Uncomment for USB - RS485 dongle
 #  type: serial
@@ -21,7 +25,7 @@ modbus:
 
 sensor:
 - platform: modbus
-  scan_interval: 2
+  scan_interval: 5
   registers:
   # Holding Registers
     - name: SolaX Group h1
@@ -54,7 +58,6 @@ sensor:
       count: 14
       data_type: custom
       structure: ">2h10HI"
-
 
 - platform: template
   sensors:
@@ -98,7 +101,7 @@ sensor:
       friendly_name: "SolaX Charger End Time 2"
       value_template: "{{ states('sensor.solax_group_h1').split(',')[17] }}:{{ states('sensor.solax_group_h1').split(',')[18] }}"
 
-# SolaX Group H1
+# SolaX Group H2
     solax_allow_grid_charge:
       friendly_name: "SolaX Allow Grid Charge"
       value_template: "{{ states('sensor.solax_group_h2').split(',')[0] }}"
@@ -134,7 +137,7 @@ sensor:
       unit_of_measurement: A
       value_template: "{{ states('sensor.solax_group_i1').split(',')[1]| float / 10 }}"
     solax_inverter_load:
-      friendly_name: "SolaX House Load"
+      friendly_name: "SolaX Inverter Power"
       unit_of_measurement: W
       value_template: "{{ states('sensor.solax_group_i1').split(',')[2] }}"
     solax_pv_voltage_1:
@@ -199,6 +202,7 @@ sensor:
       friendly_name: "SolaX Battery Capacity"
       unit_of_measurement: "%"
       value_template: "{{ states('sensor.solax_group_i1').split(',')[28] }}"
+
 # SolaX Group I2
     solax_feedin_power:
       friendly_name: "SolaX Measured Power"
@@ -370,7 +374,43 @@ sensor:
           Unknown
         {% endif %}
 
-###Solar production estimates from SolCast - live###
+##########
+#
+# Calculate Actual House Load
+#
+##########
+
+    solax_house_load:
+      friendly_name: "House Load"
+      unit_of_measurement: 'W'
+      value_template: >
+        {% if states('sensor.solax_inverter_load') | int > 0 %}
+          {{ states('sensor.solax_inverter_load') | int - states('sensor.solax_feedin_power') | int  }}
+        {% else -%}
+          0
+        {% endif %}
+
+##########
+#
+# House Load minus Car charger / Immersion heater for Power Distribution Card
+#
+# https://github.com/JonahKr/power-distribution-card
+#
+##########
+
+
+#Power Card - House Load
+    powercard_house_load:
+      friendly_name: "Power Card House Load"
+      unit_of_measurement: 'w'
+      value_template: "{{ (((states.sensor.solax_house_load.state | int) - (states.sensor.myenergi_eddi_diverted_power.state | int) - (states.sensor.myenergi_zappi_diverted_power.state | int)) | int) }}"
+
+
+##########
+#
+# Solar production estimates from SolCast - live###
+#
+##########
 
 ##5 minute average for production
 - platform: statistics
@@ -384,6 +424,10 @@ input_boolean:
     name: SolaX Backup Mode
   solax_forcetime:
     name: SolaX Force Time
+  solax_test:
+    name: SolaX Test
+  solax_grid_charge:
+    name: SolaX Grid Charge
 
 input_number:
   solax_battery_charge:
@@ -478,6 +522,13 @@ automation:
         unit: '255'
         address: '31'
         value: '2'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
 
   - alias: Solax Backup Off
     trigger:
@@ -486,6 +537,13 @@ automation:
       to: 'off'
     action:
     - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
         unit: '255'
@@ -530,6 +588,50 @@ automation:
         hub: SolaX
         unit: '255'
         address: '31'
+        value: '0'
+
+  - alias: Solax Charger Start Time 1
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_test
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '38'
+        value: '7683'
+
+#Hbyte = 10
+#Lbyte = 9
+#value = Hbyte << 8 | Lbyte;
+#print(value)
+
+  - alias: Solax Allow Grid Charge
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_grid_charge
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '64'
+        value: '1'
+
+  - alias: Solax Disallow Grid Charge
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_grid_charge
+      to: 'off'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '64'
         value: '0'
 
 #Run data upload every 5 minutes
