@@ -11,28 +11,30 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 ## Screen Shots
 
-Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I get it better organised.
+Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I get it better organised. (09 April 2021 Update - Very outdated)
 
 [Screen Shots](https://github.com/wills106/homeassistant-config/blob/master/screenshots/README.md)
 
 ## Devices
 
-I am now running Supervisor (HASSIO) with the [Synology native Package](https://community.home-assistant.io/t/hass-io-on-synology-dsm-native-package/125559)
-Previously I was running HASSIO as a Virtual Machine on my Synology DS918+ this replaced an older Docker Version running on a DS1511+ Synology.
+I was previously running Supervisor (HASSIO) with the [Synology native Package](https://community.home-assistant.io/t/hass-io-on-synology-dsm-native-package/125559)
+Prior to that I was running HASSIO as a Virtual Machine on my Synology DS918+ this replaced an older Docker Version running on a DS1511+ Synology.
 
-- Synology DS918+
+Now I am running Supervisior (HASSIO) on top of Debian running on a J4125 NUC Type device, while I determin where my installation should live long term.
+
+- Synology DS918+ NAS (Sort off)
 - 6x WD 8TB "External drives removed / lots cheaper!" ( Yes I know the DS918+ is meant to "only have" 4 bays )
 - pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC
 - Ubiquiti US-16-150W 16 Poprt PoE Managed Switch
 - Ubiquiti UniFi nanoHD Access Point
 - XIAOMI Roborock Vacuum Cleaner Gen 2 Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
-### The following are flashed with [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota)
+### I have migrated most ESP Based devices over from [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota) to [ESPHome](https://esphome.io/)
 I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash new devices over the air (OTA)
-- Sonoff RF 433 - WiFi Bridge
+- Sonoff RF 433 - WiFi Bridge - Still on Tasmota
 - Sonoff Basic WiFi Relay
 - Sonoff 4CH Pro R2
-- Tuya Dimmer Switch 1 Gang
+- Tuya Dimmer Switch 1 Gang - Still on Tasmota
 - Sonoff T1 WiFi Wall Switch 1 Gang
 - Sonoff T1 WiFi Wall Switch 2 Gang
 - Sonoff T1 WiFi Wall Switch 3 Gang
@@ -50,6 +52,9 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 
 ### Security
 
+I have replaced the Synology Surveillance Station with [Frigate](https://github.com/blakeblackshear/frigate) this is using a [Google Coral](https://coral.ai/products/accelerator) USB stick for object based motion detection. Person, Car (Automobile), Cat's, Dog's etc
+I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Nano 4GB Dev Kit](https://www.nvidia.com/en-gb/autonomous-machines/embedded-systems/jetson-nano/) for Face Recognition based on motion events provided by Frigate.
+- 2 x HikVision DS-2CD2386G2-IU
 - HikVision DS-2CD2T42WD-I5
 - HikVision DS-2CD2T42WD-I8
 - HiWatch DB-120A-IW WiFi Smart Doorbell ( HikVision Version DS-KB6403-WIP )
