@@ -2,7 +2,7 @@ How to use [Packages](https://www.home-assistant.io/docs/configuration/packages/
 
 I have some example Lovelace views in the lovelace-example folder.
 
-[myengeri.yaml](https://github.com/wills106/homeassistant-config/blob/master/packages/myengeri.yaml) Read the Status of myEnergi Eddi & Zappi2.0
+[myengeri.yaml](https://github.com/wills106/homeassistant-config/blob/master/packages/myenergi.yaml) Read the Status of myEnergi Eddi & Zappi2.0
 
 SolaX Inverter versions:
 
