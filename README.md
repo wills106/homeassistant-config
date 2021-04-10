@@ -53,7 +53,7 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 ### Security
 
 I have replaced the Synology Surveillance Station with [Frigate](https://github.com/blakeblackshear/frigate) this is using a [Google Coral](https://coral.ai/products/accelerator) USB stick for object based motion detection. Person, Car (Automobile), Cat's, Dog's etc
-I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Nano 4GB Dev Kit](https://www.nvidia.com/en-gb/autonomous-machines/embedded-systems/jetson-nano/) for Face Recognition based on motion events provided by Frigate.
+I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Nano 4GB Dev Kit](https://www.nvidia.com/en-gb/autonomous-machines/embedded-systems/jetson-nano/) for Face Recognition based on motion events provided by [Frigate](https://github.com/blakeblackshear/frigate).
 - 2 x HikVision DS-2CD2386G2-IU
 - HikVision DS-2CD2T42WD-I5
 - HikVision DS-2CD2T42WD-I8
@@ -61,11 +61,13 @@ I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Na
 - KERUI D026 RF Door/Window Sensor
 - KERUI P829 RF Motion Sensor
 
-### Solar
+### Solar - Energy
 
-- SolaX X1-Hybrid-5.0-D-E (Gen3)
-- 2 x SolaX Gen2 Tripple Power HV 4.5kWh battery
+- [SolaX X1-Hybrid-5.0-D-E (Gen3)](https://www.solaxpower.com/single-phase-hybrid/)
+- 2 x [SolaX Gen2 Tripple Power HV 4.5kWh battery](https://www.solaxpower.com/triple-power-battery/)
 - 16 x JA Solar 305w PV Panels
+- EV Charger [Zappi v2](https://myenergi.com/product/zappi/)
+- Solar Diverter [Eddi](https://myenergi.com/product/eddi/) for immersion heater
 
 ## Retired Devices
 - Synology DS1511+ (Docker running Home Assistant)
