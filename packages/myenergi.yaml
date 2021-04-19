@@ -3,7 +3,7 @@
 # Package to read / control myEnergi Eddi and Zappi2.0
 # Only reading is implemented at the moment.
 #
-# Taking information shared at:
+# Using information shared at:
 #
 # https://github.com/twonk/MyEnergi-App-Api
 # https://myenergi.info/home-assistant-example-via-restful-t1629.html
