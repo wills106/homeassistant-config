@@ -3,18 +3,45 @@
 # Package to read / control myEnergi Eddi and Zappi2.0
 # Only reading is implemented at the moment.
 #
-# Using information shared at:
+# Taking information shared at:
 #
 # https://github.com/twonk/MyEnergi-App-Api
 # https://myenergi.info/home-assistant-example-via-restful-t1629.html
 #
 ##########
 
+
+automation:
+  - id: solar_diverter_switch
+    alias: 'Turn on / off Solar Diverter'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.solar_diverter
+    action:
+      choose:
+        conditions: "{{ trigger.to_state.state == 'off' }}"
+        sequence:
+          - service:  shell_command.eddi_off
+            data:
+              myenergi_serial: !secret myenergi_serial
+              myenergi_password: !secret myenergi_password
+              eddi_serial: !secret eddi_serial
+      default:
+        - service:  shell_command.eddi_on
+          data:
+            myenergi_serial: !secret myenergi_serial
+            myenergi_password: !secret myenergi_password
+            eddi_serial: !secret eddi_serial
+
+input_boolean:
+  solar_diverter:
+    name: Solar Diverter
+
 sensor:
 - platform: rest
   name: myEnergi Eddi
   resource: "https://s0.myenergi.net/cgi-jstatus-E" # Change s0 to the last digit of you serial number. ie if it ends in 2 you need s2 etc
-  scan_interval: 15
+  scan_interval: 5
   timeout: 70
   authentication: digest
   username: !secret myenergi_serial
@@ -50,19 +77,15 @@ sensor:
     - sta       # Status (1:Paused, 2: ????, 3:Diverting, 4:Boost, 5:Temp Reached, 6:Stopped)
 #    - tim       # Time (UTC)
 #    - tp1       # Temperature Probe 1
-#    - tp2       # Temperature Probe 2
+#    - tp2       # Temperature Probe 2      
     - vol       # voltage out
-
-##########
-#
-# Attributes do not show if value is zero
-#
-##########
+      
+    # Attributes do not appear if value is zero ! 
 
 - platform: rest
   name: myEnergi Zappi
   resource: "https://s0.myenergi.net/cgi-jstatus-Z" # Change s0 to the last digit of you serial number. ie if it ends in 2 you need s2 etc
-  scan_interval: 15
+  scan_interval: 5
   timeout: 70
   authentication: digest
   username: !secret myenergi_serial
@@ -81,39 +104,47 @@ sensor:
 #    - dst       # Use Daylight Savings Time
 #    - ectp1     # Internal Load (same as div)
 #    - ectp2     # Grid (same as grd)
-#    - ectp3     #
+#    - ectp3     # 
 #    - ectp4     # Grid Phase 1 (W)
-#    - ectp5     # Grid Phase 2 (W)
-#    - ectp6     # Grid Phase 3 (W)
+#    - ectp5     # Grid Phase 2 (W)      
+#    - ectp6     # Grid Phase 3 (W)            
 #    - ectt1     # Internal CT Name - Internal Load
-#    - ectt2     # Internal CT Name - Grid
-#    - ectt3     # Internal CT Name
-#    - ectt4     # Internal CT Name
+#    - ectt2     # Internal CT Name - Grid   
+#    - ectt3     # Internal CT Name            
+#    - ectt4     # Internal CT Name  
 #    - frq       # Grid Frequency
     - fwv       # Firmware Version
 #    - gen       # Current Solar/Generation Power W
 #    - grd       # Current Grid Power W
     - lck       # Lock Status (4 bits : 1st digit - ? : 2nd digit - 1 unlocked, 0 locked)
     - mgl       # Minimum Green Level
-    - pri       # Priority
+    - pri       # Priority 
     - pst       # Charge Status (A: EV Disconnected, B1: EV Connected, B2: Waiting for EV, C1: EV Ready to Charge, C2: Charging, F: Fault)
 #    - sbh       # Smart boost start time hours
 #    - sbk       # smart boost - kWh to add
 #    - sbm       # Smart boost start time minutes
-#    - sno       # Serial No.
+#    - sno       # Serial No. 
     - sta       # Zappi Status (1: Paused, 2: DSR, 3: Diverting, 4: Boosting, 5: Charge Complete)
 #    - tbh       # Boost hours?
 #    - tbk       # Boost KW (charge remaining is tbk-che)
 #    - tbm       # Boost minutes?
 #    - tim       # Time (UTC)
 #    - vol       # Grid Voltage
-    - zmo       # Zappi Mode (1: Fast, 2: Eco, 3: Eco+, 4: Stopped)
+    - zmo       # Zappi Mode (1: Fast, 2: Eco, 3: Eco+, 4: Stopped) 
 
-##########
-#
-# Attributes do not show if value is zero
-#
-##########
+#'lck' - representation of current PIN lock settings and zappi lock status
+#Bit 0: Locked Now
+#Bit 1: Lock when plugged in
+#Bit 2: Lock when unplugged.
+#Bit 3: Charge when locked.
+#Bit 4: Charge Session Allowed (Even if locked)
+
+#Note that charging will be allowed if:-
+#Locked Now=0
+#or
+#Locked Now=1 and Charge When Locked=1
+#or
+#Charge Session Allowed=1
 
 - platform: template
   sensors:
@@ -121,14 +152,14 @@ sensor:
       friendly_name: 'Eddi Diverted Power'
       value_template: "{% if state_attr('sensor.myenergi_eddi','div') | int > 0 %}{{ state_attr('sensor.myenergi_eddi','div') }}{% else %}0{% endif %}"
       unit_of_measurement: w
-      device_class: power
+      device_class: power        
       icon_template: mdi:water-boiler
 
     myenergi_zappi_diverted_power:
       friendly_name: 'Zappi Diverted Power'
       value_template: "{% if state_attr('sensor.myenergi_zappi','div') | int > 0 %}{{ state_attr('sensor.myenergi_zappi','div') }}{% else %}0{% endif %}"
       unit_of_measurement: w
-      device_class: power
+      device_class: power        
       icon_template: mdi:car-electric
 
     myenergi_eddi_status:
@@ -140,17 +171,17 @@ sensor:
 
     myenergi_zappi_status:
       friendly_name: "myEnergi Zappi Status"
-      availability_template: "{{ states('sensor.myenergi_zappi') }}"
+      availability_template: "{{ states('sensor.myenergi_zappi') }}" 
       value_template: >
         {% set zappi_status = {1:'Paused',2:'DSR',3:'Diverting',4:'Boost',5:'Charge Complete'} %}
         {{zappi_status[state_attr('sensor.myenergi_zappi','sta')] }}
 
     myenergi_zappi_charge_status:
       friendly_name: "myEnergi Zappi Charge Status"
-      availability_template: "{{ states('sensor.myenergi_zappi') }}"
+      availability_template: "{{ states('sensor.myenergi_zappi') }}" 
       value_template: >-
-        {% set status = state_attr('sensor.myenergi_zappi','pst') %}
-        {% set mapper = {'A':'EV Disconnected','B1':'EV Connected','B2':'Waiting for EV','C1':'EV Ready to Charge','C2':'Charging','F':'Fault'} %}
+        {% set status = state_attr('sensor.myenergi_zappi','pst') %}          
+        {% set mapper = {'A':'EV Disconnected','B1':'EV Connected','B2':'Waiting for EV','C1':'EV Ready to Charge','C2':'Charging','F':'Fault'} %}           
         {{mapper[status]}}
 
     myenergi_zappi_mode:
@@ -159,3 +190,8 @@ sensor:
       value_template: >-
         {% set zappi_mode = {1:'Fast',2:'ECO',3:'ECO+',4:'Stopped'} %}
         {{zappi_mode[state_attr('sensor.myenergi_zappi','zmo')] }}
+
+# Change s0 to the last digit of you serial number. ie if it ends in 2 you need s2 etc
+shell_command:
+  eddi_on: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-1'"
+  eddi_off: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-0'"
