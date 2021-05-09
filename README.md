@@ -1,6 +1,8 @@
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V51QQOL)
 Don't feel like you have to Donate, I have only added it due to requests.
 
+[Octopus.Energy 🐙](https://share.octopus.energy/wise-boar-813) referal code. You get £50 credit for joining and I get £50 credit.
+
 # Home Assistant Configuration
 
 My [Home Assistant](https://home-assistant.io/) Configuration Files
@@ -13,7 +15,11 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 Screen Shots giving an idea of the Lovelace UI - will change quite a bit as I get it better organised. (09 April 2021 Update - Very outdated)
 
-[Screen Shots](https://github.com/wills106/homeassistant-config/blob/master/screenshots/README.md)
+[Old Screen Shots](https://github.com/wills106/homeassistant-config/blob/master/screenshots/README.md)
+
+Powerflow card and myEnergi sensors for solar diversion and EV Charger.
+
+![PowerCard](https://github.com/wills106/homeassistant-config/blob/master/screenshots/energy.PNG)
 
 ## Devices
 
