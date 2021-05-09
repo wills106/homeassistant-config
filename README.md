@@ -7,7 +7,7 @@ My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 ## Version
 
-[.HA_VERSION](https://github.com/wills106/homeassistant-config/blob/master/.HA_VERSION)
+[HA_VERSION](https://github.com/wills106/homeassistant-config/blob/master/HA_VERSION)
 
 ## Screen Shots
 
