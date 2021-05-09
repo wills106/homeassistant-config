@@ -1,5 +1,7 @@
 ##########
 #
+# https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_group_read.yaml
+#
 # New group register reads.
 # Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_triplepower.yaml
 #
@@ -25,7 +27,7 @@ modbus:
 
 sensor:
 - platform: modbus
-  scan_interval: 5
+  scan_interval: 2
   registers:
   # Holding Registers
     - name: SolaX Group h1
@@ -255,9 +257,6 @@ sensor:
       unit_of_measurement: 'kWh'
 
     solcast_post:
-      entity_id:
-        - sensor.date_time_iso
-        - sensor.pv_stats
       value_template: >
         {{ '{"measurement": {"period_end": "' ~ as_timestamp(states.sensor.date_time_iso.state)|timestamp_custom ('%Y-%m-%dT%H:%M:%SZ', false) ~ '", "period": "PT5M","total_power": ' ~ state_attr('sensor.pv_stats', 'mean') ~ '}}' }}
 
@@ -424,6 +423,8 @@ input_boolean:
     name: SolaX Backup Mode
   solax_forcetime:
     name: SolaX Force Time
+  solax_feedin:
+    name: SolaX Feed-in Priority
   solax_test:
     name: SolaX Test
   solax_grid_charge:
@@ -574,6 +575,46 @@ automation:
     trigger:
       platform: state
       entity_id: input_boolean.solax_forcetime
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+  - alias: Solax Feed-in Priority
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_feedin
+      to: 'on'
+    action:
+    - service: modbus.write_register # Feedin Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '3'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Feddin Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '3'
+
+  - alias: Solax Feed-in Priority Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_feedin
       to: 'off'
     action:
     - service: modbus.write_register # Auto Mode
