@@ -33,6 +33,7 @@ automation:
             myenergi_password: !secret myenergi_password
             eddi_serial: !secret eddi_serial
 
+
 input_boolean:
   solar_diverter:
     name: Solar Diverter
@@ -155,10 +156,24 @@ sensor:
       device_class: power        
       icon_template: mdi:water-boiler
 
+    myenergi_eddi_diverted_today:
+      friendly_name: 'Eddi Diverted Power Today'
+      value_template: "{% if state_attr('sensor.myenergi_eddi','che') | int > 0 %}{{ state_attr('sensor.myenergi_eddi','che') }}{% else %}0{% endif %}"
+      unit_of_measurement: kWh
+      device_class: power        
+      icon_template: mdi:water-boiler
+
     myenergi_zappi_diverted_power:
       friendly_name: 'Zappi Diverted Power'
       value_template: "{% if state_attr('sensor.myenergi_zappi','div') | int > 0 %}{{ state_attr('sensor.myenergi_zappi','div') }}{% else %}0{% endif %}"
       unit_of_measurement: w
+      device_class: power        
+      icon_template: mdi:car-electric
+
+    myenergi_zappi_charge_added:
+      friendly_name: 'Zappi Charge Added'
+      value_template: "{% if state_attr('sensor.myenergi_zappi','che') | int > 0 %}{{ state_attr('sensor.myenergi_zappi','che') }}{% else %}0{% endif %}"
+      unit_of_measurement: kWh
       device_class: power        
       icon_template: mdi:car-electric
 
@@ -195,3 +210,9 @@ sensor:
 shell_command:
   eddi_on: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-1'"
   eddi_off: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-0'"
+
+
+
+
+
+
