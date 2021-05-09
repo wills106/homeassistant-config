@@ -75,6 +75,15 @@ I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Na
 - EV Charger [Zappi v2](https://myenergi.com/product/zappi/)
 - Solar Diverter [Eddi](https://myenergi.com/product/eddi/) for immersion heater
 
+## Custom Components and Lovelace Cards etc
+- [Frigate NVR with Object detection](https://github.com/blakeblackshear/frigate)
+- [Frigate Integration](https://github.com/blakeblackshear/frigate-hass-integration)
+- [Octopus.Energy Agile Integration](https://github.com/markgdev/home-assistant_OctopusAgile)
+- [Power Distribution Card](https://github.com/markgdev/home-assistant_OctopusAgile)
+- [SamsungTV](https://github.com/jscruz/sensor.carbon_intensity_uk)
+- [Solcast Solar Prediction](https://github.com/dannerph/homeassistant-solcast)
+- [UK Carbon Intensity](https://github.com/jscruz/sensor.carbon_intensity_uk)
+
 ## Retired Devices
 - Synology DS1511+ (Docker running Home Assistant)
 - Linksys WRT1900ACS Router
