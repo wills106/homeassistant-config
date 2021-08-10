@@ -1,7 +1,7 @@
 ##########
 #
 # Package to read / control myEnergi Eddi and Zappi2.0
-# Only reading is implemented at the moment.
+# Control is only partially implemented at the moment.
 #
 # Using information shared at:
 #
@@ -12,6 +12,26 @@
 
 
 automation:
+
+##########
+#
+# Automation to add a 30min delay once Eddi has reached temp before
+# diverting again this is to allow a period of Solar Export to Grid
+#
+##########
+  - id: solar_diverter_delay
+    alias: 'Delay Solar Diverter'
+    trigger:
+      - platform: state
+        entity_id: sensor.myenergi_eddi_status
+        to: "Temp Reached"
+    action:
+    - service: homeassistant.turn_off
+      entity_id: input_boolean.solar_diverter
+    - delay: '00:30:00'
+    - service: homeassistant.turn_on
+      entity_id: input_boolean.solar_diverter
+
   - id: solar_diverter_switch
     alias: 'Turn on / off Solar Diverter'
     trigger:
@@ -158,7 +178,7 @@ sensor:
 
     myenergi_eddi_diverted_today:
       friendly_name: 'Eddi Diverted Power Today'
-      value_template: "{% if state_attr('sensor.myenergi_eddi','che') | int > 0 %}{{ state_attr('sensor.myenergi_eddi','che') }}{% else %}0{% endif %}"
+      value_template: "{% if state_attr('sensor.myenergi_eddi','che') | float > 0 %}{{ state_attr('sensor.myenergi_eddi','che') }}{% else %}0{% endif %}"
       unit_of_measurement: kWh
       device_class: power        
       icon_template: mdi:water-boiler
@@ -172,7 +192,7 @@ sensor:
 
     myenergi_zappi_charge_added:
       friendly_name: 'Zappi Charge Added'
-      value_template: "{% if state_attr('sensor.myenergi_zappi','che') | int > 0 %}{{ state_attr('sensor.myenergi_zappi','che') }}{% else %}0{% endif %}"
+      value_template: "{% if state_attr('sensor.myenergi_zappi','che') | float > 0 %}{{ state_attr('sensor.myenergi_zappi','che') }}{% else %}0{% endif %}"
       unit_of_measurement: kWh
       device_class: power        
       icon_template: mdi:car-electric
@@ -210,9 +230,3 @@ sensor:
 shell_command:
   eddi_on: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-1'"
   eddi_off: "curl --digest -u {{myenergi_serial}}:{{myenergi_password}} -H 'accept: application/json' -H 'content-type: application/json' --compressed 'https://s0.myenergi.net/cgi-eddi-mode-E{{eddi_serial}}-0'"
-
-
-
-
-
-

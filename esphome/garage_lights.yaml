@@ -1,0 +1,10 @@
+# Sonnof 4Ch Pro R2 Garage Light Controller
+
+# Substitutions
+substitutions:
+  # Device Names
+  device_name: "garage_lights"
+  friendly_name: "Garage"
+  device_ip: "192.168.1.x"
+
+<<: !include common/sonoff_4ch_pro_r2.yaml

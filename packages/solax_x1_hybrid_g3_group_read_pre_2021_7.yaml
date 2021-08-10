@@ -5,7 +5,7 @@
 # New group register reads.
 # Replaces https://github.com/wills106/homeassistant-config/blob/master/packages/solax_x1_hybrid_g3_triplepower.yaml
 #
-# Will not work prior to 2021.07.0 version of Home Assistant
+# Will not work prior to 2020.12.0 version of Home Assistant
 #
 ##########
 
@@ -14,6 +14,7 @@ modbus:
   type: tcp # Comment out for RS485
   host: !secret inverter_ip # Comment out for RS485
   port: 502 # Comment out for RS485
+  timeout: 5
 
 # Uncomment for USB - RS485 dongle
 #  type: serial
@@ -23,41 +24,43 @@ modbus:
 #  stopbits: 1
 #  bytesize: 8
 #  parity: N
- 
-  sensors:
+
+sensor:
+- platform: modbus
+  scan_interval: 2
+  registers:
   # Holding Registers
     - name: SolaX Group h1
-      address: 139
+      hub: SolaX
+      register: 139
       count: 19
       data_type: custom
       structure: ">19H"
-      scan_interval: 2
 
     - name: SolaX Group h2
-      address: 180
+      hub: SolaX
+      register: 180
       count: 8
       data_type: custom
       structure: ">8H"
-      scan_interval: 2
 
   # Input Registers
     - name: SolaX Group i1
-      address: 0
-      input_type: input
+      hub: SolaX
+      register: 0
+      register_type: input
       count: 30
       data_type: custom
       structure: ">H2h5Hh3Hh7H3hHh5H"
-      scan_interval: 2
     
     - name: SolaX Group i2
-      address: 70
-      input_type: input
+      hub: SolaX
+      register: 70
+      register_type: input
       count: 14
       data_type: custom
       structure: ">2h10HI"
-      scan_interval: 2
 
-sensor:
 - platform: template
   sensors:
 # SolaX Group H1
