@@ -1,0 +1,16 @@
+sensor:
+  - platform: integration
+    source: sensor.solax_pv_total_power
+    name: solax_pv_total_power_kWh
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.solax_grid_export
+    name: solax_grid_export_kWh
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.solax_grid_import
+    name: solax_grid_import_kWh
+    unit_prefix: k
+    round: 2
