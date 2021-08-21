@@ -1,0 +1,563 @@
+##########
+#
+# Will not work prior to 2021.07.0 version of Home Assistant
+#
+##########
+
+modbus:
+  name: SolaX 
+  type: serial # Comment out for RS485 Modbus over TCP
+  method: rtu # Comment out for RS485 Modbus over TCP
+  port: /dev/ttyUSB0 # Comment out for RS485 Modbus over TCP
+  baudrate: 115200 # Comment out for RS485 Modbus over TCP
+  stopbits: 1 # Comment out for RS485 Modbus over TCP
+  bytesize: 8 # Comment out for RS485 Modbus over TCP
+  parity: N # Comment out for RS485 Modbus over TCP
+
+# Uncomment for Modbus over TCP
+  # type: tcp
+  # host: !secret inverter_ip
+  # port: 502
+
+  sensors:
+  # Holding Registers
+    - name: SolaX Group h1
+      address: 139
+      count: 19
+      data_type: custom
+      structure: ">19H"
+      scan_interval: 2
+
+    - name: SolaX Group h2
+      address: 180
+      count: 8
+      data_type: custom
+      structure: ">8H"
+      scan_interval: 2
+
+  # Input Registers
+    - name: SolaX Group i1
+      address: 0
+      input_type: input
+      count: 30
+      data_type: custom
+      structure: ">H2h5Hh3Hh7H3hHh5H"
+      scan_interval: 2
+    
+    - name: SolaX Group i2
+      address: 70
+      input_type: input
+      count: 14
+      data_type: custom
+      structure: ">2h10HI"
+      scan_interval: 2
+
+sensor:
+- platform: template
+  sensors:
+# SolaX Group H1
+    solax_charger_use_mode:
+      friendly_name: "SolaX Charger Use Mode"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[0] }}"
+    solax_battery_min_capacity:
+      friendly_name: "SolaX Battery Minimum Capacity"
+      unit_of_measurement: "%"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[1] }}"
+    solax_battery_type:
+      friendly_name: "SolaX Battery Type"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[2] }}"
+    solax_battery_charge_float_voltage:
+      friendly_name: "SolaX Battery Charge Float Voltage"
+      unit_of_measurement: V
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[3]| float / 10 }}"
+    solax_battery_discharge_cut_off_voltage:
+      friendly_name: "SolaX Battery Discharge Cut Off Voltage"
+      unit_of_measurement: V
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[4]| float / 10 }}"
+    solax_battery_charge_max_current:
+      friendly_name: "SolaX Battery Charge Maximum Current"
+      unit_of_measurement: A
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[5]| float / 10 }}"
+    solax_battery_discharge_max_current:
+      friendly_name: "SolaX Battery Discharge Maximum Current"
+      unit_of_measurement: A
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[6]| float / 10 }}"
+    solax_charger_start_time_1:
+      friendly_name: "SolaX Charger Start Time 1"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[7] }}:{{ states('sensor.solax_group_h1').split(',')[8] }}"
+    solax_charger_end_time_1:
+      friendly_name: "SolaX Charger End Time 1"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[9] }}:{{ states('sensor.solax_group_h1').split(',')[10] }}"
+    solax_charger_start_time_2:
+      friendly_name: "SolaX Charger Start Time 2"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[15] }}:{{ states('sensor.solax_group_h1').split(',')[16] }}"
+    solax_charger_end_time_2:
+      friendly_name: "SolaX Charger End Time 2"
+      value_template: "{{ states('sensor.solax_group_h1').split(',')[17] }}:{{ states('sensor.solax_group_h1').split(',')[18] }}"
+
+# SolaX Group H2
+    solax_allow_grid_charge:
+      friendly_name: "SolaX Allow Grid Charge"
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[0] }}"
+    solax_export_control_factory_limit:
+      friendly_name: "SolaX Export Control Factory Limit"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[1]| float / 10 }}"
+    solax_export_control_user_limit:
+      friendly_name: "SolaX Export Control User Limit"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[2]| float / 10 }}"
+    solax_eps_mute:
+      friendly_name: "SolaX EPS Mute"
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[3] }}"
+    solax_eps_set_frequency:
+      friendly_name: "SolaX EPS Set Frequency"
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[4] }}"
+    solax_inverter_rate_power:
+      friendly_name: "SolaX Inverter rate Power"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[6] }}"
+    solax_language:
+      friendly_name: "SolaX Language / Sprache"
+      value_template: "{{ states('sensor.solax_group_h2').split(',')[7] }}"
+
+# SolaX Group I1
+    solax_inverter_voltage:
+      friendly_name: "SolaX Inverter Voltage"
+      unit_of_measurement: V
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[0]| float / 10 }}"
+    solax_inverter_current:
+      friendly_name: "SolaX Inverter Current"
+      unit_of_measurement: A
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[1]| float / 10 }}"
+    solax_inverter_load:
+      friendly_name: "SolaX Inverter Power"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[2] }}"
+    solax_grid_frequency:
+      friendly_name: "SolaX Grid Frequency"
+      unit_of_measurement: Hz
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[7]| float / 100 }}"
+    solax_inverter_temperature:
+      friendly_name: "SolaX Inverter Temperature"
+      unit_of_measurement: °C
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[8] }}"
+    solax_run_mode:
+      friendly_name: "SolaX Run Mode"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[9] }}"
+    solax_time_count_down:
+      friendly_name: "SolaX Time Count Down"
+      unit_of_measurement: s
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[19]| float / 1000 }}"
+    solax_battery_voltage_charge:
+      friendly_name: "SolaX Battery Voltage"
+      unit_of_measurement: V
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[20]| float / 10 }}"
+    solax_battery_current_charge:
+      friendly_name: "SolaX Battery Curent"
+      unit_of_measurement: A
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[21]| float / 10 }}"
+    solax_battery_power_charge:
+      friendly_name: "SolaX Battery Power"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[22] }}"
+    solax_bms_connect_state:
+      friendly_name: "SolaX BMS Connect State"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[23] }}"
+    solax_battery_temperature:
+      friendly_name: "SolaX Battery Temperature"
+      unit_of_measurement: °C
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[24] }}"
+    solax_battery_capacity_charge:
+      friendly_name: "SolaX Battery Capacity"
+      unit_of_measurement: "%"
+      value_template: "{{ states('sensor.solax_group_i1').split(',')[28] }}"
+
+# SolaX Group I2
+    solax_feedin_power:
+      friendly_name: "SolaX Measured Power"
+      unit_of_measurement: W
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[0] }}"
+    solax_feedin_energy_total:
+      friendly_name: "SolaX Feedin Energy Total"
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[2]| float / 10 }}"
+    solax_consumed_energy_total:
+      friendly_name: "SolaX Consumed Energy Total"
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[4]| float / 10 }}"
+    solax_eps_volatge:
+      friendly_name: "SolaX EPS Voltage"
+      unit_of_measurement: V
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[6]| float / 10 }}"
+    solax_eps_current:
+      friendly_name: "SolaX EPS Current"
+      unit_of_measurement: A
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[7]| float / 10 }}"
+    solax_eps_power:
+      friendly_name: "SolaX EPS Power"
+      unit_of_measurement: VA
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[8] }}"
+    solax_eps_frequency:
+      friendly_name: "SolaX EPS Frequency"
+      unit_of_measurement: Hz
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[9]| float / 10 }}"
+    solax_energy_today:
+      friendly_name: "SolaX Today's Yield"
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[10]| float / 10 }}"
+    solax_total_energy_to_grid:
+      friendly_name: "SolaX Total Export"
+      unit_of_measurement: kWh
+      value_template: "{{ states('sensor.solax_group_i2').split(',')[12]| float / 1000 }}"
+
+
+    solax_run_mode_template:
+      friendly_name: "SolaX Run Mode"
+      value_template: >-
+        {% if is_state('sensor.solax_run_mode', '0') %}
+          Waiting
+        {% elif is_state('sensor.solax_run_mode', '1') %}
+          Checking
+        {% elif is_state('sensor.solax_run_mode', '2') %}
+          Normal Mode
+        {% elif is_state('sensor.solax_run_mode', '3') %}
+          Off Mode
+        {% elif is_state('sensor.solax_run_mode', '4') %}
+          Permanent Fault Mode
+        {% elif is_state('sensor.solax_run_mode', '5') %}
+          Update Mode
+        {% elif is_state('sensor.solax_run_mode', '6') %}
+          EPS Check Mode
+        {% elif is_state('sensor.solax_run_mode', '7') %}
+          EPS Mode
+        {% elif is_state('sensor.solax_run_mode', '8') %}
+          Self Test
+        {% elif is_state('sensor.solax_run_mode', '9') %}
+          Idle Mode
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_charger_use_mode_template:
+      friendly_name: "SolaX Charger Use Mode"
+      value_template: >-
+        {% if is_state('sensor.solax_charger_use_mode', '0') %}
+          Self Use Mode
+        {% elif is_state('sensor.solax_charger_use_mode', '1') %}
+          Force Time Use
+        {% elif is_state('sensor.solax_charger_use_mode', '2') %}
+          Back Up Mode
+        {% elif is_state('sensor.solax_charger_use_mode', '3') %}
+          Feedin Priority
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_bms_connect_state_template:
+      friendly_name: "SolaX BMS Connect State"
+      value_template: >-
+        {% if is_state('sensor.solax_bms_connect_state', '0') %}
+          Disconnected
+        {% elif is_state('sensor.solax_bms_connect_state', '1') %}
+          Connected
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_battery_type_template:
+      friendly_name: "SolaX Battery Type"
+      value_template: >-
+        {% if is_state('sensor.solax_battery_type', '0') %}
+          Lead Acid
+        {% elif is_state('sensor.solax_battery_type', '1') %}
+          Lithium
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_allow_grid_charge_template:
+      friendly_name: "SolaX Allow Grid Charge"
+      value_template: >-
+        {% if is_state('sensor.solax_allow_grid_charge', '0') %}
+          Forbidden
+        {% elif is_state('sensor.solax_allow_grid_charge', '1') %}
+          Charger Time 1
+        {% elif is_state('sensor.solax_allow_grid_charge', '2') %}
+          Charger Time 2
+        {% elif is_state('sensor.solax_allow_grid_charge', '3') %}
+          Both Charger Time's
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_eps_mute_template:
+      friendly_name: "SolaX EPS Mute"
+      value_template: >-
+        {% if is_state('sensor.solax_eps_mute', '0') %}
+          Off
+        {% elif is_state('sensor.solax_eps_mute', '1') %}
+          On
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_eps_set_frequency_template:
+      friendly_name: "SolaX EPS Set Frequency"
+      value_template: >-
+        {% if is_state('sensor.solax_eps_set_frequency', '0') %}
+          50Hz
+        {% elif is_state('sensor.solax_eps_set_frequency', '1') %}
+          60Hz
+        {% else %}
+          Unknown
+        {% endif %}
+    solax_language_template:
+      friendly_name: "SolaX Language / Sprache"
+      value_template: >-
+        {% if is_state('sensor.solax_language', '0') %}
+          English
+        {% elif is_state('sensor.solax_language', '1') %}
+          Deutsche
+        {% else %}
+          Unknown
+        {% endif %}
+
+automation:
+  - alias: House Battery Charge Rate
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_charge
+    action:
+    - service: modbus.write_register # Battery Charge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeast Battery Charge incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '36'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: House Battery Disharge Rate
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_discharge
+    action:
+    - service: modbus.write_register # Battery Discharge
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+    - delay: '00:00:01'
+    - service: modbus.write_register # Repeat Battery Discharge incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '37'
+        value: "{{ (trigger.to_state.state | float * 10) | int }}"
+
+  - alias: "House Battery Min Energy %"
+    trigger:
+      platform: state
+      entity_id: input_number.solax_battery_min_energy
+    action:
+    - service: modbus.write_register # Min Discharge %
+      data_template:
+        hub: SolaX
+        unit: '1'
+        address: '32'
+        value: "{{ trigger.to_state.state | int }}"
+
+  - alias: Solax Backup
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '2'
+
+  - alias: Solax Backup Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_backup
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+  - alias: Solax ForceTime
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'on'
+    action:
+    - service: modbus.write_register # Force Time Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '1'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '1'
+
+  - alias: Solax ForceTime Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_forcetime
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+  - alias: Solax Feed-in Priority
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_feedin
+      to: 'on'
+    action:
+    - service: modbus.write_register # Feedin Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '3'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Feddin Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '3'
+
+  - alias: Solax Feed-in Priority Off
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_feedin
+      to: 'off'
+    action:
+    - service: modbus.write_register # Auto Mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+    - delay: '00:00:01'
+    - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '31'
+        value: '0'
+
+  - alias: Solax Charger Start Time 1
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_test
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '38'
+        value: '7683'
+
+#Hbyte = 10
+#Lbyte = 9
+#value = Hbyte << 8 | Lbyte;
+#print(value)
+
+  - alias: Solax Allow Grid Charge
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_grid_charge
+      to: 'on'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '64'
+        value: '1'
+
+  - alias: Solax Disallow Grid Charge
+    trigger:
+      platform: state
+      entity_id: input_boolean.solax_grid_charge
+      to: 'off'
+    action:
+    - service: modbus.write_register # Backup mode
+      data_template:
+        hub: SolaX
+        unit: '255'
+        address: '64'
+        value: '0'
+
+input_boolean:
+  solax_backup:
+    name: Solax Backup Mode
+    initial: off
+  solax_forcetime:
+    name: Solax Force Time
+    initial: off
+
+input_number:
+  solax_battery_charge:
+    name: Solax Battery Charge A
+    initial: 25
+    min: 0
+    max: 30 # Technical Datasheet states Max Charge is 30A, but recommend 25A
+    step: 1
+
+  solax_battery_discharge:
+    name: Solax Battery Disharge A
+    initial: 25
+    min: 0
+    max: 30 # Technical Datasheet states Max Discharge is 30A, but recommend 25A
+    step: 1
+
+  solax_battery_min_energy:
+    name: "Solax Battery Min Energy Level %"
+    initial: 25
+    min: 10 # Technical Datasheet states Max DOD is 90%
+    max: 100
+    step: 5
