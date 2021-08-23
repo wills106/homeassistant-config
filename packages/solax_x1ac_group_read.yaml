@@ -26,14 +26,14 @@ modbus:
       count: 19
       data_type: custom
       structure: ">19H"
-      scan_interval: 2
+      scan_interval: 5
 
     - name: SolaX Group h2
       address: 180
       count: 8
       data_type: custom
       structure: ">8H"
-      scan_interval: 2
+      scan_interval: 5
 
   # Input Registers
     - name: SolaX Group i1
@@ -42,7 +42,7 @@ modbus:
       count: 30
       data_type: custom
       structure: ">H2h5Hh3Hh7H3hHh5H"
-      scan_interval: 2
+      scan_interval: 5
     
     - name: SolaX Group i2
       address: 70
@@ -50,7 +50,7 @@ modbus:
       count: 14
       data_type: custom
       structure: ">2h10HI"
-      scan_interval: 2
+      scan_interval: 5
 
 sensor:
 - platform: template
@@ -107,12 +107,6 @@ sensor:
       friendly_name: "SolaX Export Control User Limit"
       unit_of_measurement: W
       value_template: "{{ states('sensor.solax_group_h2').split(',')[2]| float / 10 }}"
-    solax_eps_mute:
-      friendly_name: "SolaX EPS Mute"
-      value_template: "{{ states('sensor.solax_group_h2').split(',')[3] }}"
-    solax_eps_set_frequency:
-      friendly_name: "SolaX EPS Set Frequency"
-      value_template: "{{ states('sensor.solax_group_h2').split(',')[4] }}"
     solax_inverter_rate_power:
       friendly_name: "SolaX Inverter rate Power"
       unit_of_measurement: W
@@ -186,22 +180,6 @@ sensor:
       friendly_name: "SolaX Consumed Energy Total"
       unit_of_measurement: kWh
       value_template: "{{ states('sensor.solax_group_i2').split(',')[4]| float / 10 }}"
-    solax_eps_volatge:
-      friendly_name: "SolaX EPS Voltage"
-      unit_of_measurement: V
-      value_template: "{{ states('sensor.solax_group_i2').split(',')[6]| float / 10 }}"
-    solax_eps_current:
-      friendly_name: "SolaX EPS Current"
-      unit_of_measurement: A
-      value_template: "{{ states('sensor.solax_group_i2').split(',')[7]| float / 10 }}"
-    solax_eps_power:
-      friendly_name: "SolaX EPS Power"
-      unit_of_measurement: VA
-      value_template: "{{ states('sensor.solax_group_i2').split(',')[8] }}"
-    solax_eps_frequency:
-      friendly_name: "SolaX EPS Frequency"
-      unit_of_measurement: Hz
-      value_template: "{{ states('sensor.solax_group_i2').split(',')[9]| float / 10 }}"
     solax_energy_today:
       friendly_name: "SolaX Today's Yield"
       unit_of_measurement: kWh
@@ -286,26 +264,6 @@ sensor:
         {% else %}
           Unknown
         {% endif %}
-    solax_eps_mute_template:
-      friendly_name: "SolaX EPS Mute"
-      value_template: >-
-        {% if is_state('sensor.solax_eps_mute', '0') %}
-          Off
-        {% elif is_state('sensor.solax_eps_mute', '1') %}
-          On
-        {% else %}
-          Unknown
-        {% endif %}
-    solax_eps_set_frequency_template:
-      friendly_name: "SolaX EPS Set Frequency"
-      value_template: >-
-        {% if is_state('sensor.solax_eps_set_frequency', '0') %}
-          50Hz
-        {% elif is_state('sensor.solax_eps_set_frequency', '1') %}
-          60Hz
-        {% else %}
-          Unknown
-        {% endif %}
     solax_language_template:
       friendly_name: "SolaX Language / Sprache"
       value_template: >-
@@ -377,14 +335,14 @@ automation:
     - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '2'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Backup Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '2'
 
@@ -397,14 +355,14 @@ automation:
     - service: modbus.write_register # Auto Mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
 
@@ -417,14 +375,14 @@ automation:
     - service: modbus.write_register # Force Time Mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '1'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Force Time Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '1'
 
@@ -437,14 +395,14 @@ automation:
     - service: modbus.write_register # Auto Mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
 
@@ -457,14 +415,14 @@ automation:
     - service: modbus.write_register # Feedin Mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '3'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Feddin Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '3'
 
@@ -477,14 +435,14 @@ automation:
     - service: modbus.write_register # Auto Mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
     - delay: '00:00:01'
     - service: modbus.write_register # 2nd Auto Mode incase Inverter missed first
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '31'
         value: '0'
 
@@ -497,7 +455,7 @@ automation:
     - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '38'
         value: '7683'
 
@@ -515,7 +473,7 @@ automation:
     - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '64'
         value: '1'
 
@@ -528,7 +486,7 @@ automation:
     - service: modbus.write_register # Backup mode
       data_template:
         hub: SolaX
-        unit: '255'
+        unit: '1'
         address: '64'
         value: '0'
 
