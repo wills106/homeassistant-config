@@ -1,3 +1,7 @@
+# SolaX has been replaced with my custom_integration that I have built [SolaX Power Inverter - Modbus](https://github.com/wills106/homsassistant-solax-modbus)
+
+# myenergi has been replaced with the custom_integration [myenergi](https://github.com/CJNE/ha-myenergi)
+
 How to use [Packages](https://www.home-assistant.io/docs/configuration/packages/)
 
 I have some example Lovelace views in the lovelace-example folder.
