@@ -15,3 +15,12 @@
   unit_of_measurement: 'm3'
   scan_interval: 600
   command: 'sh /config/bash_scripts/gas.sh'
+
+- platform: "octopusagile"
+
+- platform: template
+  sensors:
+    agile_rate:
+      friendly_name: "Agile Rate"
+      unit_of_measurement: "GBP/kWh"
+      value_template: "{{ states('sensor.octopus_agile_current_rate') | float / 100 }}"

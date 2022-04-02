@@ -1,476 +1,149 @@
-#######################################
-#                                     #
-# Input_Boolean's                     #
-#                                     #
-#######################################
-
-#############################
-#                           #
-# Reset - Input_Boolean's   #
-#                           #
-#############################
-
-- alias: Reset Daily Booleans
+- id: '1645793480899'
+  alias: Delay Solar Diverter
+  description: ''
   trigger:
-    - platform: time
-      at: '20:00:00'
+  - platform: state
+    entity_id: sensor.myenergi_eddi_status
+    to: Max temp reached
+  condition: []
   action:
-    - service: homeassistant.turn_off
-      entity_id:
-        - input_boolean.early_shift
-        - input_boolean.late_shift
-        - input_boolean.overtime
-        - input_boolean.holiday
-        - input_boolean.party
-        - input_boolean.weekend
-
-#############################
-#                           #
-# Set - Input_Boolean's     #
-#                           #
-#############################
-
-- alias: Early Shift
+  - service: automation.turn_off
+    data: {}
+    target:
+      entity_id: automation.turn_off_solar_diverter_below_100w_pv
+  - service: automation.turn_off
+    data: {}
+    target:
+      entity_id: automation.turn_on_solar_diverter_above_100w_pv
+  - device_id: 1c434db3f2899078cbe101a7a54deede
+    domain: select
+    entity_id: select.myenergi_eddi_operating_mode
+    type: select_option
+    option: Stopped
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - device_id: 1c434db3f2899078cbe101a7a54deede
+    domain: select
+    entity_id: select.myenergi_eddi_operating_mode
+    type: select_option
+    option: Normal
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id: automation.turn_off_solar_diverter_below_100w_pv
+  - service: automation.turn_on
+    data: {}
+    target:
+      entity_id: automation.turn_on_solar_diverter_above_100w_pv
+  mode: single
+- id: '1645793972068'
+  alias: Turn false Garage Light off
+  description: ''
   trigger:
-    - platform: state
-      entity_id: calendar.early_shift
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.early_shift
-
-- alias: Late Shift
-  trigger:
-    - platform: state
-      entity_id: calendar.late_shift
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.late_shift
-
-- alias: Overtime
-  trigger:
-    - platform: state
-      entity_id: calendar.overtime
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.overtime
-
-- alias: Holiday
-  trigger:
-    - platform: state
-      entity_id: calendar.holiday
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.holiday
-
-- alias: Party
-  trigger:
-    - platform: state
-      entity_id: calendar.party
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.party
-
-- alias: Weekend
-  trigger:
-    - platform: state
-      entity_id: calendar.weekend
-      to: 'on'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.weekend
-
-#######################################
-#                                     #
-# MQTT - Status Power on Startup      #
-#                                     #
-#######################################
-
-#Check Power Status on startup for Sonoff Devices
-- alias: "Power state on HA start-up"
-  trigger:
-    platform: homeassistant
-    event: start
-  action:
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power1"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power2"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/Power3"
-        payload: "" 
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power4"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power5"
-        payload: ""
-
-#######################################
-#                                     #
-# 2 Way Light Control                 #
-#                                     #
-#######################################
-
-# Automation for two way Living Room Lights
-- alias: Living Room Lights On
-  initial_state: 'on'
-  trigger:
-    platform: state
-    entity_id: group.LivingRoomLights
-    to: 'on'
-  action:
-    service: homeassistant.turn_on
-    entity_id: group.LivingRoomLights
-
-- alias: Living Room Lights Off
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id: light.LivingroomMaster
-      to: 'off'
-    - platform: state
-      entity_id: light.LivingroomSlave
-      to: 'off'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.LivingRoomLights
-
-# Automation for two way Hall Lights
-- alias: Hall Lights On
-  initial_state: 'on'
-  trigger:
-    platform: state
-    entity_id: group.HallLights
-    to: 'on'
-  action:
-    service: homeassistant.turn_on
-    entity_id: group.HallLights
-
-- alias: Hall Lights Off
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id: light.HallMaster
-      to: 'off'
-    - platform: state
-      entity_id: light.HallSlave
-      to: 'off'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.HallLights
-
-#######################################
-#                                     #
-# Lights - Based on Calendar          #
-#                                     #
-#######################################
-
-#############################
-#                           #
-# Lights - Early Shift      #
-#                           #
-#############################
-
-# Time to get up...
-# Condition ideally needs to check light lux for summer months, no need for kitchen lights then.
-
-- alias: "LightsOnMorningEarly"
-  trigger:
-    platform: time
-    at: '04:30:00'
+  - platform: device
+    type: turned_on
+    device_id: 9baba3ff60ce677d613ac519c125e6e4
+    entity_id: light.garage_light_right
+    domain: light
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
   condition:
-    condition: state
-    entity_id: input_boolean.early_shift
-    state: 'on'
+  - condition: device
+    device_id: 6b6ac76533c5741284ac3f254fdb79f0
+    domain: lock
+    entity_id: lock.conexis_garage_door
+    type: is_locked
   action:
-    - service: homeassistant.turn_on
-      entity_id: group.HallLights
-
-# Time for work...
-- alias: "LightsOutWorkEarly"
+  - type: turn_off
+    device_id: 9baba3ff60ce677d613ac519c125e6e4
+    entity_id: light.garage_light_right
+    domain: light
+  mode: single
+- id: '1645795348588'
+  alias: Turn on Solar Diverter
+  description: ''
   trigger:
-    platform: time
-    at: '05:20:00'
+  - type: battery_level
+    platform: device
+    device_id: 576c6ce6230a18a2de653c8e254dfbfb
+    entity_id: sensor.solax_battery_capacity
+    domain: sensor
+    above: 95
   condition:
-    condition: state
-    entity_id: input_boolean.early_shift
-    state: 'on'
+  - type: is_power
+    condition: device
+    device_id: 576c6ce6230a18a2de653c8e254dfbfb
+    entity_id: sensor.solax_pv_total_power
+    domain: sensor
+    above: 500
   action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-# Time for bed...
-- alias: "LightsOutBedEarly"
+  - service: select.select_option
+    data:
+      option: Back Up Mode
+    target:
+      entity_id: select.solax_charger_use_mode
+  - device_id: 1c434db3f2899078cbe101a7a54deede
+    domain: select
+    entity_id: select.myenergi_eddi_operating_mode
+    type: select_option
+    option: Normal
+  mode: single
+- id: '1645795423311'
+  alias: Turn off Solar Diverter below 100w PV
+  description: ''
   trigger:
-    platform: time
-    at: '22:15:00'
+  - type: power
+    platform: device
+    device_id: 576c6ce6230a18a2de653c8e254dfbfb
+    entity_id: sensor.solax_pv_total_power
+    domain: sensor
+    below: 400
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition: []
+  action:
+  - device_id: 1c434db3f2899078cbe101a7a54deede
+    domain: select
+    entity_id: select.myenergi_eddi_operating_mode
+    type: select_option
+    option: Stopped
+  - service: select.select_option
+    data:
+      option: Self Use Mode
+    target:
+      entity_id: select.solax_charger_use_mode
+  mode: single
+- id: '1645990036998'
+  alias: New Automation
+  description: ''
+  trigger:
+  - type: energy
+    platform: device
+    device_id: e542bbaca249d970af1a30180277e247
+    entity_id: sensor.energy_production_today
+    domain: sensor
+    below: 8
   condition:
-    condition: state
-    entity_id: input_boolean.early_shift
-    state: 'on'
+  - type: is_battery_level
+    condition: device
+    device_id: 576c6ce6230a18a2de653c8e254dfbfb
+    entity_id: sensor.solax_battery_capacity
+    domain: sensor
+    below: 50
+  - condition: time
+    after: 02:00
+    before: 03:30
   action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Late Shift       #
-#                           #
-#############################
-
-# Time for work...
-- alias: "LightsOutWorkLate"
-  trigger:
-    platform: time
-    at: '12:40:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.late_shift
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-# Time for bed...
-- alias: "LightsOutBedLate"
-  trigger:
-    platform: time
-    at: '01:00:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.late_shift
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Overtime         #
-#                           #
-#############################
-
-# Time for work...
-- alias: "LightsOutWorkOvertime"
-  trigger:
-    platform: time
-    at: '05:20:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.overtime
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-# Time for bed...
-- alias: "LightsOutBedOvertime"
-  trigger:
-    platform: time
-    at: '22:15:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.overtime
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Holiday          #
-#                           #
-#############################
-
-# Time for bed...
-- alias: "LightsOutBedHoliday"
-  trigger:
-    platform: time
-    at: '00:15:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.holiday
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Party            #
-#                           #
-#############################
-
-# Time for bed...
-- alias: "LightsOutBedParty"
-  trigger:
-    platform: time
-    at: '02:00:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.party
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Weekend          #
-#                           #
-#############################
-
-# Time for bed...    
-- alias: "LightsOutBedWeekend"
-  trigger:
-    platform: time
-    at: '00:15:00'
-  condition:
-    condition: state
-    entity_id: input_boolean.weekend
-    state: 'on'
-  action:
-    service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#############################
-#                           #
-# Lights - Vacation         #
-#                           #
-#############################
-
-#############################
-#                           #
-# Lights - Failsafe @ Night #
-#                           #
-#############################
-
-# I already said it's time for bed...
-- alias: "LightsOutFailSafe"
-  trigger:
-    platform: state
-    entity_id: group.alllights
-    to: 'on'    
-  condition:
-    condition: time
-    after: '02:00:00'
-    before: '04:25:00'
-  action:
-  - delay: 00:15:00
-  - service: homeassistant.turn_off
-    entity_id: group.alllights
-
-#######################################
-#                                     #
-# 433Mhz Door / Window Sensor         #
-#                                     #
-#######################################
-
-- alias: Turn Bathroom Lights On Off
-  trigger:
-    platform: mqtt
-    topic: tele/sonoffBridge/RESULT
-  condition:
-    condition: template
-    value_template: '{{ trigger.payload_json.RfReceived.Data == "513D12" }}'
-  action:
-  - service: homeassistant.toggle
-    entity_id: group.BathroomLights
-
-#######################################
-#                                     #
-# Recieve IFTTT.com message           #
-#                                     #
-#######################################
-
-- alias: Ifttt_webhook
-  trigger:
-    platform: event
-    event_type: ifttt_webhook_received
-    event_data:
-      action: call_service
-  action:
-    service_template: '{{ trigger.event.data.service }}'
-    data_template:
-      entity_id: '{{ trigger.event.data.entity_id }}'
-
-#- alias: Stream Doorbell
-#  trigger:
-#    platform: mqtt
-#    topic: tele/sonoffBridge/RESULT
-#  condition:
-#    condition: template
-#    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
-#  action:
-#  - service: media_player.play_media
-#    entity_id: media_player.living_room_tv
-#    data:
-#      media_content_id: 'does not work'
-#      media_content_type: video
-
-#- alias: 'Notify when front door is open'
-#  trigger:
-#    platform: mqtt
-#    topic: tele/sonoffBridge/RESULT
-#  condition:
-#    condition: template
-#    value_template: '{{ trigger.payload_json.RfReceived.Data == "1234EE" }}'
-#  action:
-#    service: notify.Lounge
-#    data_template:
-#      title: "Home Assistant"
-#      message: "Front door is OPEN"
-#      data:
-#        file:
-#          url: !secret carport_url
-- alias: Im Home light me up
-  trigger:
-    platform: state
-    entity_id: device_tracker.wills106_willsphone
-    from: 'not_home'
-    to: 'home'
-  condition:
-    condition: or  # 'when dark' condition: either after sunset or before sunrise
-    conditions:
-      - condition: sun
-        after: sunset
-#        after_offset: "-00:15:00"
-      - condition: sun
-        before: sunrise
-  action:
-    service: homeassistant.turn_on
-    entity_id: group.HallLights
-
-- alias: Tripwire
-  trigger:
-    platform: state
-    entity_id: binary_sensor.driveway_line_crossing
-    from: 'off'
-    to: 'on'
-  condition:
-    condition: or  # 'when dark' condition: either after sunset or before sunrise
-    conditions:
-      - condition: sun
-        after: sunset
-      - condition: sun
-        before: sunrise
-  action:
-    - service: homeassistant.turn_on
-      entity_id: group.HallLights
-    - service: camera.snapshot
-      data:
-        entity_id: camera.hikvision__ds2cd2t42wdi8
-        filename: '/local/snapshots/Driveway_{{ now().strftime("%Y%m%d-%H%M%S") }}.jpg'
-  
+  - service: select.select_option
+    data:
+      option: Force Time Use
+    target:
+      entity_id: select.solax_charger_use_mode
+  mode: single

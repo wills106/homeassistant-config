@@ -2,88 +2,86 @@ homeassistant:
   # Customization file
 #  customize: !include customize.yaml
   packages: !include_dir_named packages
-
+  
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-# Enables the frontend
-frontend:
-  themes: !include_dir_merge_named themes/
-
-camera:
-  - platform: generic
-    name: Drive
-    still_image_url: !secret frigate_drive_url
-    stream_source: !secret drive_rtsp
-
-  - platform: generic
-    name: Doorbell
-    still_image_url: !secret frigate_doorbell_url
-    stream_source: !secret doorbell_rtsp
-  - platform: generic
-    name: Garage
-    still_image_url: !secret frigate_garage_url
-    stream_source: !secret garage_rtsp
-
-ffmpeg:
-
-# Track calendar false is needed to prevent Hass from overwriting the google_calendar.yaml file.
-google:
-  client_id: !secret calendar_id
-  client_secret: !secret calendar_secret
-  track_new_calendar: false
-
-hive:
-  username: !secret user_name
-  password: !secret hive_pass
-
 http:
-  cors_allowed_origins:
-    - https://domain_name
   use_x_forwarded_for: true
   trusted_proxies:
-    - 192.168.xx.xx
+    - 172.17.0.0/24
 
+camera:
+#  - platform: generic
+#    name: Doorbell Live
+#    stream_source: !secret cam_doorbell
+  - platform: generic
+    name: Drive Live
+    stream_source: !secret cam_drive
+  - platform: generic
+    name: Front Garden Live
+    stream_source: !secret cam_front_garden
+  - platform: generic
+    name: Rear Garden Live
+    stream_source: !secret cam_rear_garden
 
-input_boolean:
-  early_shift:
-  late_shift:
-  overtime:
-  holiday:
-  party:
-  weekend:
-  heater:
-    icon: mdi:radiator
-  willsbed:
-  otherbed:
+light:
+  - platform: group
+    name: Bathroom Lights
+    entities:
+      - light.bathroom_rgbw_1_rgb
+      - light.bathroom_rgbw_2_rgb
+      - light.bathroom_rgbw_3_rgb
 
-notify:
-  - name: signal
-    platform: signal_messenger
-    url: !secret signal_host
-    number: !secret signal_number
-    recipients: # one or more recipients
-      - !secret signal_recipient1
-      - !secret signal_recipient2
+logger:
+  default: warning
 
 octopusagile:
   region_code: "E"
-  mpan: MPAN
-  serial: SERIAL
-  auth: API_KEY
+  mpan: !secret octo_mpan
+  serial: !secret octo_serial
+  auth: !secret octo_api_key
   startdate: "2020-04-25"
+  gorate: 4.5
+  # You can leave godayrate out to go by 
+  # Agile rates outside of offpeak period
+  godayrate: 13.72
+  gotimes:
+  - "02:30:00"
+  - "03:00:00"
+  - "03:30:00"
+  - "04:00:00"
+  - "04:30:00"
+  - "05:00:00"
+
+panel_iframe:
+  double_take:
+    title: "Double-Take"
+    url: !secret double_take_url
+    icon: mdi:shield-account
+    require_admin: true
+  file_browser:
+    title: "File-Browser"
+    url: !secret file_browser_url
+    icon: mdi:file-document-edit
+    require_admin: true
+  snapeshire:
+    title: "Snapeshire"
+    url: !secret snapeshire_url
+    icon: mdi:home-assistant
+    require_admin: true
+  volumio:
+    title: "Volumio"
+    url: !secret volumio_url
+    icon: mdi:record-player
+
 
 python_script:
 
-recorder:
-  db_url: mysql://username:password@core-mariadb/homeassistant?charset=utf8
-
-solcast:
-  api_key: !secret solcast_api
-  resource_id: !secret solcast_id
-  api_limit: 15
-
 stream:
+  ll_hls: true
+  part_duration: 0.75
+  segment_duration: 6
 
 # Text to speech
 tts:
@@ -99,9 +97,8 @@ withings:
   client_secret: !secret withings_secret
   use_webhook: true
 
-
-group: !include groups.yaml
 automation: !include automations.yaml
+group: !include groups.yaml
+scene: !include scenes.yaml
 script: !include scripts.yaml
 sensor: !include sensors.yaml
-scene: !include scenes.yaml
