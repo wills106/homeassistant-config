@@ -3,13 +3,20 @@ Don't feel like you have to Donate, I have only added it due to requests.
 
 [Octopus.Energy 🐙](https://share.octopus.energy/wise-boar-813) referal code. You get £50 credit for joining and I get £50 credit.
 
+This page will use affiliate links where available, any generated money will be used on Home Automation Hardware either for this repository or my other one https://github.com/wills106/homsassistant-solax-modbus
+
+# WIP This has been neglected for quite some time!
+# I am going through the process of updating.
+
+# Please checkout my [SolaX Power Modbus custom_component](https://github.com/wills106/homsassistant-solax-modbus)
+
 # Home Assistant Configuration
 
 My [Home Assistant](https://home-assistant.io/) Configuration Files
 
 ## Version
 
-[HA_VERSION](https://github.com/wills106/homeassistant-config/blob/master/HA_VERSION)
+[.HA_VERSION](https://github.com/wills106/homeassistant-config/blob/master/.HA_VERSION)
 
 ## Screen Shots
 
@@ -26,13 +33,13 @@ Powerflow card and myEnergi sensors for solar diversion and EV Charger.
 I was previously running Supervisor (HASSIO) with the [Synology native Package](https://community.home-assistant.io/t/hass-io-on-synology-dsm-native-package/125559)
 Prior to that I was running HASSIO as a Virtual Machine on my Synology DS918+ this replaced an older Docker Version running on a DS1511+ Synology.
 
-Now I am running Supervisior (HASSIO) on top of Debian running on a J4125 NUC Type device, while I determin where my installation should live long term.
+Now I am running Home Assistant Core on Unraid.
 
-- Synology DS918+ NAS (Sort off)
+- Unraid
 - 6x WD 8TB "External drives removed / lots cheaper!" ( Yes I know the DS918+ is meant to "only have" 4 bays )
 - pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC
 - Ubiquiti US-16-150W 16 Poprt PoE Managed Switch
-- Ubiquiti UniFi nanoHD Access Point
+- Ubiquiti UniFi nanoHD Access Point [Amazon Link1](https://amzn.to/3iTEmwm)
 - XIAOMI Roborock Vacuum Cleaner Gen 2 Rooted and running [Valetudo](https://github.com/Hypfer/Valetudo)
 
 ### I have migrated most ESP Based devices over from [Tasmota Firmware](https://github.com/arendst/Sonoff-Tasmota) to [ESPHome](https://esphome.io/)
@@ -51,10 +58,10 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 - 2 Gang UK Wall Stockets
 
 ### Z-Wave Devices
-- Z-WAVE.ME ZMEEUZB1 Z-Wave USB dongle
+- Z-WAVE.ME ZMEEUZB1 Z-Wave USB dongle [Amazon Link1](https://amzn.to/3LypgbR)
 - Eurotronic SPIRIT Z-Wave TRV
-- Yale Conexis L1 Smart Lock
-- Yale Z-Wave Module 2
+- Yale Conexis L1 Smart Lock [Amazon Link1](https://amzn.to/37aCNav)
+- Yale Z-Wave Module 2 [Amazon Link1](https://amzn.to/3DxoF7n)
 
 ### Security
 
@@ -80,8 +87,8 @@ I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Na
 - [Frigate Integration](https://github.com/blakeblackshear/frigate-hass-integration)
 - [Octopus.Energy Agile Integration](https://github.com/markgdev/home-assistant_OctopusAgile)
 - [Power Distribution Card](https://github.com/markgdev/home-assistant_OctopusAgile)
-- [SamsungTV](https://github.com/jscruz/sensor.carbon_intensity_uk)
-- [Solcast Solar Prediction](https://github.com/dannerph/homeassistant-solcast)
+- [Solcast Solar Prediction](https://github.com/oziee/ha-solcast-solar)
+- [SolaX Power Modbus](https://github.com/wills106/homsassistant-solax-modbus)
 - [UK Carbon Intensity](https://github.com/jscruz/sensor.carbon_intensity_uk)
 
 ## Retired Devices
