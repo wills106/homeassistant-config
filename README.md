@@ -6,6 +6,7 @@ Don't feel like you have to Donate, I have only added it due to requests.
 This page will use affiliate links where available, any generated money will be used on Home Automation Hardware either for this repository or my other one https://github.com/wills106/homsassistant-solax-modbus
 
 # WIP This has been neglected for quite some time!
+
 # I am going through the process of updating.
 
 # Please checkout my [SolaX Power Modbus custom_component](https://github.com/wills106/homsassistant-solax-modbus)
@@ -36,7 +37,7 @@ Prior to that I was running HASSIO as a Virtual Machine on my Synology DS918+ th
 Now I am running Home Assistant Core on Unraid.
 
 - Unraid
-- 6x WD 8TB "External drives removed / lots cheaper!" ( Yes I know the DS918+ is meant to "only have" 4 bays )
+- 6x WD 8TB "External drives removed / lots cheaper!"
 - pfSense  Firewall / Router running on an Intel 3865u 6 NIC Mini PC
 - Ubiquiti US-16-150W 16 Poprt PoE Managed Switch
 - Ubiquiti UniFi nanoHD Access Point [Amazon Link1](https://amzn.to/3iTEmwm)
@@ -65,8 +66,10 @@ I use [Tuya-Convert](https://github.com/ct-Open-Source/tuya-convert) to flash ne
 
 ### Security
 
-I have replaced the Synology Surveillance Station with [Frigate](https://github.com/blakeblackshear/frigate) this is using a [Google Coral](https://coral.ai/products/accelerator) USB stick for object based motion detection. Person, Car (Automobile), Cat's, Dog's etc
-I plan on running [DeepStack](https://docs.deepstack.cc/) On a [Nvidia Jetson Nano 4GB Dev Kit](https://www.nvidia.com/en-gb/autonomous-machines/embedded-systems/jetson-nano/) for Face Recognition based on motion events provided by [Frigate](https://github.com/blakeblackshear/frigate).
+I have replaced the Synology Surveillance Station with [Frigate](https://github.com/blakeblackshear/frigate) this is using a [Google Coral](https://coral.ai/products) Dual Edge TPU for object based motion detection. Person, Car (Automobile), Cat's, Dog's etc
+
+I am using [Double Take](https://github.com/jakowenko/double-take) as the glue between [Frigate](https://github.com/blakeblackshear/frigate) and [CompreFace](https://exadel.com/solutions/compreface/). [Frigate](https://github.com/blakeblackshear/frigate) generates the motion based events which get passed to [CompreFace](https://exadel.com/solutions/compreface/) which runs on an Nvidia GTX1650 performing the Face Recognition.
+
 - 2 x HikVision DS-2CD2386G2-IU
 - HikVision DS-2CD2T42WD-I5
 - HikVision DS-2CD2T42WD-I8
